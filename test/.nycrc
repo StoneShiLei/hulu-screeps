@@ -1,0 +1,6 @@
+{
+    "exclude": [
+        "src/utils/ErrorMapper.ts",
+        "test/*"
+    ]
+}
