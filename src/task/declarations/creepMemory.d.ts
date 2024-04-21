@@ -1,0 +1,4 @@
+
+interface CreepMemory {
+    task:ITask
+}
