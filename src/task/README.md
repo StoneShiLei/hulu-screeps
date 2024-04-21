@@ -35,3 +35,5 @@ task.run()
 isvalid 检查当前任务和目标是否可用
 validTask 检查接任务的目标是否可执行任务
 validTarget 检查目标是否可被执行任务
+
+

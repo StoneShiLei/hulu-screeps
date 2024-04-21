@@ -7,5 +7,6 @@ export abstract class Task implements ITask{
 
 	}
 
+
     abstract work():number
 }
