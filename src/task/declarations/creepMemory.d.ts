@@ -1,4 +1,4 @@
 
 interface CreepMemory {
-    task:ProtoTask
+    task:ProtoTask | null
 }

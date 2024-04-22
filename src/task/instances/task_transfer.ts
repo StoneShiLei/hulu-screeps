@@ -1,14 +1,16 @@
-import { Task } from "./task";
+// import { Task } from "./task";
 
-export class TaskTransfer extends Task {
+// export class TaskTransfer extends Task {
 
-    static taskName:string = 'transfer'
+//     static taskName:string = 'transfer'
 
-    constructor() {
-		super()
-	}
+//     constructor() {
+// 		super()
+// 	}
 
-    work():number {
+//     work():number {
 
-    }
-}
+//     }
+// }
+
+var x =''

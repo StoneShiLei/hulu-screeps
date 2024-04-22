@@ -1,3 +1,4 @@
 interface RoomObject {
-	// ref: string;
+	ref:string
+	// targetedBy:Creep[]
 }

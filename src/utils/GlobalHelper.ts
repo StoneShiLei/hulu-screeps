@@ -29,4 +29,8 @@ export class GlobalHelper {
         // 如果所有尝试都失败，返回 null
         return null;
     }
+
+    static deRoomPosition(protoPos:ProtoPos):RoomPosition{
+        return new RoomPosition(protoPos.x,protoPos.y,protoPos.roomName)
+    }
 }

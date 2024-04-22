@@ -1,6 +1,8 @@
 
 interface Creep {
-    task:ITask
-    isIdle():boolean
+    task:ITask | null
+    _task:ITask | null
+    hasValidTask:boolean
+    isIdle:boolean
     run():void
 }
