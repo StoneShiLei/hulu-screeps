@@ -1,6 +1,7 @@
 import { InRequestScope, Singleton } from "typescript-ioc"
 import { gameTick, now } from "./timeHelper"
-import { Color } from "../constants"
+import { Color } from "../constants/index"
+
 
 /**
  * 日志等级

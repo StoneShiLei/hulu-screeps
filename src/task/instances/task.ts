@@ -1,5 +1,7 @@
 import { initTask } from "task/initTask";
+import { Container, Inject } from "typescript-ioc";
 import { GlobalHelper } from "utils/GlobalHelper";
+import { Logger } from "utils/Logger";
 
 export type TargetType = { ref:string,pos:RoomPosition }
 
@@ -15,6 +17,8 @@ export abstract class Task implements ITask{
     option: TaskOption;
     setting: TaskSetting;
 
+    log:Logger;
+
     constructor(taskName:string,target:TargetType,option = {} as TaskOption) {
         this.name = taskName
         this._creep = {
@@ -23,7 +27,9 @@ export abstract class Task implements ITask{
         this._parent = null
 
         this.data = {}
-        this.setting = {}
+        this.setting = {
+            targetRange:1,
+        }
         this.option = option
 
 
@@ -46,6 +52,11 @@ export abstract class Task implements ITask{
                     roomName:''
                 }
             }
+        }
+
+        this.log = Container.get(Logger)
+        if(this.creep) {
+            this.log = this.log.withCreep(this.creep).withRoom(this.creep.room)
         }
     }
 
@@ -104,14 +115,40 @@ export abstract class Task implements ITask{
 
 
     isValid(): boolean {
-        throw new Error("Method not implemented.");
+        let validTask = false
+        if (this.creep) {
+            validTask = this.isValidTask()
+        }
+        let validTarget = false
+        if (this.target){
+            validTarget = this.isValidTarget()
+        }
+        // else if() blind
+
+        this.log.logDebug(`task.isValid :task-${validTask},target-${validTarget}`)
+        if (validTask && validTarget) {
+            return true
+        }
+        else {
+            this.finish()
+            return this.parent ? this.parent.isValid() : false
+        }
     }
 
-    run(): void {
-        if(this.isValid()){
-            this.work()
-        } else {
-            this.finish()
+    run(): number | undefined {
+
+        this.log.logDebug(`targetPos is ${JSON.stringify(this.targetPos)}`)
+        this.log.logDebug(`creep is ${this.creep.name},pos is ${JSON.stringify(this.creep?.pos)}`)
+        if(this.creep.pos.inRangeTo(this.targetPos,this.setting.targetRange || 0)) { //and 不在边缘)
+            let result = this.work()
+            // if(result == OK){ // and oneShot)
+            //     this.finish()
+            // }
+            return result
+        }
+        else {
+            this.moveToTarget()
+            return
         }
     }
 
@@ -120,7 +157,7 @@ export abstract class Task implements ITask{
 		if (this.creep) {
 			this.creep.task = this.parent;
 		} else {
-			console.log(`No creep executing ${this.name}!`);
+            this.log.logInfo(`No creep executing ${this.name}!`)
 		}
     }
 

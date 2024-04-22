@@ -2,6 +2,7 @@ import { GlobalHelper } from "utils/GlobalHelper"
 import { Task } from "./instances/task"
 import { HarvestTargetType, TaskHarvest } from "./instances/task_harvest"
 import { TaskInvalid } from "./instances/task_invalid"
+import { TaskTransfer, TransferTargetType } from "./instances/task_transfer"
 
 
 export function initTask(protoTask:ProtoTask):Task{
@@ -12,6 +13,9 @@ export function initTask(protoTask:ProtoTask):Task{
     switch(taskName){
         case TaskHarvest.taskName:
             task = new TaskHarvest(target as HarvestTargetType)
+            break;
+        case TaskTransfer.taskName:
+            task = new TaskTransfer(target as TransferTargetType)
             break;
         default:
             console.log(`Invalid task name: ${taskName}! task.creep: ${protoTask._creep.name}. Deleting from memory!`);

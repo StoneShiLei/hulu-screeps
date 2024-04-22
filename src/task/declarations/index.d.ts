@@ -26,7 +26,7 @@ interface ITask extends ProtoTask {
     moveToTarget(range?:number):number
 
     isValid():boolean
-    run():void
+    run(): number | undefined
     finish():void
 
     isValidTask():boolean

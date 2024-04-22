@@ -14,10 +14,6 @@ mountTask()
 export const loop = ErrorMapper.wrapLoop(() => {
 
 
-  const logger = Container.get(Logger)
-
-
-
   for (const name in Memory.creeps) {
     if (!(name in Game.creeps)) {
       delete Memory.creeps[name];
@@ -30,7 +26,13 @@ export const loop = ErrorMapper.wrapLoop(() => {
     //creep.task = TaskHeper.chain([TaskHelper.havest(target),transform...])
 
     if(creep.isIdle){
-      creep.task = TaskHelper.harvest(creep.room.find(FIND_SOURCES)[0])
+      if (creep.carry.energy < creep.carryCapacity) {
+        creep.task = TaskHelper.harvest(creep.room.find(FIND_SOURCES)[1])
+      } else {
+        let spawn = Game.spawns['Spawn1'];
+        creep.task = TaskHelper.transfer(spawn);
+      }
+
     }
 
     creep.run()

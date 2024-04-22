@@ -1,4 +1,5 @@
 import { HarvestTargetType, TaskHarvest } from "./instances/task_harvest";
+import { TaskTransfer, TransferTargetType } from "./instances/task_transfer";
 
 
 export class TaskHelper{
@@ -8,5 +9,9 @@ export class TaskHelper{
 
     static harvest(target:HarvestTargetType,option = {} as TaskOption):TaskHarvest {
         return new TaskHarvest(target,option)
+    }
+
+    static transfer(target:TransferTargetType,option = {} as TaskOption):TaskTransfer {
+        return new TaskTransfer(target,option)
     }
 }

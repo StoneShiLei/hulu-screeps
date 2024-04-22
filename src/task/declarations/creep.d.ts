@@ -4,5 +4,5 @@ interface Creep {
     _task:ITask | null
     hasValidTask:boolean
     isIdle:boolean
-    run():void
+    run():number | undefined
 }

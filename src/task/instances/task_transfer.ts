@@ -1,16 +1,39 @@
-// import { Task } from "./task";
+import { Task } from "./task";
 
-// export class TaskTransfer extends Task {
+export type TransferTargetType =
+	StructureSpawn
+	| StructureLab
+	| StructureNuker
+	| StructurePowerSpawn
+	| Creep;
 
-//     static taskName:string = 'transfer'
+export class TaskTransfer extends Task {
 
-//     constructor() {
-// 		super()
-// 	}
+    static taskName:string = 'transfer'
 
-//     work():number {
+    constructor(target:TransferTargetType,option = {} as TaskOption){
+        super(TaskTransfer.taskName,target,option)
+    }
 
-//     }
-// }
+    isValidTask(): boolean {
+        let amount = 1;
+		let resourcesInCarry = this.creep.store.getUsedCapacity() || 0;
+		return resourcesInCarry >= amount;
+    }
+    isValidTarget(): boolean {
+        let amount = 1;
+        let target = this.target;
+        if (target instanceof StructureSpawn){
+            return target.store.getUsedCapacity(RESOURCE_ENERGY)
+             <= target.store.getCapacity(RESOURCE_ENERGY)
+        }
+        return false
+    }
+    work(): number {
+        return this.creep.transfer(this.target as TransferTargetType,
+             RESOURCE_ENERGY);
+    }
 
-var x =''
+
+
+}
