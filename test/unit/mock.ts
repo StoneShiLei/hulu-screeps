@@ -1,3 +1,5 @@
+import sinon from "sinon";
+
 export const Game: {
   creeps: { [name: string]: any };
   rooms: any;
@@ -15,3 +17,4 @@ export const Memory: {
 } = {
   creeps: {}
 };
+
