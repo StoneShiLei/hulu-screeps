@@ -1,4 +1,7 @@
 
 interface CreepMemory {
-    task:ProtoTask | null
+    /**
+     * 已序列化的原型任务
+     */
+    task: ProtoTask | null
 }

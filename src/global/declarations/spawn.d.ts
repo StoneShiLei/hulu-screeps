@@ -1,3 +1,3 @@
-interface Spawn {
+interface StructureSpawn {
 
 }

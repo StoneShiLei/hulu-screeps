@@ -1,12 +1,11 @@
 import { InRequestScope, Singleton } from "typescript-ioc"
-import { gameTick, now } from "./timeHelper"
 import { Color } from "../constants/index"
 
 
 /**
  * 日志等级
  */
-export enum LogLevel{
+export enum LogLevel {
     DEFAULT = 0,
     DEBUG = 1,
     INFO = 2,
@@ -23,7 +22,7 @@ let LOG_LEVEL = LogLevel.INFO
  * 设置全局日志等级
  * @param level 日志等级
  */
-export function setLogLevel(level:LogLevel){
+export function setLogLevel(level: LogLevel) {
     LOG_LEVEL = level
 }
 
@@ -33,33 +32,33 @@ export function setLogLevel(level:LogLevel){
 @InRequestScope
 export class Logger {
 
-    private creep:Creep|undefined
-    private room:Room|undefined
+    private creep: Creep | undefined
+    private room: Room | undefined
 
-    withCreep(creep:Creep):Logger{
+    withCreep(creep: Creep): Logger {
         this.creep = creep
         return this
     }
 
-    withRoom(room:Room):Logger{
+    withRoom(room: Room): Logger {
         this.room = room
         return this
     }
 
-    logDebug(msg:string){
-        this.log(LogLevel.DEBUG,msg,false,Color.YELLOW)
+    logDebug(msg: string) {
+        this.log(LogLevel.DEBUG, msg, false, Color.YELLOW)
     }
-    logInfo(msg:string){
-        this.log(LogLevel.INFO,msg,false)
+    logInfo(msg: string) {
+        this.log(LogLevel.INFO, msg, false)
     }
-    logError(msg:string){
-        this.log(LogLevel.ERR,msg,false,Color.RED)
+    logError(msg: string) {
+        this.log(LogLevel.ERR, msg, false, Color.RED)
     }
-    logErrorWithNotify(msg:string){
-        this.log(LogLevel.ERR,msg,true,Color.RED)
+    logErrorWithNotify(msg: string) {
+        this.log(LogLevel.ERR, msg, true, Color.RED)
     }
-    notify(msg:string){
-        this.log(LogLevel.DEFAULT,msg,true,Color.GREEN)
+    notify(msg: string) {
+        this.log(LogLevel.DEFAULT, msg, true, Color.GREEN)
     }
 
     /**
@@ -70,7 +69,7 @@ export class Logger {
      * @param notify 是否邮件通知
      * @param color 颜色
      */
-    private log(logLevel:LogLevel,msg:string,notify:boolean =false,color?:Color,prefixes:string[] = [`${now()}`,`tick-${gameTick()}`]){
+    private log(logLevel: LogLevel, msg: string, notify: boolean = false, color?: Color, prefixes: string[] = [`t-${Game.time}`]) {
 
         switch (logLevel) {
             case LogLevel.DEBUG:
@@ -87,23 +86,23 @@ export class Logger {
                 break;
         }
 
-        if (this.room){
-            prefixes.push(`Room:${this.room.name}`)
+        if (this.room) {
+            prefixes.push(`R-${this.room.name}`)
         }
-        if (this.creep){
-            prefixes.push(`Creep:${this.creep.name}`)
+        if (this.creep) {
+            prefixes.push(`C-${this.creep.name}`)
         }
 
         let prefix = prefixes.length > 0 ? `[${prefixes.join(' ')}] ` : ''
 
         //跳过小于全局日志等级的打印和通知
-        if(LOG_LEVEL != LogLevel.DEFAULT && LOG_LEVEL > logLevel) return
+        if (logLevel !== LogLevel.DEFAULT && LOG_LEVEL > logLevel) return
 
-        prefix = this.colorful(prefix, true,color)
+        prefix = this.colorful(prefix, true, color)
 
         const logMsg = `${prefix} ${msg}`
 
-        if (notify) Game.notify(logMsg)
+        if (notify) Game.notify(msg)
 
         console.log(logMsg)
     }
@@ -115,10 +114,10 @@ export class Logger {
      * @param color 颜色
      * @returns
      */
-    private colorful(content:string,bolder:boolean=false,color?:Color):string{
+    private colorful(content: string, bolder: boolean = false, color?: Color): string {
         const colorStyle = color ? `color: ${color};` : ''
         const bolderStyle = bolder ? 'font-weight: bolder;' : ''
 
-        return `<text style="${[ colorStyle, bolderStyle ].join(' ')}">${content}</text>`
+        return `<text style="${[colorStyle, bolderStyle].join(' ')}">${content}</text>`
     }
 }
