@@ -7,6 +7,14 @@
     "path": "/",
     "branch": "main"
   },
+  "dev": {
+    "token": "YOUR_TOKEN",
+    "protocol": "https",
+    "hostname": "screeps.com",
+    "port": 443,
+    "path": "/",
+    "branch": "dev"
+  },
   "sim": {
     "token": "YOUR_TOKEN",
     "protocol": "https",
@@ -14,14 +22,6 @@
     "port": 443,
     "path": "/",
     "branch": "sim"
-  },
-  "season": {
-    "token": "YOUR_TOKEN",
-    "protocol": "https",
-    "hostname": "screeps.com",
-    "port": 443,
-    "path": "/season",
-    "branch": "main"
   },
   "pserver": {
     "email": "username",
