@@ -35,28 +35,58 @@ export class Logger {
     private creep: Creep | undefined
     private room: Room | undefined
 
+    /**
+     * 加入creep上下文
+     * @param creep
+     * @returns
+     */
     withCreep(creep: Creep): Logger {
         this.creep = creep
         return this
     }
 
+    /**
+     * 加入房间上下文
+     * @param room
+     * @returns
+     */
     withRoom(room: Room): Logger {
         this.room = room
         return this
     }
 
+    /**
+     * 打印debug日志
+     * @param msg
+     */
     logDebug(msg: string) {
         this.log(LogLevel.DEBUG, msg, false, Color.YELLOW)
     }
+    /**
+     * 打印info日志
+     * @param msg
+     */
     logInfo(msg: string) {
         this.log(LogLevel.INFO, msg, false)
     }
+    /**
+     * 打印error日志
+     * @param msg
+     */
     logError(msg: string) {
         this.log(LogLevel.ERR, msg, false, Color.RED)
     }
+    /**
+     * 打印error日志 并发送邮件通知
+     * @param msg
+     */
     logErrorWithNotify(msg: string) {
         this.log(LogLevel.ERR, msg, true, Color.RED)
     }
+    /**
+     * 发送邮件通知
+     * @param msg
+     */
     notify(msg: string) {
         this.log(LogLevel.DEFAULT, msg, true, Color.GREEN)
     }
