@@ -1,28 +1,26 @@
 
+
+interface PossibleRef {
+    id?: string;
+    name?: string;
+}
+
 export class RoomObjectExtension extends RoomObject {
-    refGetter():string{
-        if (this.hasId(this)) {
+
+    /**
+     * get访问器 获取当前实体的id或name
+     * @returns
+     */
+    refGetter(this: PossibleRef): string {
+
+        if (this.id) {
             return this.id;
-        } else if (this.hasName(this)) {
+        } else if (this.name) {
             return this.name;
         } else {
             return '';
         }
     }
-
-    private hasId(obj: any): obj is RoomObjectWithId {
-        return obj.id !== undefined;
-    }
-
-    private hasName(obj: any): obj is RoomObjectWithName {
-        return obj.name !== undefined;
-    }
 }
 
-interface RoomObjectWithId extends RoomObject {
-    id: string;
-}
 
-interface RoomObjectWithName extends RoomObject {
-    name: string;
-}

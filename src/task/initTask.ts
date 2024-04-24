@@ -1,16 +1,24 @@
+import { Container } from "typescript-ioc"
 import { GlobalHelper } from "utils/GlobalHelper"
+import { Logger } from "utils/Logger"
 import { Task } from "./instances/task"
 import { HarvestTargetType, TaskHarvest } from "./instances/task_harvest"
 import { TaskInvalid } from "./instances/task_invalid"
 import { TaskTransfer, TransferTargetType } from "./instances/task_transfer"
 
+const log = Container.get(Logger)
 
-export function initTask(protoTask:ProtoTask):Task{
+/**
+ * 将原型任务根据名称转为task
+ * @param protoTask 原型任务
+ * @returns 任务
+ */
+export function initTask(protoTask: ProtoTask): Task {
     let taskName = protoTask.name
     let target = GlobalHelper.deref(protoTask._target.ref)
-    let task:Task
+    let task: Task
 
-    switch(taskName){
+    switch (taskName) {
         case TaskHarvest.taskName:
             task = new TaskHarvest(target as HarvestTargetType)
             break;
@@ -18,11 +26,12 @@ export function initTask(protoTask:ProtoTask):Task{
             task = new TaskTransfer(target as TransferTargetType)
             break;
         default:
-            console.log(`Invalid task name: ${taskName}! task.creep: ${protoTask._creep.name}. Deleting from memory!`);
+            log.logError(`非法任务: ${taskName}! task.creep: ${protoTask._creep.name}. 从memory中删除!`);
             task = new TaskInvalid(target as any);
             break;
     }
 
     task.proto = protoTask
-    return  task
+
+    return task
 }

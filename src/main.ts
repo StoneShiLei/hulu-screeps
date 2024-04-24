@@ -10,9 +10,7 @@ mountGlobal()
 mountTask()
 
 
-
-export const loop = ErrorMapper.wrapLoop(() => {
-
+function unwarappedLoop(): void {
 
   for (const name in Memory.creeps) {
     if (!(name in Game.creeps)) {
@@ -25,7 +23,7 @@ export const loop = ErrorMapper.wrapLoop(() => {
     //creep.task = TaskHelper.havest(target)
     //creep.task = TaskHeper.chain([TaskHelper.havest(target),transform...])
 
-    if(creep.isIdle){
+    if (creep.isIdle) {
       if (creep.carry.energy < creep.carryCapacity) {
         creep.task = TaskHelper.harvest(creep.room.find(FIND_SOURCES)[1])
       } else {
@@ -37,5 +35,11 @@ export const loop = ErrorMapper.wrapLoop(() => {
 
     creep.run()
   }
+}
 
-});
+const loop = ErrorMapper.wrapLoop(unwarappedLoop)
+
+export {
+  loop,
+  unwarappedLoop
+}
