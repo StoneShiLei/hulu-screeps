@@ -7,45 +7,41 @@ import { RoomObjectExtension } from "task/prototypes/roomObject";
 
 describe('RoomObjectExtension', () => {
 
-    const roomObjExt = mockInstanceOf<RoomObjectExtension>()
-
-    const source = mockInstanceOf<Source>({
-        id: "id1",
-        get ref() {
-            return roomObjExt.refGetter.call(this)
-        }
+    const roomObjExt = mockInstanceOf<RoomObjectExtension>({
+        refGetter: RoomObjectExtension.prototype.refGetter
     })
 
     it('should return the id if present', () => {
+        const source = mockInstanceOf<Source>({
+            id: "id1",
+            get ref() {
+                return roomObjExt.refGetter.call(this)
+            }
+        })
         // 模拟 id 属性
         expect(source.ref).toBe('id1');
     });
 
-    // it('should return the name if id is not present but name is', () => {
-    //     // 确保 id 未定义，name 被定义
-    //     Object.defineProperty(roomObject, 'id', {
-    //         value: undefined,
-    //         writable: true
-    //     });
-    //     Object.defineProperty(roomObject, 'name', {
-    //         value: 'objectName',
-    //         writable: true
-    //     });
+    it('should return the name if id is not present but name is', () => {
+        const flag = mockInstanceOf<Flag>({
+            name: "name1",
+            get ref() {
+                return roomObjExt.refGetter.call(this)
+            }
+        })
+        // 确保 id 未定义，name 被定义
+        expect(flag.ref).toBe('name1');
+    });
 
-    //     expect(roomObject.ref).toBe('objectName');
-    // });
+    it('should return an empty string if neither id nor name is present', () => {
+        const someObj = {
+            name: undefined,
+            id: undefined,
+            get ref() {
+                return roomObjExt.refGetter.call(this)
+            }
+        }
 
-    // it('should return an empty string if neither id nor name is present', () => {
-    //     // 确保 id 和 name 都未定义
-    //     Object.defineProperty(roomObject, 'id', {
-    //         value: undefined,
-    //         writable: true
-    //     });
-    //     Object.defineProperty(roomObject, 'name', {
-    //         value: undefined,
-    //         writable: true
-    //     });
-
-    //     expect(roomObject.ref).toBe('');
-    // });
+        expect(someObj.ref).toBe('');
+    });
 });
