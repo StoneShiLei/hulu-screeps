@@ -5,6 +5,7 @@ interface PossibleRef {
     name?: string;
 }
 
+
 export class RoomObjectExtension extends RoomObject {
 
     /**

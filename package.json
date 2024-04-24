@@ -10,7 +10,7 @@
     "push-main": "rollup -c --environment DEST:main",
     "push-dev": "rollup -c --environment DEST:dev",
     "push-sim": "rollup -c --environment DEST:sim",
-    "test": "npm run test-cov",
+    "test": "jest",
     "test-watch": "jest --watch",
     "test-cov": "jest --coverage",
     "test-only": "bash -c 'jest --watch --coverage --verbose --collectCoverageFrom=\"**/*$1*\" $1' -- ",
