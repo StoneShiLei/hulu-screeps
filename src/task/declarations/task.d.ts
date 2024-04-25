@@ -1,3 +1,32 @@
+
+/**
+ * 任务目标
+ */
+type TargetType = {
+    /**
+     * 目标引用，name id
+     */
+    ref: string,
+    /**
+     * 目标位置
+     */
+    pos: RoomPosition
+}
+
+/**
+ * 原型任务目标
+ */
+type ProtoTargetType = {
+    /**
+     * 目标引用，name id
+     */
+    ref: string
+    /**
+     * 目标位置
+     */
+    _pos: ProtoPos
+}
+
 /**
  * 原型任务
  */
@@ -15,16 +44,7 @@ interface ProtoTask {
     /**
      * 任务目标
      */
-    _target: {
-        /**
-         * 目标引用，name id
-         */
-        ref: string
-        /**
-         * 目标位置
-         */
-        _pos: ProtoPos
-    }
+    _target: ProtoTargetType
     /**
      * 父原型任务
      */
@@ -59,7 +79,7 @@ interface ITask extends ProtoTask {
     /**
      * 任务目标
      */
-    target: RoomObject | null
+    target: TargetType | null
     /**
      * 目标位置
      */
@@ -94,7 +114,7 @@ interface ITask extends ProtoTask {
     /**
      * 结束当前任务，并开始执行父任务
      */
-    finish(): void
+    finish(): number
     /**
      * 验证creep的状态是否可继续任务
      */

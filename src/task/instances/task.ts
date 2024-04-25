@@ -3,84 +3,81 @@ import { Container, Inject } from "typescript-ioc";
 import { GlobalHelper } from "utils/GlobalHelper";
 import { Logger } from "utils/Logger";
 
-export type TargetType = { ref:string,pos:RoomPosition }
+export abstract class Task<TTargetType extends TargetType> implements ITask {
 
-export abstract class Task implements ITask{
-
-   static taskName:string
+    static taskName: string
 
     name: string;
-    _creep: { name:string };
-    _target: { ref: string; _pos: ProtoPos; };
+    _creep: { name: string };
+    _target: ProtoTargetType;
     _parent: ProtoTask | null;
     data: TaskData;
     option: TaskOption;
     setting: TaskSetting;
 
-    log:Logger;
+    log: Logger;
 
-    constructor(taskName:string,target:TargetType,option = {} as TaskOption) {
+    constructor(taskName: string, target: TargetType, option = {} as TaskOption) {
         this.name = taskName
         this._creep = {
-            name:''
+            name: ''
         }
         this._parent = null
 
         this.data = {}
         this.setting = {
-            targetRange:1,
+            targetRange: 1,
         }
         this.option = option
 
 
-        if(target){
+        if (target) {
             this._target = {
-                ref:target.ref,
-                _pos:{
-                    x:target.pos.x,
-                    y:target.pos.y,
-                    roomName:target.pos.roomName
+                ref: target.ref,
+                _pos: {
+                    x: target.pos.x,
+                    y: target.pos.y,
+                    roomName: target.pos.roomName
                 }
             }
         }
-        else{
+        else {
             this._target = {
-                ref:'',
-                _pos:{
-                    x:-1,
-                    y:-1,
-                    roomName:''
+                ref: '',
+                _pos: {
+                    x: -1,
+                    y: -1,
+                    roomName: ''
                 }
             }
         }
 
         this.log = Container.get(Logger)
-        if(this.creep) {
+        if (this.creep) {
             this.log = this.log.withCreep(this.creep).withRoom(this.creep.room)
         }
     }
 
 
-    get creep() : Creep {
+    get creep(): Creep {
         return Game.creeps[this._creep.name]
     }
     set creep(creep: Creep) {
         this._creep.name = creep.name
     }
 
-
-    get target() : RoomObject | null {
-        return GlobalHelper.deref(this._target.ref)
+    get target(): TTargetType | null {
+        return GlobalHelper.deref(this._target.ref) as TTargetType | null
     }
-    get targetPos(): RoomPosition{
-        if(this.target) this._target._pos = this.target.pos //如果可见刷新pos
+    get targetPos(): RoomPosition {
+        if (this.target) this._target._pos = this.target.pos //如果可见刷新pos
         return GlobalHelper.deRoomPosition(this._target._pos)
     }
 
-    get proto():ProtoTask{
+    get proto(): ProtoTask {
         return this as ProtoTask
     }
-    set proto(protoTask:ProtoTask){
+    set proto(protoTask: ProtoTask) {
         this._creep = protoTask._creep
         this._parent = protoTask._parent
         this._target = protoTask._target
@@ -89,28 +86,28 @@ export abstract class Task implements ITask{
     }
 
 
-    get parent() : Task | null {
-        return this._parent ? initTask(this._parent):null
+    get parent(): Task<TargetType> | null {
+        return this._parent ? initTask(this._parent) : null
     }
 
-    set parent(parentTask : Task | null) {
+    set parent(parentTask: Task<TargetType> | null) {
         this._parent = parentTask ? parentTask.proto : null
-        if(this.creep) this.creep.task = this
+        if (this.creep) this.creep.task = this
     }
 
     fork(newTask: ITask): ITask {
         newTask.parent = this;
-		if (this.creep) {
-			this.creep.task = newTask;
-		}
-		return newTask;
+        if (this.creep) {
+            this.creep.task = newTask;
+        }
+        return newTask;
     }
 
     moveToTarget(range = this.setting.targetRange): number {
-		if (this.option.moveOptions && !this.option.moveOptions.range) {
-			this.option.moveOptions.range = range;
-		}
-		return this.creep.moveTo(this.targetPos, this.option.moveOptions);
+        if (this.option.moveOptions && !this.option.moveOptions.range) {
+            this.option.moveOptions.range = range;
+        }
+        return this.creep.moveTo(this.targetPos, this.option.moveOptions);
     }
 
 
@@ -120,7 +117,7 @@ export abstract class Task implements ITask{
             validTask = this.isValidTask()
         }
         let validTarget = false
-        if (this.target){
+        if (this.target) {
             validTarget = this.isValidTarget()
         }
         // else if() blind
@@ -139,7 +136,7 @@ export abstract class Task implements ITask{
 
         this.log.logDebug(`targetPos is ${JSON.stringify(this.targetPos)}`)
         this.log.logDebug(`creep is ${this.creep.name},pos is ${JSON.stringify(this.creep?.pos)}`)
-        if(this.creep.pos.inRangeTo(this.targetPos,this.setting.targetRange || 0)) { //and 不在边缘)
+        if (this.creep.pos.inRangeTo(this.targetPos, this.setting.targetRange || 0)) { //and 不在边缘)
             let result = this.work()
             // if(result == OK){ // and oneShot)
             //     this.finish()
@@ -152,16 +149,17 @@ export abstract class Task implements ITask{
         }
     }
 
-    finish(): void {
+    finish(): number {
         // this.moveToNextPos();
-		if (this.creep) {
-			this.creep.task = this.parent;
-		} else {
+        if (this.creep) {
+            this.creep.task = this.parent;
+        } else {
             this.log.logInfo(`No creep executing ${this.name}!`)
-		}
+        }
+        return OK
     }
 
     abstract isValidTask(): boolean;
     abstract isValidTarget(): boolean;
-    abstract work():number
+    abstract work(): number
 }

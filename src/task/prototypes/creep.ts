@@ -49,7 +49,7 @@ export class CreepExtension extends Creep {
      * 执行当前任务
      * @returns
      */
-    run() {
+    run(): number | undefined {
         if (this.task) {
             return this.task.run()
         }
