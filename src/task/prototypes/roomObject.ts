@@ -1,3 +1,4 @@
+import { TargetCache } from "utils/TargetCache";
 
 
 interface PossibleRef {
@@ -21,6 +22,11 @@ export class RoomObjectExtension extends RoomObject {
         } else {
             return '';
         }
+    }
+
+    targetedByGetter(): Creep[] {
+        TargetCache.assert()
+        return _.map(Game.TargetCache.targets[this.ref], name => Game.creeps[name])
     }
 }
 

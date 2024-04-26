@@ -132,7 +132,7 @@ export abstract class Task<TTargetType extends TargetType> implements ITask {
         }
     }
 
-    run(): number | undefined {
+    run(): number {
 
         this.log.logDebug(`targetPos is ${JSON.stringify(this.targetPos)}`)
         this.log.logDebug(`creep is ${this.creep.name},pos is ${JSON.stringify(this.creep?.pos)}`)
@@ -144,8 +144,7 @@ export abstract class Task<TTargetType extends TargetType> implements ITask {
             return result
         }
         else {
-            this.moveToTarget()
-            return
+            return this.moveToTarget()
         }
     }
 

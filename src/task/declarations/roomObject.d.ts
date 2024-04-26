@@ -4,7 +4,10 @@ interface RoomObject {
 	 */
 	ref: string
 
-	// targetedBy:Creep[]
+	/**
+	 * 以该实体作为任务目标的Creep
+	 */
+	targetedBy: Creep[]
 }
 
 

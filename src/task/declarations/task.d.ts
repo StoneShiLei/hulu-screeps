@@ -110,7 +110,7 @@ interface ITask extends ProtoTask {
      * 当creep已达到目标范围时执行work
      * 否则移动到目标位置
      */
-    run(): number | undefined
+    run(): number
     /**
      * 结束当前任务，并开始执行父任务
      */

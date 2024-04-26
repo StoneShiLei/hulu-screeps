@@ -1,7 +1,8 @@
 import { Task } from "./task";
 
 export type TransferTargetType =
-    StructureSpawn
+    EnergyStructure
+    | StoreStructure
     | StructureLab
     | StructureNuker
     | StructurePowerSpawn

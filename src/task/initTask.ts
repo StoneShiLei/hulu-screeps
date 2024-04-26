@@ -5,6 +5,7 @@ import { Task } from "./instances/task"
 import { HarvestTargetType, TaskHarvest } from "./instances/task_harvest"
 import { TaskInvalid } from "./instances/task_invalid"
 import { TaskTransfer, TransferTargetType } from "./instances/task_transfer"
+import { TaskUpgrade, UpgradeTargetType } from "./instances/task_upgrade"
 
 const log = Container.get(Logger)
 
@@ -13,10 +14,10 @@ const log = Container.get(Logger)
  * @param protoTask 原型任务
  * @returns 任务
  */
-export function initTask(protoTask: ProtoTask): Task {
+export function initTask(protoTask: ProtoTask): Task<TargetType> {
     let taskName = protoTask.name
     let target = GlobalHelper.deref(protoTask._target.ref)
-    let task: Task
+    let task: Task<TargetType>
 
     switch (taskName) {
         case TaskHarvest.taskName:
@@ -25,6 +26,8 @@ export function initTask(protoTask: ProtoTask): Task {
         case TaskTransfer.taskName:
             task = new TaskTransfer(target as TransferTargetType)
             break;
+        case TaskUpgrade.taskName:
+            task = new TaskUpgrade(target as UpgradeTargetType)
         default:
             log.logError(`非法任务: ${taskName}! task.creep: ${protoTask._creep.name}. 从memory中删除!`);
             task = new TaskInvalid(target as any);

@@ -1,4 +1,5 @@
 import { initTask } from "task/initTask"
+import { TargetCache } from "utils/TargetCache";
 
 export class CreepExtension extends Creep {
 
@@ -21,13 +22,34 @@ export class CreepExtension extends Creep {
      * @param task 新的task
      */
     taskSetter(task: ITask | null) {
+
+        //当被赋予新的任务时，将老任务的目标从目标缓存中删除
+        TargetCache.assert();
+        let oldProtoTask = this.memory.task
+        if (oldProtoTask) {
+            let oldRef = oldProtoTask._target.ref
+            if (Game.TargetCache.targets[oldRef]) {
+                _.remove(Game.TargetCache.targets[oldRef], name => name == this.name)
+            }
+        }
+
+        //添加新任务
         this.memory.task = task ? task.proto : null
         if (task) {
-            // if(task.target){
-            //     if(!Game) cache
-            // }
+
+            //如果目标存在，将目标加入到缓存中
+            if (task.target) {
+                if (!Game.TargetCache.targets[task.target.ref]) {
+                    Game.TargetCache.targets[task.target.ref] = []
+                }
+
+                Game.TargetCache.targets[task.target.ref].push(this.name)
+            }
+
+            //将creep注册到任务上
             task.creep = this
         }
+
         //清空临时缓存，更新get访问器
         this._task = null
     }
