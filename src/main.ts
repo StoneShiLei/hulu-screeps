@@ -5,9 +5,10 @@ import { LogLevel, Logger, setLogLevel } from "utils/Logger";
 import { mountGlobal } from "global";
 import { TaskHelper } from "task/TaskHelper";
 
-setLogLevel(LogLevel.DEBUG)
+setLogLevel(LogLevel.INFO)
 mountGlobal()
 mountTask()
+const log = Container.get(Logger)
 
 
 function unwarappedLoop(): void {
@@ -57,12 +58,13 @@ function unwarappedLoop(): void {
         }
       } else {
         const fillTargets = [
-          ..._.filter(Game.spawns, s => s.store.energy < s.store.getCapacity<RESOURCE_ENERGY>()),
+          ..._.filter(Game.spawns, s => s.store.energy < s.store.getCapacity(RESOURCE_ENERGY)),
           ..._.filter(creep.room.find<StructureExtension>(FIND_STRUCTURES, { filter: { structureType: STRUCTURE_EXTENSION } }),
-            s => s.store.energy < s.store.getCapacity<RESOURCE_ENERGY>())
+            s => s.store.energy < s.store.getCapacity(RESOURCE_ENERGY))
         ]
 
         const target = creep.pos.findClosestByPath(fillTargets)
+
         if (target) {
           creep.task = TaskHelper.transfer(target)
         }

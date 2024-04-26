@@ -28,6 +28,7 @@ export function initTask(protoTask: ProtoTask): Task<TargetType> {
             break;
         case TaskUpgrade.taskName:
             task = new TaskUpgrade(target as UpgradeTargetType)
+            break;
         default:
             log.logError(`非法任务: ${taskName}! task.creep: ${protoTask._creep.name}. 从memory中删除!`);
             task = new TaskInvalid(target as any);
