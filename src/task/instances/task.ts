@@ -24,7 +24,10 @@ export abstract class Task<TTargetType extends TargetType> implements ITask {
         this.data = {}
         this.setting = {
             targetRange: 1,
+            workOffRoad: false,
+            oneShot: false,
         }
+
         this.option = option
 
 
@@ -107,6 +110,12 @@ export abstract class Task<TTargetType extends TargetType> implements ITask {
         return this.creep.moveTo(this.targetPos, this.option.moveOptions);
     }
 
+    moveToNextPos(): number | undefined {
+        if (!this.parent?.target) return
+
+        return this.creep.moveTo(this.parent.target.pos, this.parent.option.moveOptions)
+    }
+
 
     isValid(): boolean {
         let validTask = false
@@ -117,9 +126,12 @@ export abstract class Task<TTargetType extends TargetType> implements ITask {
         if (this.target) {
             validTarget = this.isValidTarget()
         }
-        // else if() blind
+        //如果任务无视迷雾，则通过验证
+        else if (this.option.blind && !Game.rooms[this.targetPos.roomName]) {
+            validTarget = true
+        }
+        else { }
 
-        this.log.logDebug(`task.isValid :task-${validTask},target-${validTarget}`)
         if (validTask && validTarget) {
             return true
         }
@@ -130,14 +142,13 @@ export abstract class Task<TTargetType extends TargetType> implements ITask {
     }
 
     run(): number {
-
-        this.log.logDebug(`targetPos is ${JSON.stringify(this.targetPos)}`)
-        this.log.logDebug(`creep is ${this.creep.name},pos is ${JSON.stringify(this.creep?.pos)}`)
         if (this.creep.pos.inRangeTo(this.targetPos, this.setting.targetRange || 0)) { //and 不在边缘)
             let result = this.work()
-            // if(result == OK){ // and oneShot)
-            //     this.finish()
-            // }
+
+            //只执行一次的任务
+            if (result == OK && this.setting.oneShot) {
+                this.finish()
+            }
             return result
         }
         else {
@@ -146,8 +157,12 @@ export abstract class Task<TTargetType extends TargetType> implements ITask {
     }
 
     finish(): number {
-        // this.moveToNextPos();
         if (this.creep) {
+            //向父任务目标移动
+            if (this.option.moveNextTarget) {
+                this.moveToNextPos();
+            }
+            //指向父任务
             this.creep.task = this.parent;
         } else {
             this.log.logInfo(`No creep executing ${this.name}!`)

@@ -22,6 +22,7 @@ function unwarappedLoop(): void {
       let harvesters = _.filter(myCreeps, creep => creep.name.includes('Harvester'));
       let upgraders = _.filter(myCreeps, creep => creep.name.includes('Upgrader'));
       let builders = _.filter(myCreeps, creep => creep.name.includes('Builder'));
+      let testers = _.filter(myCreeps, creep => creep.name.includes('Tester'));
 
       if (harvesters.length < 2) spawn.spawnCreep([WORK, CARRY, MOVE], 'Harvester' + Game.time)
       if (upgraders.length < 2) spawn.spawnCreep([WORK, CARRY, MOVE], 'Upgrader' + Game.time)
@@ -30,6 +31,8 @@ function unwarappedLoop(): void {
       if (builders.length < 2 && sites.length) {
         spawn.spawnCreep([WORK, CARRY, MOVE], 'Builder' + Game.time)
       }
+
+      // if (testers.length < 1) spawn.spawnCreep([WORK, CARRY, MOVE], 'Tester' + Game.time)
     }
   }
 
@@ -106,6 +109,9 @@ function unwarappedLoop(): void {
       delete Memory.creeps[name];
     }
   }
+
+
+  Game.cpu.generatePixel()
 }
 
 const loop = ErrorMapper.wrapLoop(unwarappedLoop)

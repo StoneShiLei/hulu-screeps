@@ -65,7 +65,7 @@ interface ProtoTask {
  */
 interface ITask extends ProtoTask {
     /**
-     * 任务设置
+     * 任务设置,由具体实现任务子类自定义
      */
     setting: TaskSetting
     /**
@@ -99,6 +99,11 @@ interface ITask extends ProtoTask {
      * @param range 与目标的距离，默认为1
      */
     moveToTarget(range?: number): number
+
+    /**
+     * 移动到下一个目标的位置
+     */
+    moveToNextPos(): number | undefined
     /**
      * 验证任务是否为有效任务
      * 使用isValidTask验证creep状态
@@ -130,22 +135,42 @@ interface ITask extends ProtoTask {
 }
 
 /**
- * 任务设置
+ * 任务设置,由具体实现任务子类自定义
  */
 interface TaskSetting {
     /**
      * 需要到达的目标范围
      */
     targetRange?: number
+
+    /**
+     * 只执行一次
+     */
+    oneShot?: boolean
+
+    /**
+     * 让开路面，不要在路面上执行任务
+     */
+    workOffRoad?: boolean
 }
 /**
- * 目标选项
+ * 任务选项
  */
 interface TaskOption {
     /**
      * 移动选项
      */
     moveOptions?: MoveToOpts
+
+    /**
+     * 是否无视迷雾
+     */
+    blind?: boolean
+
+    /**
+     * 当前任务结束后是否向父任务目标移动
+     */
+    moveNextTarget?: boolean
 }
 /**
  * 目标数据

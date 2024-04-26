@@ -1,5 +1,7 @@
 import { initTask } from "task/helper/TaskRegistry";
-import { TargetCache } from "utils/TargetCache";
+import { TargetCache } from "task/helper/TargetCache";
+import { Container } from "typescript-ioc";
+import { Logger } from "utils/Logger";
 
 export class CreepExtension extends Creep {
 
@@ -73,7 +75,14 @@ export class CreepExtension extends Creep {
      */
     run(): number | undefined {
         if (this.task) {
-            return this.task.run()
+            try {
+                return this.task.run()
+            }
+            catch (err) {
+                const log = Container.get(Logger)
+                log.withCreep(this).withRoom(this.room)
+                    .logError(`Creep.Run发生异常:${(err as any).message}`)
+            }
         }
         return
     }
