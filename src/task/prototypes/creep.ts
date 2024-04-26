@@ -1,4 +1,4 @@
-import { initTask } from "task/initTask"
+import { initTask } from "task/helper/TaskRegistry";
 import { TargetCache } from "utils/TargetCache";
 
 export class CreepExtension extends Creep {

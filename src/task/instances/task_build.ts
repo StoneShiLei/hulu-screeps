@@ -1,10 +1,16 @@
+import { TaskRegistration } from "task/helper/TaskRegistry";
 import { Task } from "./task";
 
 export type BuildTargetType = ConstructionSite
 
+@TaskRegistration<BuildTargetType>()
 export class TaskBuild extends Task<BuildTargetType> {
 
-    static taskName: string = 'build'
+    static taskName = 'build'
+
+    static createInstance(target: BuildTargetType, options?: TaskOption) {
+        return new TaskBuild(target, options)
+    }
 
     constructor(target: BuildTargetType, option = {} as TaskOption) {
         super(TaskBuild.taskName, target, option)

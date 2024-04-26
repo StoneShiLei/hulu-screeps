@@ -1,3 +1,4 @@
+import { TaskRegistration } from "task/helper/TaskRegistry";
 import { Task } from "./task";
 
 export type TransferTargetType =
@@ -8,9 +9,14 @@ export type TransferTargetType =
     | StructurePowerSpawn
     | Creep;
 
+@TaskRegistration<TransferTargetType>()
 export class TaskTransfer extends Task<TransferTargetType> {
 
-    static taskName: string = 'transfer'
+    static taskName = 'transfer'
+
+    static createInstance(target: TransferTargetType, options?: TaskOption) {
+        return new TaskTransfer(target, options)
+    }
 
     constructor(target: TransferTargetType, option = {} as TaskOption) {
         super(TaskTransfer.taskName, target, option)

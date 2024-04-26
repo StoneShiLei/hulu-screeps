@@ -1,10 +1,16 @@
+import { TaskRegistration } from "task/helper/TaskRegistry";
 import { Task } from "./task";
 
 export type UpgradeTargetType = StructureController
 
+@TaskRegistration<UpgradeTargetType>()
 export class TaskUpgrade extends Task<UpgradeTargetType> {
 
-    static taskName: string = 'upgrade'
+    static taskName = 'upgrade'
+
+    static createInstance(target: UpgradeTargetType, options?: TaskOption) {
+        return new TaskUpgrade(target, options)
+    }
 
     constructor(target: UpgradeTargetType, option = {} as TaskOption) {
         super(TaskUpgrade.taskName, target, option)

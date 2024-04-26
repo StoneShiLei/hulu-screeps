@@ -1,12 +1,9 @@
-import { initTask } from "task/initTask";
-import { Container, Inject } from "typescript-ioc";
+import { initTask } from "task/helper/TaskRegistry";
+import { Container } from "typescript-ioc";
 import { GlobalHelper } from "utils/GlobalHelper";
 import { Logger } from "utils/Logger";
 
 export abstract class Task<TTargetType extends TargetType> implements ITask {
-
-    static taskName: string
-
     name: string;
     _creep: { name: string };
     _target: ProtoTargetType;

@@ -1,11 +1,16 @@
-import { type } from "os";
+import { TaskRegistration } from "task/helper/TaskRegistry";
 import { Task } from "./task";
 
 export type HarvestTargetType = Source | Mineral
 
+@TaskRegistration<HarvestTargetType>()
 export class TaskHarvest extends Task<HarvestTargetType> {
 
     static taskName = 'harvest'
+
+    static createInstance(target: HarvestTargetType, options?: TaskOption) {
+        return new TaskHarvest(target, options)
+    }
 
     constructor(target: HarvestTargetType, options = {} as TaskOption) {
         super(TaskHarvest.taskName, target, options);
