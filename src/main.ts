@@ -4,9 +4,11 @@ import { ErrorMapper } from "utils/ErrorMapper";
 import { LogLevel, Logger, setLogLevel } from "utils/Logger";
 import { mountGlobal } from "global";
 import { TaskHelper } from "task/helper/TaskHelper";
+import { mountRoomCache } from "roomCache";
 
 setLogLevel(LogLevel.INFO)
 mountGlobal()
+mountRoomCache()
 mountTask()
 const log = Container.get(Logger)
 
@@ -33,6 +35,8 @@ function unwarappedLoop(): void {
       }
 
       // if (testers.length < 1) spawn.spawnCreep([WORK, CARRY, MOVE], 'Tester' + Game.time)
+
+      // room['']
     }
   }
 
