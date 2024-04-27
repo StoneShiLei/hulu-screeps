@@ -5,16 +5,23 @@ import { LogLevel, Logger, setLogLevel } from "utils/Logger";
 import { mountGlobal } from "global";
 import { TaskHelper } from "task/helper/TaskHelper";
 import { mountRoomCache } from "roomCache";
+import { mountPublisher } from "publisher";
+import { mountConsumer } from "consumer";
+
 
 setLogLevel(LogLevel.INFO)
 mountGlobal()
 mountRoomCache()
 mountTask()
+mountPublisher()
+mountConsumer()
+
 const log = Container.get(Logger)
 
 
 function unwarappedLoop(): void {
-
+  // mountPublisher()
+  // mountConsumer()
   for (const room of _.values<Room>(Game.rooms)) {
     if (!room.controller || !room.controller.my) continue
 

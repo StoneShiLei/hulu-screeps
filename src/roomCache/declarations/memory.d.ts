@@ -1,7 +1,0 @@
-
-
-interface Memory {
-    cache: CacheType
-}
-
-

@@ -157,6 +157,11 @@ interface TaskSetting {
  * 任务选项
  */
 interface TaskOption {
+
+    /**
+     * 是否强制持续执行
+     */
+    keep?: boolean
     /**
      * 移动选项
      */
@@ -171,12 +176,38 @@ interface TaskOption {
      * 当前任务结束后是否向父任务目标移动
      */
     moveNextTarget?: boolean
+
+    /**
+     * 资源类型
+     */
+    resourceType?: ResourceConstant
+
+    /**
+     * 转移数量
+     */
+    amount?: number
+
+    /**
+     * 签名
+     */
+    signature?: string;
 }
 /**
  * 目标数据
  */
 interface TaskData {
-
+    /**
+     * 资源类型
+     */
+    resourceType?: ResourceConstant
+    /**
+     * 转移数量
+     */
+    amount?: number
+    /**
+     * 签名
+     */
+    signature?: string;
 }
 /**
  * 原型位置

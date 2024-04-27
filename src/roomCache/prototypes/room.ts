@@ -25,6 +25,43 @@ export class RoomExtension extends Room {
     _mineral: Mineral | undefined
     _massStores: MassStoresType[] = []
 
+    update(type?: CacheObjectType): void {
+        //如果没有传递type或不存在缓存，则全量更新缓存
+        if (!type || !local[this.name] || !local[this.name].data) {
+            init(this)
+            return
+        }
+
+        //如果包含type，则只更新该type的缓存
+        if (type) {
+            const cache = local[this.name].data
+            const lookTypes = [LOOK_SOURCES, LOOK_DEPOSITS]
+            if (type in lookTypes) {
+                const t = type as keyof AllLookAtTypes
+                const obj = this.lookForAtArea(t, 1, 1, 49, 49, true)
+                cache[t] = new Set(obj.map(o => o[t].id))
+                return
+            }
+
+            if (type === 'massStores') {
+                this.update(STRUCTURE_CONTAINER)
+                this.update(STRUCTURE_FACTORY)
+                cache.massStores = new Set()
+                if (this.storage) cache.massStores.add(this.storage.id)
+                if (this.terminal) cache.massStores.add(this.terminal.id)
+                if (this.factory) cache.massStores.add(this.factory.id)
+                if (this.containers) this.containers.forEach(c => cache.massStores.add(c.id))
+                return
+            }
+
+
+            const objects = this.find(FIND_STRUCTURES, {
+                filter: s => s.structureType == type
+            }) || []
+            cache[type] = new Set(objects.map(o => o.id))
+        }
+    }
+
     get<T extends _HasId>(id: Id<T>): T | undefined {
         return Game.getObjectById(id) || undefined
     }
@@ -202,7 +239,7 @@ function init(room: Room): RoomCacheType {
     const roomCache: RoomCacheType = {}
 
     //初始化单实体建筑和多实体建筑
-    const structureTypes = _.groupBy(room.find(FIND_STRUCTURES), s => s.structureType)
+    const structureTypes = _.groupBy(room.find(FIND_STRUCTURES) || [], s => s.structureType)
     for (const type in structureTypes) {
         roomCache[type] = new Set(structureTypes[type].map(s => s.id))
     }

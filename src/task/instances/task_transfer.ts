@@ -1,9 +1,7 @@
 import { TaskRegistration } from "task/helper/TaskRegistry";
 import { Task } from "./task";
 
-export type TransferTargetType =
-    EnergyStructure
-    | StoreStructure
+export type TransferTargetType = StoreStructure
     | StructureLab
     | StructureNuker
     | StructurePowerSpawn
@@ -20,21 +18,36 @@ export class TaskTransfer extends Task<TransferTargetType> {
 
     constructor(target: TransferTargetType, option = {} as TaskOption) {
         super(TaskTransfer.taskName, target, option)
+
+        this.setting.oneShot = true
+        this.data.resourceType = option.resourceType || RESOURCE_ENERGY
+        this.data.amount = option.amount
     }
 
     isValidTask(): boolean {
-        let amount = 1;
-        let resourcesInCarry = this.creep.store.getUsedCapacity() || 0;
-        return resourcesInCarry >= amount;
+        const amount = this.data.amount || 1;
+        const inCarry = this.creep.store.getUsedCapacity(this.data.resourceType);
+        return inCarry >= amount;
     }
     isValidTarget(): boolean {
-        let amount = 1;
-        let target = this.target;
-        if (target instanceof StructureSpawn) {
-            return target.store.getUsedCapacity(RESOURCE_ENERGY)
-                <= target.store.getCapacity(RESOURCE_ENERGY)
+        const amount = this.data.amount || 1;
+        const target = this.target;
+        if (!target) return false
+
+        let resourceTypeIsValid = true
+        let capacityIsValid = (target.store.getFreeCapacity(this.data.resourceType) || 0) > amount
+        if (target instanceof StructureLab) {
+            resourceTypeIsValid = !target.mineralType || target.mineralType == this.data.resourceType
         }
-        return false
+        else if (target instanceof StructureNuker) {
+            resourceTypeIsValid = this.data.resourceType == RESOURCE_GHODIUM
+        }
+        else if (target instanceof StructurePowerSpawn) {
+            resourceTypeIsValid = this.data.resourceType == RESOURCE_POWER
+        }
+        else { }
+
+        return resourceTypeIsValid && capacityIsValid
     }
     work(): number {
         if (this.target) {
