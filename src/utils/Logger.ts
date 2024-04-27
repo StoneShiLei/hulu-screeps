@@ -1,6 +1,10 @@
 import { InRequestScope, Singleton } from "typescript-ioc"
-import { Color } from "../constants/index"
 
+export enum Color {
+    RED = 'red',
+    GREEN = 'green',
+    YELLOW = 'yellow',
+}
 
 /**
  * 日志等级

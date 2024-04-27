@@ -1,11 +1,10 @@
 interface Room {
-    [id: string]: RoomObject
     sources: Source[]
     deposits: Deposit[]
     spawns: StructureSpawn[]
     extensions: StructureExtension[]
     roads: StructureRoad[]
-    constructedWalls: StructureWall[]
+    walls: StructureWall[]
     ramparts: StructureRampart[]
     keeperLairs: StructureKeeperLair[]
     portals: StructurePortal[]
@@ -14,15 +13,24 @@ interface Room {
     labs: StructureLab[]
     containers: StructureContainer[]
     powerBanks: StructurePowerBank[]
-    observer: StructureObserver
-    powerSpawn: StructurePowerSpawn
-    extractor: StructureExtractor
-    nuker: StructureNuker
-    factory: StructureFactory
-    invaderCore: StructureInvaderCore
-    mineral: Mineral
+    observer: StructureObserver | undefined
+    powerSpawn: StructurePowerSpawn | undefined
+    extractor: StructureExtractor | undefined
+    nuker: StructureNuker | undefined
+    factory: StructureFactory | undefined
+    invaderCore: StructureInvaderCore | undefined
+    mineral: Mineral | undefined
 
+    my: boolean
+    level: number
+
+    massStores: MassStoresType[]
+
+    countResource(type: ResourceConstant): number
+    get<T extends _HasId>(id: Id<T>): T | undefined
 }
+
+type MassStoresType = StructureStorage | StructureTerminal | StructureFactory | StructureContainer
 
 
 // *  一键呼出房间建筑，含powerBank、deposit、source、mineral

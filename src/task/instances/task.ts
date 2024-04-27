@@ -28,6 +28,11 @@ export abstract class Task<TTargetType extends TargetType> implements ITask {
             oneShot: false,
         }
 
+        _.defaults(option, {
+            blind: false,
+            moveNextTarget: false,
+            moveOptions: {}
+        })
         this.option = option
 
 

@@ -114,7 +114,6 @@ function unwarappedLoop(): void {
     }
   }
 
-
   Game.cpu.generatePixel()
 }
 
