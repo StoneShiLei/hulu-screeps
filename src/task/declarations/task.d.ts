@@ -152,16 +152,14 @@ interface TaskSetting {
      * 让开路面，不要在路面上执行任务
      */
     workOffRoad?: boolean
+
+
 }
 /**
  * 任务选项
  */
 interface TaskOption {
 
-    /**
-     * 是否强制持续执行
-     */
-    keep?: boolean
     /**
      * 移动选项
      */

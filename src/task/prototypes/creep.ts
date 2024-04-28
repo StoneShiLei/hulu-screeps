@@ -76,7 +76,12 @@ export class CreepExtension extends Creep {
     run(): number | undefined {
         if (this.task) {
             try {
-                return this.task.run()
+                const res = this.task.run()
+
+                //tick结束前再次验证任务，提前更新目标缓存
+                if (this._task) this.task.isValid()
+
+                return res
             }
             catch (err) {
                 const log = Container.get(Logger)

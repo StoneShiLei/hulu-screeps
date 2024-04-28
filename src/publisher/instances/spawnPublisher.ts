@@ -1,12 +1,13 @@
 export class SpawnPublisher implements Publisher {
     publish(room: Room): void {
-        _.each(room.spawns, spawn => {
-            // if room.level   room.enery....
-            room.messageQueue = room.messageQueue || []
-            if (room.energyAvailable < room.energyCapacityAvailable) {
-                room.messageQueue.push({ target: spawn, type: 'fillSpawn', priority: 9 })
-            }
-        })
+        if (room.energyAvailable < room.energyCapacityAvailable) {
+
+            const fillTargets = [
+                ..._.filter(room.spawns, s => s.store.energy < s.store.getCapacity(RESOURCE_ENERGY)),
+                ..._.filter(room.extensions, s => s.store.energy < s.store.getCapacity(RESOURCE_ENERGY))
+            ].map(o => { return { target: [o], type: 'fillSpawn', priority: 90 } })
+            room.messageQueue.push(...fillTargets)
+        }
     }
 
 }

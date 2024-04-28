@@ -4,5 +4,6 @@ interface Room {
 interface Message {
     type: string,
     priority: number
-    target: TargetType
+    target: TargetType[]
+    canRepeat?: boolean
 }

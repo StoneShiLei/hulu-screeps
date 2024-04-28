@@ -123,6 +123,9 @@ export abstract class Task<TTargetType extends TargetType> implements ITask {
 
 
     isValid(): boolean {
+        //强制持续执行
+        // if (this.option.keep) return true
+
         let validTask = false
         if (this.creep) {
             validTask = this.isValidTask()
