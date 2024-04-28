@@ -1,5 +1,6 @@
 import { PrototypeHelper } from "utils/PrototypeHelper";
 import { RoomPositionExtension } from "./prototypes/roomPosition";
+import { CreepExtension } from "./prototypes/creep";
 
 
 export function mountGlobal() {
@@ -10,4 +11,5 @@ export function mountGlobal() {
     }
 
     PrototypeHelper.assignPrototype(RoomPosition, RoomPositionExtension)
+    PrototypeHelper.assignPrototype(Creep, CreepExtension)
 }

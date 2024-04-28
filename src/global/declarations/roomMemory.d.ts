@@ -1,3 +1,3 @@
 interface RoomMemory {
-
+    hashCode: number
 }
