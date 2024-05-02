@@ -11,8 +11,8 @@ type TaskPackageTargetType<T extends TargetType> = {
  */
 interface TaskPackage<T extends TargetType> {
     targets: TaskPackageTargetType<T>[]
-    strategy: string
+    strategy: StrategyMethodType<T>
     needSpawn: boolean
 }
 
-
+type StrategyMethodType<T extends TargetType> = (taskPackage: TaskPackage<T>) => void

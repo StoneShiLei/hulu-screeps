@@ -2,6 +2,12 @@ export class ErrorCatcher {
     private static errors: string[] = []
     private static print: number = 0
 
+    /**
+     * 异常处理
+     * @param func 执行内容，需处理上下文 e.g: () => creep.run() 否则会丢失this
+     * @param message 异常内容
+     * @returns
+     */
     static catch<T = any>(func: Function, message?: string): T | undefined {
         try {
             return func()
@@ -13,6 +19,9 @@ export class ErrorCatcher {
         }
     }
 
+    /**
+     * 用于tick末尾抛出所有异常
+     */
     static throwAll() {
         if (this.errors.length) {
             let tmp = this.errors

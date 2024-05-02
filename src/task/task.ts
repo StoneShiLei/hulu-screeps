@@ -1,5 +1,4 @@
 import { initTask } from "task/helper/TaskRegistry";
-import { Container } from "typescript-ioc";
 import { GlobalHelper } from "utils/GlobalHelper";
 import { Logger } from "utils/Logger";
 
@@ -12,7 +11,7 @@ export abstract class Task<TTargetType extends TargetType> implements ITask {
     option: TaskOption;
     setting: TaskSetting;
 
-    log: Logger;
+    // log: Logger;
 
     constructor(taskName: string, target: TargetType, option = {} as TaskOption) {
         this.name = taskName
@@ -57,10 +56,10 @@ export abstract class Task<TTargetType extends TargetType> implements ITask {
             }
         }
 
-        this.log = Container.get(Logger)
-        if (this.creep) {
-            this.log = this.log.withCreep(this.creep).withRoom(this.creep.room)
-        }
+        // this.log = Container.get(Logger)
+        // if (this.creep) {
+        //     this.log = this.log.withCreep(this.creep).withRoom(this.creep.room)
+        // }
     }
 
 
@@ -173,7 +172,7 @@ export abstract class Task<TTargetType extends TargetType> implements ITask {
             //指向父任务
             this.creep.task = this.parent;
         } else {
-            this.log.logInfo(`No creep executing ${this.name}!`)
+            // this.log.logInfo(`No creep executing ${this.name}!`)
         }
         return OK
     }

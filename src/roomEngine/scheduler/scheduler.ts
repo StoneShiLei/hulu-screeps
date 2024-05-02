@@ -1,17 +1,29 @@
+
 export abstract class Scheduler<T extends TargetType> implements IScheduler<T> {
     protected readonly room: Room;
     protected idleCreeps: Creep[]
+    protected strategy: IRoomStrategy<T>
 
     constructor(room: Room, idleCreeps: Creep[]) {
         this.room = room;
         this.idleCreeps = idleCreeps
+        this.strategy = this.updateStrategy()
+    }
+
+    abstract updateStrategy(): IRoomStrategy<T>;
+
+    /**
+     * 调度优先级，更高优先级的优先执行
+     */
+    priority(): number {
+        return this.strategy.priority();
     }
 
     /**
      * 生成任务包
      */
     generateTaskPackage(): TaskPackage<T> | undefined {
-        const t = this.generateTargets();
+        const t = this.strategy.generateTargets();
         if (!t.length) return undefined;
 
         //筛选creeps,将符合条件的指派给任务目标
@@ -20,7 +32,7 @@ export abstract class Scheduler<T extends TargetType> implements IScheduler<T> {
         const creepsToRemove: Creep[] = [];
         const remainingCreeps: Creep[] = [];
         this.idleCreeps.forEach(creep => {
-            if (this.creepsFilter(creep)) {
+            if (this.strategy.creepsFilter(creep)) {
                 creepsToRemove.push(creep);
             } else {
                 remainingCreeps.push(creep);
@@ -29,7 +41,10 @@ export abstract class Scheduler<T extends TargetType> implements IScheduler<T> {
         this.idleCreeps.splice(0, this.idleCreeps.length, ...remainingCreeps);
 
 
-        const strategyDetail = this.getStrategy()
+        const strategyDetail = this.strategy.getStrategy()
+        strategyDetail.shouldSpawn = strategyDetail.shouldSpawn || false
+        strategyDetail.creepsPerTarget = strategyDetail.creepsPerTarget || 1
+
         const targets = t.map(t => ({ target: t, creeps: [] as Creep[] }))
         //待分配creep < 目标 * 单目标分配数量 && 需要spawn
         let needSpawn = creepsToRemove.length <
@@ -38,27 +53,10 @@ export abstract class Scheduler<T extends TargetType> implements IScheduler<T> {
 
         //为每个target分配指定数量的creep，如果不足以分配则分配剩下全部的creep
         targets.forEach(target => {
-            const numberToAssign = Math.min(strategyDetail.creepsPerTarget, creepsToRemove.length);
+            const numberToAssign = Math.min(strategyDetail.creepsPerTarget || 1, creepsToRemove.length);
             target.creeps = creepsToRemove.splice(0, numberToAssign);
         });
 
-        return { targets, strategy: strategyDetail.strategyName, needSpawn };
+        return { targets, strategy: strategyDetail.strategyMethod, needSpawn };
     }
-
-    /**
-     * 调度优先级，更高优先级的优先执行
-     */
-    abstract priority(): number;
-    /**
-     * 生成任务目标
-     */
-    abstract generateTargets(): T[];
-    /**
-     * 过滤符合任务工作条件的creep
-     */
-    abstract creepsFilter(creep: Creep): boolean;
-    /**
-     * 根据房间情况选择合适的策略
-     */
-    abstract getStrategy(): StrategyDetail
 }

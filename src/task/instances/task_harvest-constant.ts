@@ -1,7 +1,6 @@
 import { TaskRegistration } from "task/helper/TaskRegistry";
 import { Task } from "../task";
-
-export type HarvestTargetType = Source | Mineral
+import { HarvestTargetType } from "./task_harvest";
 
 @TaskRegistration<HarvestTargetType>()
 export class TaskHarvestConstant extends Task<HarvestTargetType> {

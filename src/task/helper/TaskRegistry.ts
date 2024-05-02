@@ -1,9 +1,8 @@
-import { Container } from "typescript-ioc"
 import { GlobalHelper } from "utils/GlobalHelper"
 import { Logger } from "utils/Logger"
 import { Task } from "../task"
 
-const log = Container.get(Logger)
+// const log = Container.get(Logger)
 
 /**
  * 任务构造器映射
@@ -56,7 +55,7 @@ export function initTask(protoTask: ProtoTask): Task<TargetType> {
     const createInstance = taskMap.get(taskName);
 
     if (!createInstance) {
-        log.logError(`非法任务: ${taskName}! task.creep: ${protoTask._creep.name}. 从memory中删除!`);
+        // log.logError(`非法任务: ${taskName}! task.creep: ${protoTask._creep.name}. 从memory中删除!`);
         return new TaskInvalid(target);
     }
 

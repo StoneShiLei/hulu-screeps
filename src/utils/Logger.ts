@@ -1,4 +1,3 @@
-import { InRequestScope, Singleton } from "typescript-ioc"
 
 export enum Color {
     RED = 'red',
@@ -33,7 +32,6 @@ export function setLogLevel(level: LogLevel) {
 /**
  * 日志帮助类
  */
-@InRequestScope
 export class Logger {
 
     private creep: Creep | undefined

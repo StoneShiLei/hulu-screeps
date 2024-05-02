@@ -1,6 +1,4 @@
-
-
-
+import { RoomStatusEnum } from "global/const/const";
 
 
 export class RoomExtension extends Room {
@@ -10,7 +8,11 @@ export class RoomExtension extends Room {
     } = {}
 
     creeps(role?: RoleType, ignoreSpawning: boolean = true): Creep[] {
-        if (!this._creeps || !this._creeps.length) initCreepsCache();
+        if (!this._creeps || !this._creeps.length) {
+            initCreepsCache();
+            if (!this._creeps || !this._creeps.length) this._creeps = []
+        }
+        this._roleCreeps = this._roleCreeps || {}
 
         const keySuffix = ignoreSpawning ? "_spawned_creeps" : "_creeps";
         const roleKey = role ? role + keySuffix : keySuffix;
@@ -44,6 +46,21 @@ export class RoomExtension extends Room {
             hash = ((hash << 5) + hash) + char; /* hash * 33 + c */
         }
         return hash
+    }
+
+    statusGetter(): RoomStatusEnum {
+        if (this.energyCapacityAvailable < 800) {
+            return RoomStatusEnum.Low
+        }
+        else if (this.energyCapacityAvailable >= 800 && !this.storage?.my) {
+            return RoomStatusEnum.Medium
+        }
+        else if (this.storage && this.storage.my) {
+            return RoomStatusEnum.High
+        }
+        else {
+            return RoomStatusEnum.Low
+        }
     }
 }
 
