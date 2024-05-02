@@ -4,6 +4,7 @@ import { ErrorMapper } from "utils/ErrorMapper";
 import { LogLevel, Logger, setLogLevel } from "utils/Logger";
 import { mountGlobal } from "global";
 import { mountRoomCache } from "roomCache";
+import { ErrorCatcher } from "utils/ErrorCatcher";
 
 
 setLogLevel(LogLevel.INFO)
@@ -22,13 +23,10 @@ function unwarappedLoop(): void {
     }
   }
 
-  // runPublisher()
-
-  // runConsumer()
-
 
   for (const creep of _.values<Creep>(Game.creeps)) {
-    creep.run()
+    ErrorCatcher.catch(creep.run)
+
     if (creep.hasValidTask) {
       creep.say(creep.task?.name || '???')
     }
@@ -40,6 +38,7 @@ function unwarappedLoop(): void {
     Game.cpu.generatePixel()
   }
 
+  ErrorCatcher.throwAll()
 }
 
 const loop = global.LOCAL_SHARD_NAME != 'sim' ? ErrorMapper.wrapLoop(unwarappedLoop) : unwarappedLoop
