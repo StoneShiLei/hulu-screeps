@@ -2,9 +2,9 @@ import { BuildTargetType, TaskBuild } from "task/instances/task_build";
 import { GoToTargetType, TaskGoto } from "task/instances/task_goto";
 import { TaskHarvestConstant } from "task/instances/task_harvest-constant";
 import { PickupTargetType, TaskPickup } from "task/instances/task_pickup";
-import { HarvestTargetType, TaskHarvest } from "../instances/task_harvest";
-import { TaskTransfer, TransferTargetType } from "../instances/task_transfer";
-import { TaskUpgrade, UpgradeTargetType } from "../instances/task_upgrade";
+import { HarvestTargetType, TaskHarvest } from "./instances/task_harvest";
+import { TaskTransfer, TransferTargetType } from "./instances/task_transfer";
+import { TaskUpgrade, UpgradeTargetType } from "./instances/task_upgrade";
 
 /**
  * 任务帮助

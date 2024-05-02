@@ -1,5 +1,5 @@
 import { TaskRegistration } from "task/helper/TaskRegistry";
-import { Task } from "./task";
+import { Task } from "../task";
 
 export type HarvestTargetType = Source | Mineral
 

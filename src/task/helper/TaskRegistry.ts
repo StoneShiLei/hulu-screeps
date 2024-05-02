@@ -1,7 +1,7 @@
 import { Container } from "typescript-ioc"
 import { GlobalHelper } from "utils/GlobalHelper"
 import { Logger } from "utils/Logger"
-import { Task } from "../instances/task"
+import { Task } from "../task"
 
 const log = Container.get(Logger)
 

@@ -1,6 +1,6 @@
 import { PrototypeHelper } from "utils/PrototypeHelper";
-import { RoomPositionExtension } from "./prototypes/roomPosition";
-import { CreepExtension } from "./prototypes/creep";
+import { RoomPositionExtension } from "./protos/roomPosition";
+import { CreepExtension } from "./protos/creep";
 
 
 export function mountGlobal() {

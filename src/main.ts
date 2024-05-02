@@ -3,18 +3,13 @@ import { Container } from "typescript-ioc";
 import { ErrorMapper } from "utils/ErrorMapper";
 import { LogLevel, Logger, setLogLevel } from "utils/Logger";
 import { mountGlobal } from "global";
-import { TaskHelper } from "task/helper/TaskHelper";
 import { mountRoomCache } from "roomCache";
-import { mountPublisher, runPublisher } from "publisher";
-import { mountConsumer, runConsumer } from "consumer";
 
 
 setLogLevel(LogLevel.INFO)
 mountGlobal()
 mountRoomCache()
 mountTask()
-mountPublisher()
-mountConsumer()
 
 const log = Container.get(Logger)
 

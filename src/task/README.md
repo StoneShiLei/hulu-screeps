@@ -16,20 +16,12 @@
 
 用例：
 harvest && transfer：
-if(creep容量富裕 && source存量富裕){
-    creep.task = new harvestTask()
+if(creep.idle && creep.store.energy == 0){
+    creep.task = new harvestTask(source)
 } else {
-    creep.task = new transferTask()
+    creep.task = new transferTask(spawn)
 }
 
-任务组织：
-任务只是单一原子操作，仍然需要角色来进行多个任务之间的组织
-
-任务分发：
-以结构实体为中心，向角色分发任务
-controller分发upgrade角色任务
-spawn分发填入任务
-source分发采集任务
-storage等容器分发搬运任务
-
-
+creep.idle判断creep是否闲置（没有通过验证可执行的任务）
+TargetCache用于实时更新每个Target有多少creep以其为目标
+TaskRegistry为任务具体实现自动注册

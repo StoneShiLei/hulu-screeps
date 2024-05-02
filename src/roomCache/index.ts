@@ -1,4 +1,4 @@
-import { RoomExtension } from "roomCache/prototypes/room";
+import { RoomExtension } from "roomCache/protos/room";
 import { PrototypeHelper } from "utils/PrototypeHelper";
 
 
