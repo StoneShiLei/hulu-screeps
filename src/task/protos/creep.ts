@@ -1,5 +1,5 @@
-import { initTask } from "task/helper/TaskRegistry";
 import { TargetCache } from "task/helper/TargetCache";
+import { initTask } from "task/task";
 import { Logger } from "utils/Logger";
 
 export class CreepExtension extends Creep {

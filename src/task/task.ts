@@ -1,4 +1,4 @@
-import { initTask } from "task/helper/TaskRegistry";
+import { taskMap } from "task/helper/TaskRegistry";
 import { GlobalHelper } from "utils/GlobalHelper";
 import { Logger } from "utils/Logger";
 
@@ -180,4 +180,49 @@ export abstract class Task<TTargetType extends TargetType> implements ITask {
     abstract isValidTask(): boolean;
     abstract isValidTarget(): boolean;
     abstract work(): number
+}
+
+/**
+ * 初始化任务
+ * @param protoTask 原型任务
+ * @returns
+ */
+export function initTask(protoTask: ProtoTask): Task<TargetType> {
+    let taskName = protoTask.name
+    let target = GlobalHelper.deref(protoTask._target.ref)
+
+    const createInstance = taskMap.get(taskName);
+
+    if (!createInstance) {
+        return new TaskInvalid(target);
+    }
+
+    const task = createInstance(target);
+
+    task.proto = protoTask
+
+    return task
+}
+
+/**
+ * 非法任务
+ */
+class TaskInvalid extends Task<any> {
+
+    static taskName = 'invalid'
+
+    constructor(target: any, options = {} as TaskOption) {
+        super('INVALID', target, options);
+    }
+
+    isValidTask(): boolean {
+        return false
+    }
+    isValidTarget(): boolean {
+        return false
+    }
+    work(): number {
+        return OK
+    }
+
 }
