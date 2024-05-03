@@ -1,6 +1,6 @@
 import { Scheduler } from "./scheduler";
 import { RoomStatusEnum } from "global/const/const";
-import { SpawnStrategy } from "roomEngine/strategy/spawnStrategy";
+import { FillStrategy } from "roomEngine/strategy/fillStrategy";
 import { TransferTargetType } from "task/instances/task_transfer";
 
 export class SpawnScheduler extends Scheduler<TransferTargetType> {
@@ -116,7 +116,7 @@ class Low implements IRoomStrategy<TransferTargetType> {
     }
     getStrategy(): StrategyDetail<TransferTargetType> {
         return {
-            strategyMethod: SpawnStrategy.fill,
+            strategyMethod: FillStrategy.fillSpawn,
         }
     }
 

@@ -1,16 +1,16 @@
-import { HarvestTargetType } from "task/instances/task_harvest";
 import { Scheduler } from "./scheduler";
-import { SourceStrategy } from "roomEngine/strategy/sourceStrategy";
 import { RoomStatusEnum } from "global/const/const";
+import { TransferTargetType } from "task/instances/task_transfer";
+import { FillStrategy } from "roomEngine/strategy/fillStrategy";
 
-export class SourceScheduler extends Scheduler<HarvestTargetType> {
+export class TowerScheduler extends Scheduler<TransferTargetType> {
 
     constructor(room: Room, idleCreeps: Creep[]) {
         super(room, idleCreeps)
         this.strategy = this.updateStrategy()
     }
 
-    updateStrategy(): IRoomStrategy<HarvestTargetType> | undefined {
+    updateStrategy(): IRoomStrategy<TransferTargetType> | undefined {
         switch (this.room.status) {
             case RoomStatusEnum.Low:
                 return new Low(this.room)
@@ -25,7 +25,7 @@ export class SourceScheduler extends Scheduler<HarvestTargetType> {
 }
 
 
-class Low implements IRoomStrategy<HarvestTargetType> {
+class Low implements IRoomStrategy<TransferTargetType> { //todo
     room: Room
 
     constructor(room: Room) {
@@ -33,32 +33,28 @@ class Low implements IRoomStrategy<HarvestTargetType> {
     }
 
     priority(): number {
-        return 100
+        return 50 //todo
     }
-    generateTargets(): HarvestTargetType[] {
-        const f = (source: Source) => {
-            const energyAvailable = source.energy > 0
-            const canWorkPosLen = source.pos.surroundPos(1).filter(pos => pos.isWalkable()).length
-            const targetedLen = source.targetedBy.length
-
-            return energyAvailable && canWorkPosLen * 1.5 - targetedLen > 0
-        }
-
-        return this.room.sources.filter(f).sort((a, b) => b.energy - a.energy)
+    generateTargets(): TransferTargetType[] {
+        return this.room.towers.filter(tower => {
+            //统计以tower为目标运送的能量总量
+            const sendingCount = tower.targetedBy.reduce((energy, creep) => energy + creep.store[RESOURCE_ENERGY] || 0, 0)
+            return sendingCount + tower.store[RESOURCE_ENERGY] < 600
+        })
     }
     creepsFilter(creep: Creep): boolean {
-        return creep.isEmptyStore && creep.role == "worker" && !creep.spawning
+        return !creep.isEmptyStore && creep.role == "worker" && !creep.spawning //todo
     }
-    getStrategy(): StrategyDetail<HarvestTargetType> {
+    getStrategy(): StrategyDetail<TransferTargetType> {
         return {
-            strategyMethod: SourceStrategy.harvest,
-            shouldSpawn: this.room.creeps('worker', false).length < 20,
+            strategyMethod: FillStrategy.fillTower,
+            shouldSpawn: false
         }
     }
 
 }
 
-class Medium implements IRoomStrategy<HarvestTargetType> {
+class Medium implements IRoomStrategy<TransferTargetType> {
     room: Room
 
     constructor(room: Room) {
@@ -68,20 +64,20 @@ class Medium implements IRoomStrategy<HarvestTargetType> {
     priority(): number {
         throw new Error("Method not implemented.");
     }
-    generateTargets(): HarvestTargetType[] {
+    generateTargets(): TransferTargetType[] {
         throw new Error("Method not implemented.");
     }
     creepsFilter(creep: Creep): boolean {
         throw new Error("Method not implemented.");
     }
-    getStrategy(): StrategyDetail<HarvestTargetType> {
+    getStrategy(): StrategyDetail<TransferTargetType> {
         throw new Error("Method not implemented.");
     }
 
 }
 
 
-class High implements IRoomStrategy<HarvestTargetType> {
+class High implements IRoomStrategy<TransferTargetType> {
     room: Room
 
     constructor(room: Room) {
@@ -91,13 +87,13 @@ class High implements IRoomStrategy<HarvestTargetType> {
     priority(): number {
         throw new Error("Method not implemented.");
     }
-    generateTargets(): HarvestTargetType[] {
+    generateTargets(): TransferTargetType[] {
         throw new Error("Method not implemented.");
     }
     creepsFilter(creep: Creep): boolean {
         throw new Error("Method not implemented.");
     }
-    getStrategy(): StrategyDetail<HarvestTargetType> {
+    getStrategy(): StrategyDetail<TransferTargetType> {
         throw new Error("Method not implemented.");
     }
 

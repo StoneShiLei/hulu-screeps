@@ -42,12 +42,12 @@ class Low implements IRoomStrategy<PickupTargetType | WithdrawTargetType> {
     }
     generateTargets(): (PickupTargetType | WithdrawTargetType)[] {
         dropedResourceMap[this.room.name] = dropedResourceMap[this.room.name] || []
-
+        debugger
         if (this.room.hashTime % 9 == 0) {
-            const droped: (PickupTargetType | WithdrawTargetType)[] = []
-            droped.concat(this.room.find(FIND_DROPPED_RESOURCES).filter(x => x.amount > 100))
-            droped.concat(this.room.find(FIND_TOMBSTONES).filter(x => x.store.energy > 100))
-            droped.concat(this.room.find(FIND_RUINS).filter(x => x.store.energy > 100))
+            let droped: (PickupTargetType | WithdrawTargetType)[] = []
+            droped = droped.concat(this.room.find(FIND_DROPPED_RESOURCES).filter(x => x.amount > 100))
+            droped = droped.concat(this.room.find(FIND_TOMBSTONES).filter(x => x.store.energy > 100))
+            droped = droped.concat(this.room.find(FIND_RUINS).filter(x => x.store.energy > 100))
             dropedResourceMap[this.room.name] = droped
         }
         const target = dropedResourceMap[this.room.name].shift()

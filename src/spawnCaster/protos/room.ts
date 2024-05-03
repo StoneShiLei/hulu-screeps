@@ -26,7 +26,7 @@ export class RoomExtension extends Room {
 
         if (!this._isSpawnAvailable) return undefined
 
-        const name = this.genName(role)
+        const name = role + this.genName()
 
         const opts: SpawnOptions = {
             memory: {
@@ -62,7 +62,7 @@ export class RoomExtension extends Room {
         return name
     }
 
-    private genName(role: RoleType): string {
-        return role + _.padLeft(Math.ceil(Math.random() * Math.pow(36, 10)).toString(36).toLocaleUpperCase(), 10, "0")
+    private genName(): string {
+        return _.padLeft(Math.ceil(Math.random() * Math.pow(36, 10)).toString(36).toLocaleUpperCase(), 10, "0")
     }
 }

@@ -1,13 +1,17 @@
+import { ErrorCatcher } from "utils/ErrorCatcher"
 import { initScheduler } from "./scheduler"
+import { BusinessTower } from "structure/instances/business_tower"
 
 
 export class RoomEngine {
     static run() {
         _.values<Room>(Game.rooms).forEach(room => {
 
-            debugger
-            if (room.hashTime % 3 != 0 || !room.my) return
+            ErrorCatcher.catch(() => BusinessTower.run(room))
 
+
+
+            if (room.hashTime % 3 != 0 || !room.my) return
             if (room.hashTime % 31) room.update()
 
 

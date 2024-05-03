@@ -23,10 +23,29 @@ export class RoomExtension extends Room {
     _factory: StructureFactory | undefined
     _invaderCore: StructureInvaderCore | undefined
     _mineral: Mineral | undefined
-    _massStores: MassStoresType[] = []
-    _constructionSites: ConstructionSite[] = []
+    _massStores: MassStoresType[] | undefined
+    _constructionSites: ConstructionSite[] | undefined
+
+    allNeedRepairStructuresGetter(): Structure[] {
+        const single = [this.observer, this.powerSpawn, this.extractor, this.nuker, this.factory]
+            .filter((s): s is StructureObserver | StructurePowerSpawn | StructureExtractor | StructureNuker | StructureFactory => s !== undefined)
+
+        return [
+            ...single,
+            ...this.spawns,
+            ...this.extensions,
+            ...this.roads,
+            ...this.links,
+            ...this.towers,
+            ...this.labs,
+            ...this.containers,
+            ...this.massStores,
+        ]
+    }
 
     update(type?: CacheObjectType): void {
+        if (type == STRUCTURE_STORAGE || type == STRUCTURE_TERMINAL) type = 'massStores'
+
         //如果没有传递type或不存在缓存，则全量更新缓存
         if (!type || !local[this.name] || !local[this.name].data) {
             init(this)

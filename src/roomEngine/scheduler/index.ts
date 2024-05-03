@@ -5,6 +5,7 @@ import { InvaderScheduler } from "./invaderScheduler";
 import { Scheduler } from "./scheduler";
 import { SourceScheduler } from "./sourceScheduler";
 import { SpawnScheduler } from "./spawnScheduler";
+import { TowerScheduler } from "./towerScheduler";
 
 /**
  * 初始化Scheduler
@@ -20,6 +21,7 @@ export function initScheduler(room: Room, idleCreeps: Creep[]): Scheduler<any>[]
         new BuildableScheduler(room, idleCreeps),
         new DropedResourceScheduler(room, idleCreeps),
         new InvaderScheduler(room, idleCreeps),
+        new TowerScheduler(room, idleCreeps),
     ]
 
     return schedulers.sort((a, b) => b.priority() - a.priority())

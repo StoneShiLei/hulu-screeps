@@ -7,27 +7,20 @@ import { ErrorCatcher } from "utils/ErrorCatcher";
 import { RoomEngine } from "roomEngine";
 import { StackAnalysis } from "utils/StackAnalysis";
 import { mountSpawnCaster } from "spawnCaster";
+import { mountStructure } from "structure";
 
-// console.log('init!!')
+
 setLogLevel(LogLevel.INFO)
 mountGlobal()
 mountRoomCache()
 mountTask()
 mountSpawnCaster()
+mountStructure()
 
 function unwarappedLoop(): void {
 
   ErrorCatcher.catch(() => RoomEngine.run())
-
-  for (const creep of _.values<Creep>(Game.creeps)) {
-
-    ErrorCatcher.catch(() => creep.run())
-
-    if (creep.hasValidTask) {
-      // creep.say(creep.task?.name || '???')
-    }
-  }
-
+  _.values<Creep>(Game.creeps).forEach(creep => ErrorCatcher.catch(() => creep.run()))
 
 
   if (global.LOCAL_SHARD_NAME != 'sim') {

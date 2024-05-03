@@ -22,7 +22,10 @@ interface Room {
     invaderCore: StructureInvaderCore | undefined
     mineral: Mineral | undefined
 
-
+    /**
+     * 获取当前房间内所有可以进行维修的建筑
+     */
+    allNeedRepairStructures: Structure[]
     /**
      * 当前房间是否有己方控制器
      */
@@ -66,5 +69,5 @@ type CacheObjectType =
     STRUCTURE_FACTORY | STRUCTURE_SPAWN | STRUCTURE_EXTENSION | STRUCTURE_ROAD | STRUCTURE_WALL |
     STRUCTURE_RAMPART | STRUCTURE_KEEPER_LAIR | STRUCTURE_PORTAL | STRUCTURE_LINK |
     STRUCTURE_TOWER | STRUCTURE_LAB | STRUCTURE_CONTAINER | STRUCTURE_POWER_BANK |
-    LOOK_SOURCES | LOOK_DEPOSITS | MassStoresConstantType
+    LOOK_SOURCES | LOOK_DEPOSITS | MassStoresConstantType | STRUCTURE_STORAGE | STRUCTURE_TERMINAL
 type MassStoresConstantType = 'massStores'

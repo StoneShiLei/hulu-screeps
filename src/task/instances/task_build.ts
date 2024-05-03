@@ -21,7 +21,14 @@ export class TaskBuild extends Task<BuildTargetType> {
         return this.creep.store.energy > 0
     }
     isValidTarget(): boolean {
-        return !!this.target && this.target.my && this.target.progress < this.target.progressTotal
+        if (!!this.target && this.target.my && this.target.progress < this.target.progressTotal) {
+            return true
+        }
+        else {
+            //更新房间建筑缓存
+            this.target?.structureType ? this.creep.room.update(this.target.structureType) : this.creep.room.update()
+            return false
+        }
     }
     work(): number {
         if (!!this.target && this.target.my) {
