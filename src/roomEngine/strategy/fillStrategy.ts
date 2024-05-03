@@ -10,7 +10,7 @@ export class FillStrategy extends Strategy {
         if (!targets.length) return
 
         taskPackage.targets[0].creeps.forEach(creep => {
-            const target = creep.pos.findClosestByPath(targets)
+            const target = creep.pos.findClosestByPath(targets, { ignoreCreeps: true })
             if (!target) return
 
             creep.task = TaskHelper.transfer(target)
