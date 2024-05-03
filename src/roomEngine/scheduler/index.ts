@@ -1,5 +1,10 @@
+import { BuildableScheduler } from "./buildableScheduler";
+import { ControllerScheduler } from "./controllerScheduler";
+import { DropedResourceScheduler } from "./dropedResourceScheduler";
+import { InvaderScheduler } from "./invaderScheduler";
 import { Scheduler } from "./scheduler";
 import { SourceScheduler } from "./sourceScheduler";
+import { SpawnScheduler } from "./spawnScheduler";
 
 /**
  * 初始化Scheduler
@@ -10,6 +15,11 @@ import { SourceScheduler } from "./sourceScheduler";
 export function initScheduler(room: Room, idleCreeps: Creep[]): Scheduler<any>[] {
     const schedulers = [
         new SourceScheduler(room, idleCreeps),
+        new SpawnScheduler(room, idleCreeps),
+        new ControllerScheduler(room, idleCreeps),
+        new BuildableScheduler(room, idleCreeps),
+        new DropedResourceScheduler(room, idleCreeps),
+        new InvaderScheduler(room, idleCreeps),
     ]
 
     return schedulers.sort((a, b) => b.priority() - a.priority())

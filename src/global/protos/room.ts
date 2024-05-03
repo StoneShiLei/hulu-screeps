@@ -39,6 +39,10 @@ export class RoomExtension extends Room {
         return this.memory.hashCode
     }
 
+    hashTimeGetter(): number {
+        return Game.time + this.hashCode
+    }
+
     private hash(str: string) {
         let hash = 5381;
         for (let i = 0; i < str.length; i++) {
@@ -49,18 +53,19 @@ export class RoomExtension extends Room {
     }
 
     statusGetter(): RoomStatusEnum {
-        if (this.energyCapacityAvailable < 800) {
-            return RoomStatusEnum.Low
-        }
-        else if (this.energyCapacityAvailable >= 800 && !this.storage?.my) {
-            return RoomStatusEnum.Medium
-        }
-        else if (this.storage && this.storage.my) {
-            return RoomStatusEnum.High
-        }
-        else {
-            return RoomStatusEnum.Low
-        }
+        return RoomStatusEnum.Low
+        // if (this.energyCapacityAvailable < 800) {
+        //     return RoomStatusEnum.Low
+        // }
+        // else if (this.energyCapacityAvailable >= 800 && !this.storage?.my) {
+        //     return RoomStatusEnum.Medium
+        // }
+        // else if (this.storage && this.storage.my) {
+        //     return RoomStatusEnum.High
+        // }
+        // else {
+        //     return RoomStatusEnum.Low
+        // }
     }
 }
 

@@ -6,7 +6,7 @@ import { mountRoomCache } from "roomCache";
 import { ErrorCatcher } from "utils/ErrorCatcher";
 import { RoomEngine } from "roomEngine";
 
-console.log('init!!')
+// console.log('init!!')
 setLogLevel(LogLevel.INFO)
 mountGlobal()
 mountRoomCache()

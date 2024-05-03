@@ -5,6 +5,8 @@ import { PickupTargetType, TaskPickup } from "task/instances/task_pickup";
 import { HarvestTargetType, TaskHarvest } from "./instances/task_harvest";
 import { TaskTransfer, TransferTargetType } from "./instances/task_transfer";
 import { TaskUpgrade, UpgradeTargetType } from "./instances/task_upgrade";
+import { TaskWithdraw, WithdrawTargetType } from "./instances/task_withdraw";
+import { AttackTargetType, TaskAttack } from "./instances/task_attack";
 
 /**
  * 任务帮助
@@ -45,6 +47,10 @@ export class TaskHelper {
         return new TaskTransfer(target, option)
     }
 
+    static withdraw(target: WithdrawTargetType, option?: TaskOption): TaskWithdraw {
+        return new TaskWithdraw(target, option)
+    }
+
     static upgrade(target: UpgradeTargetType, option?: TaskOption): TaskUpgrade {
         return new TaskUpgrade(target, option)
     }
@@ -59,5 +65,9 @@ export class TaskHelper {
 
     static pickup(target: PickupTargetType, option?: TaskOption): TaskPickup {
         return new TaskPickup(target, option)
+    }
+
+    static attack(target: AttackTargetType, option?: TaskOption): TaskAttack {
+        return new TaskAttack(target, option)
     }
 }

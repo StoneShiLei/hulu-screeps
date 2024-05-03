@@ -24,6 +24,7 @@ export class RoomExtension extends Room {
     _invaderCore: StructureInvaderCore | undefined
     _mineral: Mineral | undefined
     _massStores: MassStoresType[] = []
+    _constructionSites: ConstructionSite[] = []
 
     update(type?: CacheObjectType): void {
         //如果没有传递type或不存在缓存，则全量更新缓存
@@ -84,6 +85,10 @@ export class RoomExtension extends Room {
 
     levelGetter(): number {
         return !!this.containers && this.controller?.level || 0
+    }
+
+    constructionSitesGetter(): ConstructionSite[] {
+        return this._constructionSites ? this._constructionSites : getCacheMultiple<ConstructionSite>(this, "constructionSites")
     }
 
     massStoresGetter(): MassStoresType[] {
@@ -260,6 +265,10 @@ function init(room: Room): RoomCacheType {
     if (room.terminal) roomCache.massStores.add(room.terminal.id)
     if (roomCache[STRUCTURE_FACTORY] && roomCache[STRUCTURE_FACTORY].size) roomCache.massStores.add(roomCache[STRUCTURE_FACTORY].values().next().value)
     if (roomCache[STRUCTURE_CONTAINER]) roomCache[STRUCTURE_CONTAINER].forEach(id => roomCache.massStores.add(id))
+
+    //建筑工地
+    roomCache.constructionSites = new Set(room.find(FIND_MY_CONSTRUCTION_SITES).map(s => s.id))
+
 
     local[room.name] = { data: roomCache, time: {} }
     return local[room.name].data

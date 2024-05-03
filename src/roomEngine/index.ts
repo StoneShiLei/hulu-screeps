@@ -4,11 +4,12 @@ import { initScheduler } from "./scheduler"
 export class RoomEngine {
     static run() {
         _.values<Room>(Game.rooms).forEach(room => {
-            const hash = Game.time + room.hashCode
-            if (hash % 3 != 0) return
+
+            if (room.hashTime % 3 != 0) return
             if (!room.my) return
 
-            if (hash % 31) room.update()
+            if (room.hashTime % 31) room.update()
+
 
             const schedulers = initScheduler(room, room.creeps().filter(c => c.isIdle))
             const taskPackages = schedulers

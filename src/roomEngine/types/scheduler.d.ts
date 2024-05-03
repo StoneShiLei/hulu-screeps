@@ -2,7 +2,7 @@
  * 任务策略详细
  */
 interface StrategyDetail<T extends TargetType> {
-    strategyMethod: (taskPackage: TaskPackage<T>) => void
+    strategyMethod: StrategyMethodType<T>
     shouldSpawn?: boolean
     creepsPerTarget?: number
 }
@@ -23,7 +23,7 @@ interface IScheduler<T extends TargetType> {
     /**
      * 根据房间的状态，使用不同的策略
      */
-    updateStrategy(): IRoomStrategy<T>
+    updateStrategy(): IRoomStrategy<T> | undefined
 }
 
 /**

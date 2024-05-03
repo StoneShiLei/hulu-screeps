@@ -13,6 +13,7 @@ interface Room {
     labs: StructureLab[]
     containers: StructureContainer[]
     powerBanks: StructurePowerBank[]
+    constructionSites: ConstructionSite[]
     observer: StructureObserver | undefined
     powerSpawn: StructurePowerSpawn | undefined
     extractor: StructureExtractor | undefined
@@ -20,6 +21,7 @@ interface Room {
     factory: StructureFactory | undefined
     invaderCore: StructureInvaderCore | undefined
     mineral: Mineral | undefined
+
 
     /**
      * 当前房间是否有己方控制器

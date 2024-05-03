@@ -1,16 +1,16 @@
-import { HarvestTargetType } from "task/instances/task_harvest";
 import { Scheduler } from "./scheduler";
-import { SourceStrategy } from "roomEngine/strategy/sourceStrategy";
 import { RoomStatusEnum } from "global/const/const";
+import { BuildableStrategy } from "roomEngine/strategy/buildableStrategy";
+import { BuildTargetType } from "task/instances/task_build";
 
-export class SourceScheduler extends Scheduler<HarvestTargetType> {
+export class BuildableScheduler extends Scheduler<BuildTargetType> {
 
     constructor(room: Room, idleCreeps: Creep[]) {
         super(room, idleCreeps)
         this.strategy = this.updateStrategy()
     }
 
-    updateStrategy(): IRoomStrategy<HarvestTargetType> | undefined {
+    updateStrategy(): IRoomStrategy<BuildTargetType> | undefined {
         switch (this.room.status) {
             case RoomStatusEnum.Low:
                 return new Low(this.room)
@@ -25,7 +25,7 @@ export class SourceScheduler extends Scheduler<HarvestTargetType> {
 }
 
 
-class Low implements IRoomStrategy<HarvestTargetType> {
+class Low implements IRoomStrategy<BuildTargetType> {
     room: Room
 
     constructor(room: Room) {
@@ -33,32 +33,25 @@ class Low implements IRoomStrategy<HarvestTargetType> {
     }
 
     priority(): number {
-        return 100
+        return 30
     }
-    generateTargets(): HarvestTargetType[] {
-        const f = (source: Source) => {
-            const energyAvailable = source.energy > 0
-            const canWorkPosLen = source.pos.surroundPos(1).filter(pos => pos.isWalkable()).length
-            const targetedLen = source.targetedBy.length
-
-            return energyAvailable && canWorkPosLen * 1.5 - targetedLen > 0
-        }
-
-        return this.room.sources.filter(f).sort((a, b) => b.energy - a.energy)
+    generateTargets(): BuildTargetType[] {
+        return this.room.level > 1 && this.room.constructionSites.length ? [this.room.constructionSites[0]] : []
     }
     creepsFilter(creep: Creep): boolean {
-        return creep.isEmptyStore && creep.role == "worker" && !creep.spawning
+        return !creep.isEmptyStore && creep.role == "worker" && !creep.spawning
     }
-    getStrategy(): StrategyDetail<HarvestTargetType> {
+    getStrategy(): StrategyDetail<BuildTargetType> {
         return {
-            strategyMethod: SourceStrategy.harvest,
-            shouldSpawn: this.room.creeps('worker').length < 20,
+            strategyMethod: BuildableStrategy.build,
+            creepsPerTarget: 999,
+            shouldSpawn: false,
         }
     }
 
 }
 
-class Medium implements IRoomStrategy<HarvestTargetType> {
+class Medium implements IRoomStrategy<BuildTargetType> {
     room: Room
 
     constructor(room: Room) {
@@ -68,20 +61,20 @@ class Medium implements IRoomStrategy<HarvestTargetType> {
     priority(): number {
         throw new Error("Method not implemented.");
     }
-    generateTargets(): HarvestTargetType[] {
+    generateTargets(): BuildTargetType[] {
         throw new Error("Method not implemented.");
     }
     creepsFilter(creep: Creep): boolean {
         throw new Error("Method not implemented.");
     }
-    getStrategy(): StrategyDetail<HarvestTargetType> {
+    getStrategy(): StrategyDetail<BuildTargetType> {
         throw new Error("Method not implemented.");
     }
 
 }
 
 
-class High implements IRoomStrategy<HarvestTargetType> {
+class High implements IRoomStrategy<BuildTargetType> {
     room: Room
 
     constructor(room: Room) {
@@ -91,13 +84,13 @@ class High implements IRoomStrategy<HarvestTargetType> {
     priority(): number {
         throw new Error("Method not implemented.");
     }
-    generateTargets(): HarvestTargetType[] {
+    generateTargets(): BuildTargetType[] {
         throw new Error("Method not implemented.");
     }
     creepsFilter(creep: Creep): boolean {
         throw new Error("Method not implemented.");
     }
-    getStrategy(): StrategyDetail<HarvestTargetType> {
+    getStrategy(): StrategyDetail<BuildTargetType> {
         throw new Error("Method not implemented.");
     }
 

@@ -1,23 +1,24 @@
 import { TaskRegistration } from "task/helper/TaskRegistry";
 import { Task } from "../task";
 
-export type TransferTargetType = StoreStructure
+export type WithdrawTargetType = StoreStructure
     | StructureLab
     | StructureNuker
     | StructurePowerSpawn
-    | Creep;
+    | Tombstone
+    | Ruin;
 
-@TaskRegistration<TransferTargetType>()
-export class TaskTransfer extends Task<TransferTargetType> {
+@TaskRegistration<WithdrawTargetType>()
+export class TaskWithdraw extends Task<WithdrawTargetType> {
 
-    static taskName = 'transfer'
+    static taskName = 'withdraw'
 
-    static createInstance(target: TransferTargetType, options?: TaskOption) {
-        return new TaskTransfer(target, options)
+    static createInstance(target: WithdrawTargetType, options?: TaskOption) {
+        return new TaskWithdraw(target, options)
     }
 
-    constructor(target: TransferTargetType, option = {} as TaskOption) {
-        super(TaskTransfer.taskName, target, option)
+    constructor(target: WithdrawTargetType, option = {} as TaskOption) {
+        super(TaskWithdraw.taskName, target, option)
 
         this.setting.oneShot = true
         this.data.resourceType = option.resourceType || RESOURCE_ENERGY
@@ -26,8 +27,8 @@ export class TaskTransfer extends Task<TransferTargetType> {
 
     isValidTask(): boolean {
         const amount = this.data.amount || 1;
-        const inCarry = this.creep.store.getUsedCapacity(this.data.resourceType);
-        return inCarry >= amount;
+        const freeStore = this.creep.store.getFreeCapacity(this.data.resourceType);
+        return freeStore >= amount;
     }
     isValidTarget(): boolean {
         const amount = this.data.amount || 1;
@@ -35,9 +36,9 @@ export class TaskTransfer extends Task<TransferTargetType> {
         if (!target) return false
 
         let resourceTypeIsValid = true
-        let capacityIsValid = (target.store.getFreeCapacity(this.data.resourceType) || 0) > amount
+        let capacityIsValid = (target.store.getUsedCapacity(this.data.resourceType) || 0) > amount
         if (target instanceof StructureLab) {
-            resourceTypeIsValid = !target.mineralType || target.mineralType == this.data.resourceType
+            resourceTypeIsValid = target.mineralType == this.data.resourceType
         }
         else if (target instanceof StructureNuker) {
             resourceTypeIsValid = this.data.resourceType == RESOURCE_GHODIUM
@@ -51,7 +52,7 @@ export class TaskTransfer extends Task<TransferTargetType> {
     }
     work(): number {
         if (this.target) {
-            return this.creep.transfer(this.target, RESOURCE_ENERGY, this.data.amount)
+            return this.creep.withdraw(this.target, RESOURCE_ENERGY, this.data.amount)
         }
         else {
             return this.finish()
