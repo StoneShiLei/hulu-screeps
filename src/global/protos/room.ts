@@ -5,7 +5,7 @@ export class RoomExtension extends Room {
 
     private _roleCreeps: {
         [key: string]: Creep[]
-    } = {}
+    } | undefined
 
     creeps(role?: RoleType, ignoreSpawning: boolean = true): Creep[] {
         if (!this._creeps || !this._creeps.length) {

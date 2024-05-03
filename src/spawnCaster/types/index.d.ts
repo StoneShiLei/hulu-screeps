@@ -3,3 +3,6 @@ interface BodySetMap {
 }
 
 type BodySetArray = [BodyPartConstant, number][];
+
+
+type BodyConfigFunc = (room: Room) => BodyPartConstant[]

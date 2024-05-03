@@ -5,8 +5,8 @@ export class RoomEngine {
     static run() {
         _.values<Room>(Game.rooms).forEach(room => {
 
-            if (room.hashTime % 3 != 0) return
-            if (!room.my) return
+            debugger
+            if (room.hashTime % 3 != 0 || !room.my) return
 
             if (room.hashTime % 31) room.update()
 

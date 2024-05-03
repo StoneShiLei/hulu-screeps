@@ -2,20 +2,20 @@ const local: CacheType = {};
 
 export class RoomExtension extends Room {
 
-    _sources: Source[] = [];
-    _deposits: Deposit[] = [];
-    _spawns: StructureSpawn[] = [];
-    _extensions: StructureExtension[] = [];
-    _roads: StructureRoad[] = [];
-    _walls: StructureWall[] = [];
-    _ramparts: StructureRampart[] = [];
-    _keeperLairs: StructureKeeperLair[] = [];
-    _portals: StructurePortal[] = [];
-    _links: StructureLink[] = [];
-    _towers: StructureTower[] = [];
-    _labs: StructureLab[] = [];
-    _containers: StructureContainer[] = [];
-    _powerBanks: StructurePowerBank[] = [];
+    _sources: Source[] | undefined
+    _deposits: Deposit[] | undefined
+    _spawns: StructureSpawn[] | undefined
+    _extensions: StructureExtension[] | undefined
+    _roads: StructureRoad[] | undefined
+    _walls: StructureWall[] | undefined
+    _ramparts: StructureRampart[] | undefined
+    _keeperLairs: StructureKeeperLair[] | undefined
+    _portals: StructurePortal[] | undefined
+    _links: StructureLink[] | undefined
+    _towers: StructureTower[] | undefined
+    _labs: StructureLab[] | undefined
+    _containers: StructureContainer[] | undefined
+    _powerBanks: StructurePowerBank[] | undefined
     _observer: StructureObserver | undefined
     _powerSpawn: StructurePowerSpawn | undefined
     _extractor: StructureExtractor | undefined

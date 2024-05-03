@@ -1,7 +1,7 @@
 import { AttackTargetType } from "task/instances/task_attack";
 import { Strategy } from "./strategy";
 import { TaskHelper } from "task/TaskHelper";
-import { BodyPartHelper } from "spawn/helper/BodyPartHelper";
+import { BodyPartHelper } from "spawnCaster/helper/BodyPartHelper";
 
 export class InvaderStrategy extends Strategy {
     static basicDefence(taskPackage: TaskPackage<AttackTargetType>) {
@@ -14,13 +14,12 @@ export class InvaderStrategy extends Strategy {
         })
 
         if (taskPackage.needSpawn) {
-            const attackBodyCost = BODYPART_COST[ATTACK] + 3 * BODYPART_COST[MOVE]
-            const bodyCount = Math.floor(taskPackage.room.energyCapacityAvailable / attackBodyCost)
-            const body = BodyPartHelper.convertBodyPart({ [MOVE]: bodyCount * 3, [ATTACK]: bodyCount })
-            taskPackage.room.spawns[0].spawnCreep(body,
-                'BasicDefencer' + Game.time,
-                { memory: { roomName: taskPackage.room.name, role: 'basicDefender', task: null } }
-            )
+            taskPackage.room.trySpawn('basicDefender', (room: Room): BodyPartConstant[] => {
+                const attackBodyCost = BODYPART_COST[ATTACK] + 3 * BODYPART_COST[MOVE]
+                const bodyCount = Math.floor(room.energyCapacityAvailable / attackBodyCost)
+                const body = BodyPartHelper.convertBodyPart({ [MOVE]: bodyCount * 3, [ATTACK]: bodyCount })
+                return body
+            })
         }
     }
 }

@@ -6,13 +6,14 @@ import { mountRoomCache } from "roomCache";
 import { ErrorCatcher } from "utils/ErrorCatcher";
 import { RoomEngine } from "roomEngine";
 import { StackAnalysis } from "utils/StackAnalysis";
+import { mountSpawnCaster } from "spawnCaster";
 
 // console.log('init!!')
 setLogLevel(LogLevel.INFO)
 mountGlobal()
 mountRoomCache()
 mountTask()
-
+mountSpawnCaster()
 
 function unwarappedLoop(): void {
 
@@ -36,8 +37,8 @@ function unwarappedLoop(): void {
   ErrorCatcher.throwAll()
 }
 
-const loop = global.LOCAL_SHARD_NAME != 'sim' ? ErrorMapper.wrapLoop(StackAnalysis.wrap(unwarappedLoop)) : unwarappedLoop
-// const loop = global.LOCAL_SHARD_NAME != 'sim' ? ErrorMapper.wrapLoop(unwarappedLoop) : unwarappedLoop
+// const loop = global.LOCAL_SHARD_NAME != 'sim' ? ErrorMapper.wrapLoop(StackAnalysis.wrap(unwarappedLoop)) : unwarappedLoop
+const loop = global.LOCAL_SHARD_NAME != 'sim' ? ErrorMapper.wrapLoop(unwarappedLoop) : unwarappedLoop
 
 
 export {

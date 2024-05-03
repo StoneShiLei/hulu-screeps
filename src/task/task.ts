@@ -107,10 +107,12 @@ export abstract class Task<TTargetType extends TargetType> implements ITask {
         return newTask;
     }
 
-    moveToTarget(range = this.setting.targetRange): number {
-        if (this.option.moveOptions && !this.option.moveOptions.range) {
-            this.option.moveOptions.range = range;
-        }
+    moveToTarget(range?: number): number {
+        if (range === undefined) range = this.setting.targetRange
+
+        this.option.moveOptions = this.option.moveOptions || {}
+        this.option.moveOptions.range = range
+
         return this.creep.moveTo(this.targetPos, this.option.moveOptions);
     }
 

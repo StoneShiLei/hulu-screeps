@@ -1,6 +1,7 @@
 import { HarvestTargetType } from "task/instances/task_harvest";
 import { Strategy } from "./strategy";
 import { TaskHelper } from "task/TaskHelper";
+import { WorkerBodyConfig } from "role/bodyConfig/worker";
 
 export class SourceStrategy extends Strategy {
     static harvest(taskPackage: TaskPackage<HarvestTargetType>) {
@@ -10,10 +11,7 @@ export class SourceStrategy extends Strategy {
         })
 
         if (taskPackage.needSpawn) {
-            taskPackage.room.spawns[0].spawnCreep([WORK, CARRY, MOVE, MOVE],
-                'Worker' + Game.time,
-                { memory: { roomName: taskPackage.room.name, role: 'worker', task: null } }
-            )
+            taskPackage.room.trySpawn('worker', WorkerBodyConfig.lowWorker)
         }
     }
 }

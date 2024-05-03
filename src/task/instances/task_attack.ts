@@ -30,7 +30,6 @@ export class TaskAttack extends Task<AttackTargetType> {
 
         // 处理近战攻击
         if (this.creep.getActiveBodyparts(ATTACK) > 0) {
-            debugger
             if (this.creep.pos.isNearTo(this.target)) {
                 result = this.creep.attack(this.target);
             } else {

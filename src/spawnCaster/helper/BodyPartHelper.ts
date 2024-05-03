@@ -1,4 +1,9 @@
 export class BodyPartHelper {
+    /**
+     * 转换bodySet
+     * @param bodySet { [MOVE]: 8, [WORK]: 15, [CARRY]: 2} | [ [MOVE,8] ,[WORK,9] ,[MOVE,1] ]
+     * @returns [ WORK, WORK ]
+     */
     static convertBodyPart(bodySet: BodySetMap | BodySetArray): BodyPartConstant[] {
         // 检查 bodySet 是否为数组
         if (Array.isArray(bodySet)) {
@@ -21,5 +26,16 @@ export class BodyPartHelper {
             // 把二维数组展平
             return ([] as BodyPartConstant[]).concat(...bodys);
         }
+    }
+
+    /**
+     * 计算body的能量消耗
+     * @param body  [ WORK, WORK ]
+     * @returns 能量消耗
+     */
+    static getCost(body: BodyPartConstant[]) {
+        let cost = 0
+        body.forEach(b => cost += BODYPART_COST[b])
+        return cost
     }
 }
