@@ -5,6 +5,7 @@ import { mountGlobal } from "global";
 import { mountRoomCache } from "roomCache";
 import { ErrorCatcher } from "utils/ErrorCatcher";
 import { RoomEngine } from "roomEngine";
+import { StackAnalysis } from "utils/StackAnalysis";
 
 // console.log('init!!')
 setLogLevel(LogLevel.INFO)
@@ -15,12 +16,6 @@ mountTask()
 
 function unwarappedLoop(): void {
 
-  // for (const name in Memory.creeps) {
-  //   if (!(name in Game.creeps)) {
-  //     delete Memory.creeps[name];
-  //   }
-  // }
-
   ErrorCatcher.catch(() => RoomEngine.run())
 
   for (const creep of _.values<Creep>(Game.creeps)) {
@@ -28,7 +23,7 @@ function unwarappedLoop(): void {
     ErrorCatcher.catch(() => creep.run())
 
     if (creep.hasValidTask) {
-      creep.say(creep.task?.name || '???')
+      // creep.say(creep.task?.name || '???')
     }
   }
 
@@ -41,7 +36,9 @@ function unwarappedLoop(): void {
   ErrorCatcher.throwAll()
 }
 
-const loop = global.LOCAL_SHARD_NAME != 'sim' ? ErrorMapper.wrapLoop(unwarappedLoop) : unwarappedLoop
+const loop = global.LOCAL_SHARD_NAME != 'sim' ? ErrorMapper.wrapLoop(StackAnalysis.wrap(unwarappedLoop)) : unwarappedLoop
+// const loop = global.LOCAL_SHARD_NAME != 'sim' ? ErrorMapper.wrapLoop(unwarappedLoop) : unwarappedLoop
+
 
 export {
   loop,

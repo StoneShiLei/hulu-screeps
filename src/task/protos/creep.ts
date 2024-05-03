@@ -74,8 +74,9 @@ export class CreepExtension extends Creep {
      */
     run(): number | undefined {
         if (this.task) {
+            const name = `${this.task.name}`
             const res = this.task.run()
-
+            if (Game.time % 3 == 0) this.say(name + ':' + res.toString())
             //tick结束前再次验证任务，提前更新目标缓存
             if (this._task) this.task.isValid()
 
