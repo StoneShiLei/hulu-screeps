@@ -15,6 +15,7 @@ export class TaskUpgrade extends Task<UpgradeTargetType> {
     constructor(target: UpgradeTargetType, option = {} as TaskOption) {
         super(TaskUpgrade.taskName, target, option)
         this.setting.targetRange = 3
+        this.setting.workOffRoad = true
     }
 
     isValidTask(): boolean {

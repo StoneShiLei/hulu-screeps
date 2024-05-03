@@ -15,6 +15,7 @@ export class TaskBuild extends Task<BuildTargetType> {
     constructor(target: BuildTargetType, option = {} as TaskOption) {
         super(TaskBuild.taskName, target, option)
         this.setting.targetRange = 3
+        this.setting.workOffRoad = true
     }
 
     isValidTask(): boolean {

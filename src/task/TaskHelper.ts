@@ -7,6 +7,14 @@ import { TaskTransfer, TransferTargetType } from "./instances/task_transfer";
 import { TaskUpgrade, UpgradeTargetType } from "./instances/task_upgrade";
 import { TaskWithdraw, WithdrawTargetType } from "./instances/task_withdraw";
 import { AttackTargetType, TaskAttack } from "./instances/task_attack";
+import { MeleeAttackTargetType, TaskMeleeAttack } from "./instances/task_meleeAttack";
+import { RangedAttackTargetType, TaskRangedAttack } from "./instances/task_rangedAttack";
+import { ReserveTargetType, TaskReserve } from "./instances/task_reserve";
+import { ClaimTargetType, TaskClaim } from "./instances/task_claim";
+import { SignTargetType, TaskSign } from "./instances/task_sign";
+import { FortifyTargetType, TaskFortify } from "./instances/task_fortify";
+import { DismantleTargetType, TaskDismantle } from "./instances/task_dismantle";
+import { RepairTargetType, TaskRepair } from "./instances/task_repair";
 
 /**
  * 任务帮助
@@ -69,5 +77,45 @@ export class TaskHelper {
 
     static attack(target: AttackTargetType, option?: TaskOption): TaskAttack {
         return new TaskAttack(target, option)
+    }
+
+
+    static meleeAttack(target: MeleeAttackTargetType, option?: TaskOption): TaskMeleeAttack {
+        return new TaskMeleeAttack(target, option)
+    }
+
+
+    static rangedAttack(target: RangedAttackTargetType, option?: TaskOption): TaskRangedAttack {
+        return new TaskRangedAttack(target, option)
+    }
+
+
+    static reserve(target: ReserveTargetType, option?: TaskOption): TaskReserve {
+        return new TaskReserve(target, option)
+    }
+
+
+    static claim(target: ClaimTargetType, option?: TaskOption): TaskClaim {
+        return new TaskClaim(target, option)
+    }
+
+
+    static sign(target: SignTargetType, option?: TaskOption): TaskSign {
+        return new TaskSign(target, option)
+    }
+
+
+    static fortify(target: FortifyTargetType, option?: TaskOption): TaskFortify {
+        return new TaskFortify(target, option)
+    }
+
+
+    static dismantle(target: DismantleTargetType, option?: TaskOption): TaskDismantle {
+        return new TaskDismantle(target, option)
+    }
+
+
+    static repair(target: RepairTargetType, option?: TaskOption): TaskRepair {
+        return new TaskRepair(target, option)
     }
 }

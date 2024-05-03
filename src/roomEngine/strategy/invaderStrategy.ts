@@ -9,7 +9,7 @@ export class InvaderStrategy extends Strategy {
             targetPackage.creeps.forEach(creep => {
                 const target = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS)
                 if (!target) return
-                creep.task = TaskHelper.attack(target)
+                creep.task = TaskHelper.meleeAttack(target)
             })
         })
 
