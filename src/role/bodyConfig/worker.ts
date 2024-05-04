@@ -40,7 +40,7 @@ export class WorkerBodyConfig {
 
         return BodyPartHelper.convertBodyPart({ [WORK]: workSegmentsCount, [CARRY]: segmentsCount, [MOVE]: segmentsCount })
     }
-    static highWorker(room: Room): BodyPartConstant[] {
-        return []
-    }
+    // static highWorker(room: Room): BodyPartConstant[] {
+    //     return []
+    // }
 }

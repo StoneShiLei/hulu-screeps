@@ -2,4 +2,4 @@ interface Creep {
     role: RoleType
 }
 
-type RoleType = "worker" | "carrier" | "upgrader" | "basicDefender"
+type RoleType = "worker" | "carrier" | "upgrader" | "basicDefender" | "sourceConstantHarvester"

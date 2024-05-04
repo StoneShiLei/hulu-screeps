@@ -2,8 +2,6 @@ import { ErrorCatcher } from "utils/ErrorCatcher"
 import { BusinessTower } from "structure/instances/business_tower"
 import { PrototypeHelper } from "utils/PrototypeHelper"
 import { RoomExtension } from "./protos/room"
-import { DropedResourceScheduler } from "./scheduler/old/dropedResourceScheduler"
-import { SourceScheduler } from "./scheduler/old/sourceScheduler"
 import { InvaderScheduler } from "./scheduler/invaderScheduler"
 import { HiveScheduler } from "./scheduler/hiveScheduler"
 import { TowerScheduler } from "./scheduler/towerScheduler"
@@ -11,6 +9,7 @@ import { BuildableScheduler } from "./scheduler/buildableScheduler"
 import { UpgradeScheduler } from "./scheduler/upgradeScheduler"
 import { RoomStatusEnum } from "global/const/const"
 import { WorkerBodyConfig } from "role/bodyConfig/worker"
+import { SourceScheduler } from "./scheduler/sourceScheduler"
 
 export function mountRoomEngine() {
     PrototypeHelper.assignPrototype(Room, RoomExtension)
@@ -71,7 +70,9 @@ export class RoomEngine {
     }
 
     private static medium(room: Room) {
+        new SourceScheduler(room, 'sourceConstantHarvester').tryGenEventToRoom()
 
+        new HiveScheduler(room, 'worker').tryGenEventToRoom()
     }
 
     private static high(room: Room) {

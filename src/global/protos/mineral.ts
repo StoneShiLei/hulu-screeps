@@ -1,19 +1,7 @@
-export class SourceExtension extends Source {
-    _canHarvest: boolean | undefined
-
-    canHarvestGetter(): boolean {
-
-        if (this._canHarvest) return this._canHarvest
-
-        const energyAvailable = this.energy > 0
-        const canWorkPosLen = this.pos.surroundPos(1).filter(pos => pos.isWalkable()).length
-        const targetedLen = this.targetedBy.length
-
-        this._canHarvest = energyAvailable && canWorkPosLen * 1.5 - targetedLen > 0
-        return this._canHarvest
-    }
+export class MineralExtension extends Mineral {
 
     containerGetter(): StructureContainer | null {
+        if (!this.room) return null
         this.room.memory.roomObjectData = this.room.memory.roomObjectData || {}
         const data = this.room.memory.roomObjectData[this.id] || {}
         if (data) return Game.getObjectById<StructureContainer>(data.containerId)

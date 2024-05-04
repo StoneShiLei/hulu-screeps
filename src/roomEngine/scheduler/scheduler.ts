@@ -22,7 +22,7 @@ export abstract class Scheduler<T extends TargetType> implements IScheduler<T> {
         const strategy = this.strategy
         if (!strategy) return
         const targets = strategy.getTargets()
-        if (!targets) return
+        if (!targets.length) return
 
         const actionDetail = strategy.getAction()
 

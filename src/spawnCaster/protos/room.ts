@@ -28,6 +28,12 @@ export class RoomExtension extends Room {
 
         const name = role + this.genName()
 
+        let tempTask = task || null
+        while (tempTask) {
+            tempTask._creep.name = name
+            tempTask = task?.parent || null
+        }
+
         const opts: SpawnOptions = {
             memory: {
                 role: role,

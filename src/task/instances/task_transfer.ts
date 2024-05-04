@@ -25,11 +25,13 @@ export class TaskTransfer extends Task<TransferTargetType> {
     }
 
     isValidTask(): boolean {
+        debugger
         const amount = this.data.amount || 1;
         const inCarry = this.creep.store.getUsedCapacity(this.data.resourceType);
         return inCarry >= amount;
     }
     isValidTarget(): boolean {
+        debugger
         const amount = this.data.amount || 1;
         const target = this.target;
         if (!target) return false
@@ -50,6 +52,7 @@ export class TaskTransfer extends Task<TransferTargetType> {
         return resourceTypeIsValid && capacityIsValid
     }
     work(): number {
+        debugger
         if (this.target) {
             return this.creep.transfer(this.target, RESOURCE_ENERGY, this.data.amount)
         }

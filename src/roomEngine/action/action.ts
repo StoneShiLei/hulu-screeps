@@ -15,7 +15,7 @@ export abstract class Action implements IAction {
         if (!creep.isEmptyStore) return tasks
 
         const target = creep.pos.findClosestByPath(Action.findResource(creep.room), { ignoreCreeps: true })
-        if (!target) return tasks
+        if (!target) return [] //emptyStore且找不到获取资源的目标时，不返回任何task
 
         return [Action.genTakeResourceTask(target), ...tasks]
     }
@@ -100,7 +100,7 @@ export abstract class Action implements IAction {
         }
 
         if (type == RESOURCE_ENERGY) {
-            return room.sources.filter(s => s.canHarvest)
+            return room.sources.filter(s => s.canHarvest).sort((a, b) => b.energy - a.energy)
         }
         else {
             return room.mineral?.mineralType == type && room.mineral.mineralAmount > 0 ? [room.mineral] : []
