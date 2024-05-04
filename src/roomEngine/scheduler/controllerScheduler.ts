@@ -1,6 +1,6 @@
 import { Scheduler } from "./scheduler";
 import { RoomStatusEnum } from "global/const/const";
-import { ControllerStrategy } from "roomEngine/strategy/controllerStrategy";
+import { ControllerAction } from "roomEngine/action/controllerAction";
 import { UpgradeTargetType } from "task/instances/task_upgrade";
 
 export class ControllerScheduler extends Scheduler<UpgradeTargetType> {
@@ -41,9 +41,9 @@ class Low implements IRoomStrategy<UpgradeTargetType> {
     creepsFilter(creep: Creep): boolean {
         return !creep.isEmptyStore && creep.role == "worker" && !creep.spawning
     }
-    getStrategy(): StrategyDetail<UpgradeTargetType> {
+    getAction(): ActionDetail<UpgradeTargetType> {
         return {
-            strategyMethod: ControllerStrategy.upgrade,
+            actionMethod: ControllerAction.upgrade,
             creepsPerTarget: 999,
             shouldSpawn: false,
         }
@@ -67,7 +67,7 @@ class Medium implements IRoomStrategy<UpgradeTargetType> {
     creepsFilter(creep: Creep): boolean {
         throw new Error("Method not implemented.");
     }
-    getStrategy(): StrategyDetail<UpgradeTargetType> {
+    getAction(): ActionDetail<UpgradeTargetType> {
         throw new Error("Method not implemented.");
     }
 
@@ -90,7 +90,7 @@ class High implements IRoomStrategy<UpgradeTargetType> {
     creepsFilter(creep: Creep): boolean {
         throw new Error("Method not implemented.");
     }
-    getStrategy(): StrategyDetail<UpgradeTargetType> {
+    getAction(): ActionDetail<UpgradeTargetType> {
         throw new Error("Method not implemented.");
     }
 

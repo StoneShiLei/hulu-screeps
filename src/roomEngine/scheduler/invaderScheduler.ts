@@ -1,6 +1,6 @@
 import { Scheduler } from "./scheduler";
 import { RoomStatusEnum } from "global/const/const";
-import { InvaderStrategy } from "roomEngine/strategy/invaderStrategy";
+import { InvaderAction } from "roomEngine/action/invaderAction";
 import { AttackTargetType } from "task/instances/task_attack";
 
 export class InvaderScheduler extends Scheduler<AttackTargetType> {
@@ -41,9 +41,9 @@ class DefaultStrategy implements IRoomStrategy<AttackTargetType> {
     creepsFilter(creep: Creep): boolean {
         return creep.role == "basicDefender"
     }
-    getStrategy(): StrategyDetail<AttackTargetType> {
+    getAction(): ActionDetail<AttackTargetType> {
         return {
-            strategyMethod: InvaderStrategy.basicDefence,
+            actionMethod: InvaderAction.basicDefence,
             creepsPerTarget: 3,
             shouldSpawn: this.room.towers.length == 0 && this.room.creeps("basicDefender", false).length < 3,
         }

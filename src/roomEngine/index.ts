@@ -19,7 +19,9 @@ export class RoomEngine {
             const taskPackages = schedulers
                 .map(s => s.generateTaskPackage())
                 .filter((t): t is TaskPackage<TargetType> => t !== undefined);
-            taskPackages.forEach(t => t.strategy(t))
+            taskPackages.forEach(t => t.action(t))
         })
     }
 }
+
+

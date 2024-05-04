@@ -1,8 +1,8 @@
 import { BuildTargetType } from "task/instances/task_build";
-import { Strategy } from "./strategy";
+import { Action } from "./action";
 import { TaskHelper } from "task/TaskHelper";
 
-export class BuildableStrategy extends Strategy {
+export class BuildableAction extends Action {
     static build(taskPackage: TaskPackage<BuildTargetType>) {
         const targets = taskPackage.room.constructionSites
         if (!targets.length) return

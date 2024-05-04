@@ -1,3 +1,3 @@
-interface IStrategy {
+interface IAction {
 
 }

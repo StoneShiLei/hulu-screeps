@@ -2,7 +2,7 @@ import { PickupTargetType } from "task/instances/task_pickup";
 import { Scheduler } from "./scheduler";
 import { RoomStatusEnum } from "global/const/const";
 import { WithdrawTargetType } from "task/instances/task_withdraw";
-import { DropedResourceStrategy } from "roomEngine/strategy/dropedResourceStrategy";
+import { DropedResourceAction } from "roomEngine/action/dropedResourceAction";
 
 const dropedResourceMap: {
     [roomName: string]: (PickupTargetType | WithdrawTargetType)[]
@@ -55,9 +55,9 @@ class Low implements IRoomStrategy<PickupTargetType | WithdrawTargetType> {
     creepsFilter(creep: Creep): boolean {
         return creep.isEmptyStore && creep.role == "worker" && !creep.spawning
     }
-    getStrategy(): StrategyDetail<PickupTargetType | WithdrawTargetType> {
+    getAction(): ActionDetail<PickupTargetType | WithdrawTargetType> {
         return {
-            strategyMethod: DropedResourceStrategy.takeDroped,
+            actionMethod: DropedResourceAction.takeDroped,
         }
     }
 
@@ -79,7 +79,7 @@ class Medium implements IRoomStrategy<PickupTargetType | WithdrawTargetType> {
     creepsFilter(creep: Creep): boolean {
         throw new Error("Method not implemented.");
     }
-    getStrategy(): StrategyDetail<PickupTargetType | WithdrawTargetType> {
+    getAction(): ActionDetail<PickupTargetType | WithdrawTargetType> {
         throw new Error("Method not implemented.");
     }
 
@@ -102,7 +102,7 @@ class High implements IRoomStrategy<PickupTargetType | WithdrawTargetType> {
     creepsFilter(creep: Creep): boolean {
         throw new Error("Method not implemented.");
     }
-    getStrategy(): StrategyDetail<PickupTargetType | WithdrawTargetType> {
+    getAction(): ActionDetail<PickupTargetType | WithdrawTargetType> {
         throw new Error("Method not implemented.");
     }
 

@@ -1,9 +1,9 @@
 import { AttackTargetType } from "task/instances/task_attack";
-import { Strategy } from "./strategy";
+import { Action } from "./action";
 import { TaskHelper } from "task/TaskHelper";
 import { BodyPartHelper } from "spawnCaster/helper/BodyPartHelper";
 
-export class InvaderStrategy extends Strategy {
+export class InvaderAction extends Action {
     static basicDefence(taskPackage: TaskPackage<AttackTargetType>) {
         taskPackage.targets.forEach(targetPackage => {
             targetPackage.creeps.forEach(creep => {

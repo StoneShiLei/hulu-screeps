@@ -1,8 +1,8 @@
-import { Strategy } from "./strategy";
+import { Action } from "./action";
 import { TaskHelper } from "task/TaskHelper";
 import { TransferTargetType } from "task/instances/task_transfer";
 
-export class FillStrategy extends Strategy {
+export class FillAction extends Action {
     static fillSpawn(taskPackage: TaskPackage<TransferTargetType>) {
         const targets = [...taskPackage.room.spawns, ...taskPackage.room.extensions]
             .filter(s => s.store[RESOURCE_ENERGY] < s.store.getCapacity(RESOURCE_ENERGY))

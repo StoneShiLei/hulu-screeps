@@ -1,9 +1,9 @@
 import { PickupTargetType } from "task/instances/task_pickup";
-import { Strategy } from "./strategy";
+import { Action } from "./action";
 import { TaskHelper } from "task/TaskHelper";
 import { WithdrawTargetType } from "task/instances/task_withdraw";
 
-export class DropedResourceStrategy extends Strategy {
+export class DropedResourceAction extends Action {
     static takeDroped(taskPackage: TaskPackage<PickupTargetType | WithdrawTargetType>) {
 
         const target = taskPackage.targets[0].target

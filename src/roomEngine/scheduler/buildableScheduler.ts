@@ -1,6 +1,6 @@
 import { Scheduler } from "./scheduler";
 import { RoomStatusEnum } from "global/const/const";
-import { BuildableStrategy } from "roomEngine/strategy/buildableStrategy";
+import { BuildableAction } from "roomEngine/action/buildableAction";
 import { BuildTargetType } from "task/instances/task_build";
 
 export class BuildableScheduler extends Scheduler<BuildTargetType> {
@@ -41,9 +41,9 @@ class Low implements IRoomStrategy<BuildTargetType> {
     creepsFilter(creep: Creep): boolean {
         return !creep.isEmptyStore && creep.role == "worker" && !creep.spawning
     }
-    getStrategy(): StrategyDetail<BuildTargetType> {
+    getAction(): ActionDetail<BuildTargetType> {
         return {
-            strategyMethod: BuildableStrategy.build,
+            actionMethod: BuildableAction.build,
             creepsPerTarget: 999,
             shouldSpawn: false,
         }
@@ -67,7 +67,7 @@ class Medium implements IRoomStrategy<BuildTargetType> {
     creepsFilter(creep: Creep): boolean {
         throw new Error("Method not implemented.");
     }
-    getStrategy(): StrategyDetail<BuildTargetType> {
+    getAction(): ActionDetail<BuildTargetType> {
         throw new Error("Method not implemented.");
     }
 
@@ -90,7 +90,7 @@ class High implements IRoomStrategy<BuildTargetType> {
     creepsFilter(creep: Creep): boolean {
         throw new Error("Method not implemented.");
     }
-    getStrategy(): StrategyDetail<BuildTargetType> {
+    getAction(): ActionDetail<BuildTargetType> {
         throw new Error("Method not implemented.");
     }
 

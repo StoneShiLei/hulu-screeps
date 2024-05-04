@@ -1,8 +1,8 @@
 /**
  * 任务策略详细
  */
-interface StrategyDetail<T extends TargetType> {
-    strategyMethod: StrategyMethodType<T>
+interface ActionDetail<T extends TargetType> {
+    actionMethod: ActionMethodType<T>
     shouldSpawn?: boolean
     creepsPerTarget?: number
 }
@@ -49,5 +49,5 @@ interface IRoomStrategy<T extends TargetType> {
     /**
      * 根据房间情况选择合适的执行策略
      */
-    getStrategy(): StrategyDetail<T>;
+    getAction(): ActionDetail<T>;
 }

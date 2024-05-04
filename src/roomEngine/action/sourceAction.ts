@@ -1,9 +1,9 @@
 import { HarvestTargetType } from "task/instances/task_harvest";
-import { Strategy } from "./strategy";
+import { Action } from "./action";
 import { TaskHelper } from "task/TaskHelper";
 import { WorkerBodyConfig } from "role/bodyConfig/worker";
 
-export class SourceStrategy extends Strategy {
+export class SourceAction extends Action {
     static harvest(taskPackage: TaskPackage<HarvestTargetType>) {
         taskPackage.targets.forEach(targetPackage => {
             const task = TaskHelper.harvest(targetPackage.target)

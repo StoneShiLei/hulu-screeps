@@ -1,7 +1,7 @@
 import { Scheduler } from "./scheduler";
 import { RoomStatusEnum } from "global/const/const";
 import { TransferTargetType } from "task/instances/task_transfer";
-import { FillStrategy } from "roomEngine/strategy/fillStrategy";
+import { FillAction } from "roomEngine/action/fillAction";
 
 export class TowerScheduler extends Scheduler<TransferTargetType> {
 
@@ -45,9 +45,9 @@ class Low implements IRoomStrategy<TransferTargetType> { //todo
     creepsFilter(creep: Creep): boolean {
         return !creep.isEmptyStore && creep.role == "worker" && !creep.spawning //todo
     }
-    getStrategy(): StrategyDetail<TransferTargetType> {
+    getAction(): ActionDetail<TransferTargetType> {
         return {
-            strategyMethod: FillStrategy.fillTower,
+            actionMethod: FillAction.fillTower,
             shouldSpawn: false
         }
     }
@@ -70,7 +70,7 @@ class Medium implements IRoomStrategy<TransferTargetType> {
     creepsFilter(creep: Creep): boolean {
         throw new Error("Method not implemented.");
     }
-    getStrategy(): StrategyDetail<TransferTargetType> {
+    getAction(): ActionDetail<TransferTargetType> {
         throw new Error("Method not implemented.");
     }
 
@@ -93,7 +93,7 @@ class High implements IRoomStrategy<TransferTargetType> {
     creepsFilter(creep: Creep): boolean {
         throw new Error("Method not implemented.");
     }
-    getStrategy(): StrategyDetail<TransferTargetType> {
+    getAction(): ActionDetail<TransferTargetType> {
         throw new Error("Method not implemented.");
     }
 

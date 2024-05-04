@@ -1,6 +1,6 @@
 import { HarvestTargetType } from "task/instances/task_harvest";
 import { Scheduler } from "./scheduler";
-import { SourceStrategy } from "roomEngine/strategy/sourceStrategy";
+import { SourceAction } from "roomEngine/action/sourceAction";
 import { RoomStatusEnum } from "global/const/const";
 
 export class SourceScheduler extends Scheduler<HarvestTargetType> {
@@ -49,9 +49,9 @@ class Low implements IRoomStrategy<HarvestTargetType> {
     creepsFilter(creep: Creep): boolean {
         return creep.isEmptyStore && creep.role == "worker" && !creep.spawning
     }
-    getStrategy(): StrategyDetail<HarvestTargetType> {
+    getAction(): ActionDetail<HarvestTargetType> {
         return {
-            strategyMethod: SourceStrategy.harvest,
+            actionMethod: SourceAction.harvest,
             shouldSpawn: this.room.creeps('worker', false).length < 20,
         }
     }
@@ -74,7 +74,7 @@ class Medium implements IRoomStrategy<HarvestTargetType> {
     creepsFilter(creep: Creep): boolean {
         throw new Error("Method not implemented.");
     }
-    getStrategy(): StrategyDetail<HarvestTargetType> {
+    getAction(): ActionDetail<HarvestTargetType> {
         throw new Error("Method not implemented.");
     }
 
@@ -97,7 +97,7 @@ class High implements IRoomStrategy<HarvestTargetType> {
     creepsFilter(creep: Creep): boolean {
         throw new Error("Method not implemented.");
     }
-    getStrategy(): StrategyDetail<HarvestTargetType> {
+    getAction(): ActionDetail<HarvestTargetType> {
         throw new Error("Method not implemented.");
     }
 
