@@ -1,12 +1,12 @@
 import { Scheduler } from "./scheduler";
 import { RoomStatusEnum } from "global/const/const";
-import { ControllerAction } from "roomEngine/action/controllerAction";
+import { UpgradeAction } from "roomEngine/action/upgradeAction";
 import { UpgradeTargetType } from "task/instances/task_upgrade";
 
-export class ControllerScheduler extends Scheduler<UpgradeTargetType> {
+export class UpgradeScheduler extends Scheduler<UpgradeTargetType> {
 
-    constructor(room: Room, idleCreeps: Creep[]) {
-        super(room, idleCreeps)
+    constructor(room: Room, role: RoleType) {
+        super(room, role)
         this.strategy = this.updateStrategy()
     }
 
@@ -32,20 +32,13 @@ class Low implements IRoomStrategy<UpgradeTargetType> {
         this.room = room
     }
 
-    priority(): number {
-        return 10
-    }
-    generateTargets(): UpgradeTargetType[] {
+    getTargets(): UpgradeTargetType[] {
         return this.room.controller ? [this.room.controller] : []
     }
-    creepsFilter(creep: Creep): boolean {
-        return !creep.isEmptyStore && creep.role == "worker" && !creep.spawning
-    }
+
     getAction(): ActionDetail<UpgradeTargetType> {
         return {
-            actionMethod: ControllerAction.upgrade,
-            creepsPerTarget: 999,
-            shouldSpawn: false,
+            actionMethod: UpgradeAction.upgrade,
         }
     }
 
@@ -58,13 +51,7 @@ class Medium implements IRoomStrategy<UpgradeTargetType> {
         this.room = room
     }
 
-    priority(): number {
-        throw new Error("Method not implemented.");
-    }
-    generateTargets(): UpgradeTargetType[] {
-        throw new Error("Method not implemented.");
-    }
-    creepsFilter(creep: Creep): boolean {
+    getTargets(): UpgradeTargetType[] {
         throw new Error("Method not implemented.");
     }
     getAction(): ActionDetail<UpgradeTargetType> {
@@ -81,15 +68,10 @@ class High implements IRoomStrategy<UpgradeTargetType> {
         this.room = room
     }
 
-    priority(): number {
+    getTargets(): UpgradeTargetType[] {
         throw new Error("Method not implemented.");
     }
-    generateTargets(): UpgradeTargetType[] {
-        throw new Error("Method not implemented.");
-    }
-    creepsFilter(creep: Creep): boolean {
-        throw new Error("Method not implemented.");
-    }
+
     getAction(): ActionDetail<UpgradeTargetType> {
         throw new Error("Method not implemented.");
     }

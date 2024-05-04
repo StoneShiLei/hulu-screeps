@@ -4,7 +4,7 @@ import { LogLevel, Logger, setLogLevel } from "utils/Logger";
 import { mountGlobal } from "global";
 import { mountRoomCache } from "roomCache";
 import { ErrorCatcher } from "utils/ErrorCatcher";
-import { RoomEngine } from "roomEngine";
+import { RoomEngine, mountRoomEngine } from "roomEngine";
 import { StackAnalysis } from "utils/StackAnalysis";
 import { mountSpawnCaster } from "spawnCaster";
 import { mountStructure } from "structure";
@@ -16,6 +16,7 @@ mountRoomCache()
 mountTask()
 mountSpawnCaster()
 mountStructure()
+mountRoomEngine()
 
 function unwarappedLoop(): void {
 

@@ -1,9 +1,9 @@
 import { Scheduler } from "./scheduler";
 import { RoomStatusEnum } from "global/const/const";
-import { TransferTargetType } from "task/instances/task_transfer";
 import { FillAction } from "roomEngine/action/fillAction";
+import { TransferTargetType } from "task/instances/task_transfer";
 
-export class TowerScheduler extends Scheduler<TransferTargetType> {
+export class HiveScheduler extends Scheduler<TransferTargetType> {
 
     constructor(room: Room, role: RoleType) {
         super(room, role)
@@ -11,12 +11,12 @@ export class TowerScheduler extends Scheduler<TransferTargetType> {
     }
 
     updateStrategy(): IRoomStrategy<TransferTargetType> | undefined {
-        return new Default(this.room);
+        return new Defaule(this.room)
     }
 }
 
 
-class Default implements IRoomStrategy<TransferTargetType> { //todo
+class Defaule implements IRoomStrategy<TransferTargetType> {
     room: Room
 
     constructor(room: Room) {
@@ -24,14 +24,14 @@ class Default implements IRoomStrategy<TransferTargetType> { //todo
     }
 
     getTargets(): TransferTargetType[] {
-        return this.room.towers.filter(tower => {
-            return (tower.getCurrentStoreResource(RESOURCE_ENERGY) || 0) + tower.store[RESOURCE_ENERGY] < 600
+        return [...this.room.spawns, ...this.room.extensions].filter(s => {
+            return (s.getCurrentStoreResource(RESOURCE_ENERGY) || 0) + s.store[RESOURCE_ENERGY] < s.store.getCapacity(RESOURCE_ENERGY)
         })
     }
 
     getAction(): ActionDetail<TransferTargetType> {
         return {
-            actionMethod: FillAction.fillTower,
+            actionMethod: FillAction.fillSpawn,
         }
     }
 

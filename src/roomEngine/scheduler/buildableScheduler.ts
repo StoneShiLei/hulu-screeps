@@ -5,8 +5,8 @@ import { BuildTargetType } from "task/instances/task_build";
 
 export class BuildableScheduler extends Scheduler<BuildTargetType> {
 
-    constructor(room: Room, idleCreeps: Creep[]) {
-        super(room, idleCreeps)
+    constructor(room: Room, role: RoleType) {
+        super(room, role)
         this.strategy = this.updateStrategy()
     }
 
@@ -32,20 +32,13 @@ class Low implements IRoomStrategy<BuildTargetType> {
         this.room = room
     }
 
-    priority(): number {
-        return 30
-    }
-    generateTargets(): BuildTargetType[] {
+    getTargets(): BuildTargetType[] {
         return this.room.level > 1 && this.room.constructionSites.length ? [this.room.constructionSites[0]] : []
     }
-    creepsFilter(creep: Creep): boolean {
-        return !creep.isEmptyStore && creep.role == "worker" && !creep.spawning
-    }
+
     getAction(): ActionDetail<BuildTargetType> {
         return {
             actionMethod: BuildableAction.build,
-            creepsPerTarget: 999,
-            shouldSpawn: false,
         }
     }
 
@@ -58,15 +51,10 @@ class Medium implements IRoomStrategy<BuildTargetType> {
         this.room = room
     }
 
-    priority(): number {
+    getTargets(): BuildTargetType[] {
         throw new Error("Method not implemented.");
     }
-    generateTargets(): BuildTargetType[] {
-        throw new Error("Method not implemented.");
-    }
-    creepsFilter(creep: Creep): boolean {
-        throw new Error("Method not implemented.");
-    }
+
     getAction(): ActionDetail<BuildTargetType> {
         throw new Error("Method not implemented.");
     }
@@ -81,15 +69,10 @@ class High implements IRoomStrategy<BuildTargetType> {
         this.room = room
     }
 
-    priority(): number {
+    getTargets(): BuildTargetType[] {
         throw new Error("Method not implemented.");
     }
-    generateTargets(): BuildTargetType[] {
-        throw new Error("Method not implemented.");
-    }
-    creepsFilter(creep: Creep): boolean {
-        throw new Error("Method not implemented.");
-    }
+
     getAction(): ActionDetail<BuildTargetType> {
         throw new Error("Method not implemented.");
     }

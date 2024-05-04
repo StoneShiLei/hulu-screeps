@@ -1,7 +1,19 @@
 import { ErrorCatcher } from "utils/ErrorCatcher"
-import { initScheduler } from "./scheduler"
 import { BusinessTower } from "structure/instances/business_tower"
+import { PrototypeHelper } from "utils/PrototypeHelper"
+import { RoomExtension } from "./protos/room"
+import { DropedResourceScheduler } from "./scheduler/dropedResourceScheduler"
+import { SourceScheduler } from "./scheduler/sourceScheduler"
+import { InvaderScheduler } from "./scheduler/invaderScheduler"
+import { HiveScheduler } from "./scheduler/hiveScheduler"
+import { TowerScheduler } from "./scheduler/towerScheduler"
+import { BuildableScheduler } from "./scheduler/buildableScheduler"
+import { UpgradeScheduler } from "./scheduler/upgradeScheduler"
+import { RoomStatusEnum } from "global/const/const"
 
+export function mountRoomEngine() {
+    PrototypeHelper.assignPrototype(Room, RoomExtension)
+}
 
 export class RoomEngine {
     static run() {
@@ -14,13 +26,46 @@ export class RoomEngine {
             if (room.hashTime % 3 != 0 || !room.my) return
             if (room.hashTime % 31) room.update()
 
+            switch (room.status) {
+                case RoomStatusEnum.Low:
+                    RoomEngine.low(room)
+                    break;
+                case RoomStatusEnum.Medium:
+                    RoomEngine.medium(room)
+                    break;
+                case RoomStatusEnum.High:
+                    RoomEngine.high(room)
+                    break;
+                default:
+                    break;
+            }
 
-            const schedulers = initScheduler(room, room.creeps().filter(c => c.isIdle))
-            const taskPackages = schedulers
-                .map(s => s.generateTaskPackage())
-                .filter((t): t is TaskPackage<TargetType> => t !== undefined);
-            taskPackages.forEach(t => t.action(t))
+            //处理事件队列
+            room.eventQueue.forEach(event => event.action())
+
+            //处理spawn队列
+            room.spawnQueue.forEach(request => {
+                room.trySpawn(request.role, request.bodyFunc, request.task, request.spawnOpt, request.targetRoomName)
+            })
         })
+    }
+
+    private static low(room: Room) {
+        new InvaderScheduler(room, 'basicDefender').tryGenEventToRoom()
+        // new DropedResourceScheduler(room, 'worker').tryGenEventToRoom()
+        // new SourceScheduler(room, 'worker').tryGenEventToRoom()
+        new HiveScheduler(room, 'worker').tryGenEventToRoom()
+        new TowerScheduler(room, 'worker').tryGenEventToRoom()
+        new BuildableScheduler(room, 'worker').tryGenEventToRoom()
+        new UpgradeScheduler(room, 'worker').tryGenEventToRoom()
+    }
+
+    private static medium(room: Room) {
+
+    }
+
+    private static high(room: Room) {
+
     }
 }
 

@@ -23,7 +23,7 @@ export class TaskHelper {
 
     /**
      *  构造任务链，将一系列任务构造为单个任务，互相关联
-     * @param tasks 任务数组，先进后出，先进为父，后进为子
+     * @param tasks 任务数组，先进先出，先进为子，后进为父
      * @param setNextPos 执行完子任务后是否向父任务移动，防止空转一tick
      * @returns 子任务
      */

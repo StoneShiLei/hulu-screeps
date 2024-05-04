@@ -5,8 +5,8 @@ import { AttackTargetType } from "task/instances/task_attack";
 
 export class InvaderScheduler extends Scheduler<AttackTargetType> {
 
-    constructor(room: Room, idleCreeps: Creep[]) {
-        super(room, idleCreeps)
+    constructor(room: Room, role: RoleType) {
+        super(room, role)
         this.strategy = this.updateStrategy()
     }
 
@@ -30,22 +30,15 @@ class DefaultStrategy implements IRoomStrategy<AttackTargetType> {
         this.room = room
     }
 
-    priority(): number {
-        return 1000
-    }
-    generateTargets(): AttackTargetType[] {
+    getTargets(): AttackTargetType[] {
         const targets = this.room.find(FIND_HOSTILE_CREEPS).filter(e => e.body.filter(b => b.type != MOVE).length)
         const target = targets.shift()
         return target ? [target] : []
     }
-    creepsFilter(creep: Creep): boolean {
-        return creep.role == "basicDefender"
-    }
+
     getAction(): ActionDetail<AttackTargetType> {
         return {
             actionMethod: InvaderAction.basicDefence,
-            creepsPerTarget: 3,
-            shouldSpawn: this.room.towers.length == 0 && this.room.creeps("basicDefender", false).length < 3,
         }
     }
 
