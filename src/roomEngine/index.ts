@@ -2,8 +2,8 @@ import { ErrorCatcher } from "utils/ErrorCatcher"
 import { BusinessTower } from "structure/instances/business_tower"
 import { PrototypeHelper } from "utils/PrototypeHelper"
 import { RoomExtension } from "./protos/room"
-import { DropedResourceScheduler } from "./scheduler/dropedResourceScheduler"
-import { SourceScheduler } from "./scheduler/sourceScheduler"
+import { DropedResourceScheduler } from "./scheduler/old/dropedResourceScheduler"
+import { SourceScheduler } from "./scheduler/old/sourceScheduler"
 import { InvaderScheduler } from "./scheduler/invaderScheduler"
 import { HiveScheduler } from "./scheduler/hiveScheduler"
 import { TowerScheduler } from "./scheduler/towerScheduler"
@@ -61,7 +61,8 @@ export class RoomEngine {
         new UpgradeScheduler(room, 'worker').tryGenEventToRoom()
 
 
-        if (room.creeps('worker', false).length < 20) {
+        if (room.creeps('worker', false).length < 20 &&
+            room.sources.filter(s => s.canHarvest).length > 0) {
             room.spawnQueue.push({
                 role: 'worker',
                 bodyFunc: WorkerBodyConfig.lowWorker,

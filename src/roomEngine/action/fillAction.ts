@@ -31,7 +31,7 @@ export class FillAction extends Action {
                 targets = sortExtensionsByDistance(creep, targets)
 
                 let capacity = creep.isEmptyStore ? creep.store.getCapacity(RESOURCE_ENERGY) : creep.store.getUsedCapacity(RESOURCE_ENERGY)
-                if (creep.store.getCapacity() > 50) debugger
+
                 const fillTasks: ITask[] = []
                 while (capacity > 0) {
                     const target = targets.shift()

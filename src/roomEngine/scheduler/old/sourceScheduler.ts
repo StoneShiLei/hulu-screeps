@@ -1,5 +1,5 @@
 import { HarvestTargetType } from "task/instances/task_harvest";
-import { Scheduler } from "./scheduler";
+import { Scheduler } from "../scheduler";
 import { SourceAction } from "roomEngine/action/sourceAction";
 import { RoomStatusEnum } from "global/const/const";
 

@@ -11,19 +11,12 @@ export class InvaderScheduler extends Scheduler<AttackTargetType> {
     }
 
     updateStrategy(): IRoomStrategy<AttackTargetType> | undefined {
-        switch (this.room.status) {
-            case RoomStatusEnum.Low:
-                return new DefaultStrategy(this.room)
-            case RoomStatusEnum.Medium:
-                return new DefaultStrategy(this.room);
-            default:
-                return undefined
-        }
+        return new Default(this.room)
     }
 }
 
 
-class DefaultStrategy implements IRoomStrategy<AttackTargetType> {
+class Default implements IRoomStrategy<AttackTargetType> {
     room: Room
 
     constructor(room: Room) {

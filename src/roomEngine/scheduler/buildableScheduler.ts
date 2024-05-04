@@ -11,21 +11,12 @@ export class BuildableScheduler extends Scheduler<BuildTargetType> {
     }
 
     updateStrategy(): IRoomStrategy<BuildTargetType> | undefined {
-        switch (this.room.status) {
-            case RoomStatusEnum.Low:
-                return new Low(this.room)
-            case RoomStatusEnum.Medium:
-                return new Medium(this.room);
-            case RoomStatusEnum.High:
-                return new High(this.room);
-            default:
-                return undefined
-        }
+        return new Default(this.room)
     }
 }
 
 
-class Low implements IRoomStrategy<BuildTargetType> {
+class Default implements IRoomStrategy<BuildTargetType> {
     room: Room
 
     constructor(room: Room) {
@@ -40,41 +31,6 @@ class Low implements IRoomStrategy<BuildTargetType> {
         return {
             actionMethod: BuildableAction.build,
         }
-    }
-
-}
-
-class Medium implements IRoomStrategy<BuildTargetType> {
-    room: Room
-
-    constructor(room: Room) {
-        this.room = room
-    }
-
-    getTargets(): BuildTargetType[] {
-        throw new Error("Method not implemented.");
-    }
-
-    getAction(): ActionDetail<BuildTargetType> {
-        throw new Error("Method not implemented.");
-    }
-
-}
-
-
-class High implements IRoomStrategy<BuildTargetType> {
-    room: Room
-
-    constructor(room: Room) {
-        this.room = room
-    }
-
-    getTargets(): BuildTargetType[] {
-        throw new Error("Method not implemented.");
-    }
-
-    getAction(): ActionDetail<BuildTargetType> {
-        throw new Error("Method not implemented.");
     }
 
 }

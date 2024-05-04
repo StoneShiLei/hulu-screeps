@@ -1,5 +1,5 @@
 import { PickupTargetType } from "task/instances/task_pickup";
-import { Scheduler } from "./scheduler";
+import { Scheduler } from "../scheduler";
 import { RoomStatusEnum } from "global/const/const";
 import { WithdrawTargetType } from "task/instances/task_withdraw";
 

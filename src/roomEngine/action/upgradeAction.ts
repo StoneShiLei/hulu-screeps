@@ -9,7 +9,7 @@ export class UpgradeAction extends Action {
             const creeps = room.creeps(role, false).filter(c => c.isIdle)
 
             creeps.forEach(creep => {
-                const target = _.first(targets)
+                const target = targets.shift()
                 if (!target) return
                 const task = TaskHelper.upgrade(target)
                 const tasks = Action.genTaskList(creep, task)

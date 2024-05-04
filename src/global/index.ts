@@ -3,6 +3,7 @@ import { RoomPositionExtension } from "./protos/roomPosition";
 import { CreepExtension } from "./protos/creep";
 import { RoomExtension } from "./protos/room";
 import { StackAnalysis } from "utils/StackAnalysis";
+import { SourceExtension } from "./protos/source";
 
 
 export function mountGlobal() {
@@ -16,4 +17,5 @@ export function mountGlobal() {
     PrototypeHelper.assignPrototype(RoomPosition, RoomPositionExtension)
     PrototypeHelper.assignPrototype(Creep, CreepExtension)
     PrototypeHelper.assignPrototype(Room, RoomExtension)
+    PrototypeHelper.assignPrototype(Source, SourceExtension)
 }

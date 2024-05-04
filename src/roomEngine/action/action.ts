@@ -100,14 +100,7 @@ export abstract class Action implements IAction {
         }
 
         if (type == RESOURCE_ENERGY) {
-            const f = (source: Source) => {
-                const energyAvailable = source.energy > 0
-                const canWorkPosLen = source.pos.surroundPos(1).filter(pos => pos.isWalkable()).length
-                const targetedLen = source.targetedBy.length
-
-                return energyAvailable && canWorkPosLen * 1.5 - targetedLen > 0
-            }
-            return room.sources.filter(f)
+            return room.sources.filter(s => s.canHarvest)
         }
         else {
             return room.mineral?.mineralType == type && room.mineral.mineralAmount > 0 ? [room.mineral] : []

@@ -52,10 +52,13 @@ class Medium implements IRoomStrategy<UpgradeTargetType> {
     }
 
     getTargets(): UpgradeTargetType[] {
-        throw new Error("Method not implemented.");
+        return this.room.controller ? [this.room.controller] : []
     }
+
     getAction(): ActionDetail<UpgradeTargetType> {
-        throw new Error("Method not implemented.");
+        return {
+            actionMethod: UpgradeAction.upgrade,
+        }
     }
 
 }
@@ -69,11 +72,13 @@ class High implements IRoomStrategy<UpgradeTargetType> {
     }
 
     getTargets(): UpgradeTargetType[] {
-        throw new Error("Method not implemented.");
+        return this.room.controller ? [this.room.controller] : []
     }
 
     getAction(): ActionDetail<UpgradeTargetType> {
-        throw new Error("Method not implemented.");
+        return {
+            actionMethod: UpgradeAction.upgrade,
+        }
     }
 
 }
