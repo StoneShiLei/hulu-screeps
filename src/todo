@@ -22,9 +22,10 @@ storage利用
 
 
 drop
-getBoosted
-getRenewed
 heal
 
 transferAll
 withdrawAll
+
+getBoosted
+getRenewed
