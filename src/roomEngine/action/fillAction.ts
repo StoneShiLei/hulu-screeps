@@ -2,32 +2,40 @@ import { Action } from "./action";
 import { TaskHelper } from "task/TaskHelper";
 import { TransferTargetType } from "task/instances/task_transfer";
 
+/**
+ * 计算两点之间的直线距离（不考虑地形）
+ * @param pos1 第一个位置
+ * @param pos2 第二个位置
+ * @returns 直线距离
+ */
+function calculateDistance(pos1: RoomPosition, pos2: RoomPosition): number {
+    return Math.sqrt(Math.pow(pos2.x - pos1.x, 2) + Math.pow(pos2.y - pos1.y, 2));
+}
+
+function sortExtensionsByDistance(creep: Creep, targets: TransferTargetType[]): TransferTargetType[] {
+    return targets.sort((a, b) => {
+        const distA = calculateDistance(creep.pos, a.pos);
+        const distB = calculateDistance(creep.pos, b.pos);
+        return distA - distB;
+    });
+}
+
 export class FillAction extends Action {
-
-    static sortByDistance(creep: Creep, targets: TransferTargetType[]): TransferTargetType[] {
-
-        const getRangeTo = function (sourcePos: RoomPosition, targetPos: RoomPosition): number {
-            return Math.sqrt(Math.pow(sourcePos.x - targetPos.x, 2) + Math.pow(sourcePos.y - targetPos.y, 2));
-        }
-
-        return targets.sort((a, b) => {
-            return getRangeTo(creep.pos, a.pos) - getRangeTo(creep.pos, b.pos)
-        })
-    }
 
     static fillSpawn(targets: TransferTargetType[], role: RoleType, room: Room) {
         return function () {
             const creeps = room.creeps(role, false).filter(c => c.isIdle)
 
             creeps.forEach(creep => {
-                targets = FillAction.sortByDistance(creep, targets)
+
+                targets = sortExtensionsByDistance(creep, targets)
 
                 let capacity = creep.isEmptyStore ? creep.store.getCapacity(RESOURCE_ENERGY) : creep.store.getUsedCapacity(RESOURCE_ENERGY)
-
+                if (creep.store.getCapacity() > 50) debugger
                 const fillTasks: ITask[] = []
                 while (capacity > 0) {
                     const target = targets.shift()
-                    if (!target) break
+                    if (!target) return
                     fillTasks.push(TaskHelper.transfer(target))
                     capacity -= target.store.getCapacity(RESOURCE_ENERGY)
                 }

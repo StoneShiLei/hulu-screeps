@@ -10,6 +10,7 @@ import { TowerScheduler } from "./scheduler/towerScheduler"
 import { BuildableScheduler } from "./scheduler/buildableScheduler"
 import { UpgradeScheduler } from "./scheduler/upgradeScheduler"
 import { RoomStatusEnum } from "global/const/const"
+import { WorkerBodyConfig } from "role/bodyConfig/worker"
 
 export function mountRoomEngine() {
     PrototypeHelper.assignPrototype(Room, RoomExtension)
@@ -58,6 +59,14 @@ export class RoomEngine {
         new TowerScheduler(room, 'worker').tryGenEventToRoom()
         new BuildableScheduler(room, 'worker').tryGenEventToRoom()
         new UpgradeScheduler(room, 'worker').tryGenEventToRoom()
+
+
+        if (room.creeps('worker', false).length < 20) {
+            room.spawnQueue.push({
+                role: 'worker',
+                bodyFunc: WorkerBodyConfig.lowWorker,
+            })
+        }
     }
 
     private static medium(room: Room) {

@@ -23,11 +23,11 @@ export abstract class Action implements IAction {
     private static findResource(room: Room, type: ResourceConstant = RESOURCE_ENERGY): TakeResourceType[] {
         let targets: TakeResourceType[]
         targets = this.findDroped(room, type)
-        if (!targets) return []
+        if (targets.length) return targets
         targets = this.findMassStore(room, type)
-        if (!targets) return []
+        if (targets.length) return targets
         targets = this.findOriginResource(room, type)
-        if (!targets) return []
+        if (targets.length) return targets
 
         return targets
     }

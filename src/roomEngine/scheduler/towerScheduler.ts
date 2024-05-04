@@ -25,7 +25,7 @@ class Default implements IRoomStrategy<TransferTargetType> { //todo
 
     getTargets(): TransferTargetType[] {
         return this.room.towers.filter(tower => {
-            return (tower.getCurrentStoreResource(RESOURCE_ENERGY) || 0) + tower.store[RESOURCE_ENERGY] < 600
+            return (tower.getCurrentStoreResource(RESOURCE_ENERGY) || 0) < 600
         })
     }
 

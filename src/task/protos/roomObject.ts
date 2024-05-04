@@ -36,37 +36,41 @@ export class RoomObjectExtension extends RoomObject {
     }
 
     getCurrentStoreResource(type: ResourceConstant): number | undefined {
+
         if (!('store' in this)) return undefined
         const store = this.store as StoreDefinition
 
         this._currentResource = this._currentResource || {}
-        this._currentResource[type] = this._currentResource[type] || store[type] || 0
-
-        if (this._currentResource[type]) return this._currentResource[type]
+        if (this._currentResource[type]) return this._currentResource[type] + store[type]
 
         let currentResourceCount = 0
 
         const creeps = this.targetedBy
 
         creeps.forEach(creep => {
-            if (!creep.task) return
-            const taskName = creep.task.name
-            const taskType = creep.task.data.resourceType
-            if (taskName == TaskTransfer.taskName && taskType == type) {
-                if (creep.task.data.amount) currentResourceCount += creep.task.data.amount
-                else currentResourceCount += creep.store.getUsedCapacity(type)
-            }
-            else if (taskName == TaskWithdraw.taskName && taskType == type) {
-                if (creep.task.data.amount) currentResourceCount -= creep.task.data.amount
-                else currentResourceCount -= creep.store.getUsedCapacity(type)
-            }
-            else {
+            let task = creep.memory.task
+            while (task) {
+                const taskName = task.name
+                const taskType = task.data.resourceType
+                if (taskName == TaskTransfer.taskName && taskType == type) {
+                    if (task.data.amount) currentResourceCount += task.data.amount
+                    else currentResourceCount += creep.store.getCapacity(type)
+                }
+                else if (taskName == TaskWithdraw.taskName && taskType == type) {
+                    if (task.data.amount) currentResourceCount -= task.data.amount
+                    else currentResourceCount -= creep.store.getCapacity(type)
+                }
+                else {
 
+                }
+                task = task._parent
             }
         })
 
+        if (!this._currentResource[type]) this._currentResource[type] = 0
         this._currentResource[type] += currentResourceCount
-        return this._currentResource[type]
+
+        return this._currentResource[type] + store[type]
     }
 }
 
