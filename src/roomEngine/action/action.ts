@@ -105,7 +105,7 @@ export abstract class Action implements IAction {
      * @param ignoreOriginResource 忽略原始资源
      * @returns
      */
-    private static findResource(room: Room, type: ResourceConstant = RESOURCE_ENERGY, ignoreOriginResource: boolean = false): TakeResourceType[] {
+    protected static findResource(room: Room, type: ResourceConstant = RESOURCE_ENERGY, ignoreOriginResource: boolean = false): TakeResourceType[] {
         let targets: TakeResourceType[]
         targets = this.findDroped(room, type)
         if (targets.length) return targets
@@ -125,7 +125,7 @@ export abstract class Action implements IAction {
      * @param target
      * @returns
      */
-    private static genTakeResourceTask(target: TakeResourceType): ITask {
+    protected static genTakeResourceTask(target: TakeResourceType): ITask {
         if ('store' in target) {
             return TaskHelper.withdraw(target)
         }
