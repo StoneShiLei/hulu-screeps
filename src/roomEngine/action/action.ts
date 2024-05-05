@@ -14,6 +14,8 @@ export abstract class Action implements IAction {
     protected static genTaskList(creep: Creep, type: ResourceConstant, ...tasks: ITask[]): ITask[] {
         if (creep.store.getUsedCapacity(type) == creep.store.getCapacity(type)) return tasks
 
+        //如果当前需求资源和体内资源不一致时，添加一个清空体内资源的任务 todo
+
         //资源未满时，先把资源补满再执行任务
         const target = creep.pos.findClosestByPath(Action.findResource(creep.room, type), { ignoreCreeps: true })
         if (!target && creep.isEmptyStore) return [] //emptyStore且找不到获取资源的目标时，不返回任何task
@@ -55,7 +57,7 @@ export abstract class Action implements IAction {
     }
 
     private static findDroped(room: Room, type: ResourceConstant): (PickupTargetType | WithdrawTargetType)[] {
-        if (room.hashTime % 9 == 0) this.updateDropedMap(room)
+        if (room.hashTime % 9 == 0 || Action.dropedResourceMap[room.name] === undefined) this.updateDropedMap(room)
 
         return this.dropedResourceMap[room.name]?.filter(d => {
             if ('store' in d) {

@@ -22,15 +22,15 @@ export abstract class Task<TTargetType extends TargetType> implements ITask {
 
         this.data = {}
         this.setting = {
-            targetRange: 1,
             workOffRoad: false,
             oneShot: false,
+            targetRange: 1
         }
 
         _.defaults(option, {
             blind: false,
             moveNextTarget: false,
-            moveOptions: {}
+            moveOptions: {},
         })
         this.option = option
 
@@ -151,7 +151,8 @@ export abstract class Task<TTargetType extends TargetType> implements ITask {
     }
 
     run(): number {
-        if (this.creep.pos.inRangeTo(this.targetPos, this.setting.targetRange || 1)) { //and 不在边缘)
+
+        if (this.creep.pos.inRangeTo(this.targetPos, this.setting.targetRange)) { //and 不在边缘)
             let result = this.work()
 
             //只执行一次的任务
@@ -196,10 +197,10 @@ export function initTask(protoTask: ProtoTask): Task<TargetType> {
     const createInstance = taskMap.get(taskName);
 
     if (!createInstance) {
-        return new TaskInvalid(target);
+        return new TaskInvalid(target, protoTask.option);
     }
 
-    const task = createInstance(target);
+    const task = createInstance(target, protoTask.option);
 
     task.proto = protoTask
 

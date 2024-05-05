@@ -5,7 +5,8 @@ import { AttackTargetType } from "task/instances/task_attack";
 
 export class InvaderScheduler extends Scheduler<AttackTargetType> {
 
-    constructor(room: Room, role: RoleType) {
+    constructor(room: Room) {
+        const role: RoleType = 'basicDefender'
         super(room, role)
         this.strategy = this.updateStrategy()
     }

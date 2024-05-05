@@ -7,12 +7,18 @@ export class RoomExtension extends Room {
         [key: string]: Creep[]
     } | undefined
 
+    idleCreeps(role?: RoleType, ignoreSpawning: boolean = true): Creep[] {
+        return this.creeps(role, ignoreSpawning).filter(c => c.isIdle)
+    }
+
     creeps(role?: RoleType, ignoreSpawning: boolean = true): Creep[] {
         if (!this._creeps || !this._creeps.length) {
             initCreepsCache();
             if (!this._creeps || !this._creeps.length) this._creeps = []
+
         }
         this._roleCreeps = this._roleCreeps || {}
+        this._roleCreeps["_creeps"] = this._roleCreeps["_creeps"] || this._creeps
 
         const keySuffix = ignoreSpawning ? "_spawned_creeps" : "_creeps";
         const roleKey = role ? role + keySuffix : keySuffix;

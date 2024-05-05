@@ -58,7 +58,7 @@ export class SourceAction extends Action {
 
     static harvest(targets: HarvestTargetType[], role: RoleType, room: Room) {
         return function () {
-            const creeps = room.creeps(role, false).filter(c => c.isIdle)
+            const creeps = room.idleCreeps(role, false)
 
             const target = targets.shift()
             if (!target) return

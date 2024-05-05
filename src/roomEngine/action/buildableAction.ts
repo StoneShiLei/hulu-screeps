@@ -1,11 +1,13 @@
 import { BuildTargetType } from "task/instances/task_build";
 import { Action } from "./action";
 import { TaskHelper } from "task/TaskHelper";
+import { WorkerBodyConfig } from "role/bodyConfig/worker";
+import { RoomStatusEnum } from "global/const/const";
 
 export class BuildableAction extends Action {
     static build(targets: BuildTargetType[], role: RoleType, room: Room) {
         return function () {
-            const creeps = room.creeps(role, false).filter(c => c.isIdle)
+            const creeps = room.idleCreeps(role, false)
 
             creeps.forEach(creep => {
                 const target = creep.pos.findClosestByPath(targets, { ignoreCreeps: true })
@@ -14,6 +16,8 @@ export class BuildableAction extends Action {
                 const tasks = Action.genTaskList(creep, RESOURCE_ENERGY, task)
                 creep.task = TaskHelper.chain(tasks)
             })
+
+
         }
     }
 }

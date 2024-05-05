@@ -19,7 +19,7 @@ export class TaskGoto extends Task<GoToTargetType> {
     }
 
     isValidTask(): boolean {
-        return !this.creep.pos.inRangeTo(this.targetPos, this.setting.targetRange || 1)
+        return !this.creep.pos.inRangeTo(this.targetPos, this.setting.targetRange)
     }
     isValidTarget(): boolean {
         return true

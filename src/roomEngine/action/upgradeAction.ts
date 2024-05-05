@@ -6,7 +6,7 @@ export class UpgradeAction extends Action {
 
     static upgrade(targets: UpgradeTargetType[], role: RoleType, room: Room) {
         return function () {
-            const creeps = room.creeps(role, false).filter(c => c.isIdle)
+            const creeps = room.idleCreeps(role, false)
 
             creeps.forEach(creep => {
                 const target = targets.shift()

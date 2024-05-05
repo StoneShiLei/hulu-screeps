@@ -24,6 +24,12 @@ declare global {
         creeps(role?: RoleType, ignoreSpawning?: boolean): Creep[]
 
         /**
+         * 获取该房间所有闲置的creep，支持按角色分类
+         * @param role 角色
+         * @param ignoreSpawning 忽略正在spawn中的creep
+         */
+        idleCreeps(role?: RoleType, ignoreSpawning?: boolean): Creep[]
+        /**
          * 房间状态
          */
         status: RoomStatusEnum

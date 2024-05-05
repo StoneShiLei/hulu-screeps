@@ -24,22 +24,22 @@ export class FillAction extends Action {
 
     static fillSpawn(targets: TransferTargetType[], role: RoleType, room: Room) {
         return function () {
-            const creeps = room.creeps(role, false).filter(c => c.isIdle)
+            const creeps = room.idleCreeps(role, false)
 
             creeps.forEach(creep => {
 
                 targets = sortExtensionsByDistance(creep, targets)
 
-                let capacity = creep.isEmptyStore ? creep.store.getCapacity(RESOURCE_ENERGY) : creep.store.getUsedCapacity(RESOURCE_ENERGY)
+                let capacity = creep.store.getCapacity(RESOURCE_ENERGY)
 
                 const fillTasks: ITask[] = []
                 while (capacity > 0) {
                     const target = targets.shift()
-                    if (!target) return
+                    if (!target) break
                     fillTasks.push(TaskHelper.transfer(target))
                     capacity -= target.store.getCapacity(RESOURCE_ENERGY)
                 }
-
+                if (!fillTasks.length) return
                 const tasks = Action.genTaskList(creep, RESOURCE_ENERGY, ...fillTasks)
                 creep.task = TaskHelper.chain(tasks)
             })
@@ -48,7 +48,7 @@ export class FillAction extends Action {
 
     static fillTower(targets: TransferTargetType[], role: RoleType, room: Room) {
         return function () {
-            const creeps = room.creeps(role, false).filter(c => c.isIdle)
+            const creeps = room.idleCreeps(role, false)
 
             targets.forEach(target => {
                 creeps.forEach(creep => {

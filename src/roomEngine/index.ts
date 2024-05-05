@@ -51,7 +51,7 @@ export class RoomEngine {
     }
 
     private static low(room: Room) {
-        new InvaderScheduler(room, 'basicDefender').tryGenEventToRoom()
+        new InvaderScheduler(room).tryGenEventToRoom()
         new HiveScheduler(room, 'worker').tryGenEventToRoom()
         new BuildableScheduler(room, 'worker').tryGenEventToRoom()
         new UpgradeScheduler(room, 'worker').tryGenEventToRoom()
@@ -72,7 +72,20 @@ export class RoomEngine {
         new HiveScheduler(room, 'worker').tryGenEventToRoom()
         new TowerScheduler(room, 'worker').tryGenEventToRoom()
         new BuildableScheduler(room, 'worker').tryGenEventToRoom()
-        new UpgradeScheduler(room, 'worker').tryGenEventToRoom()
+        new UpgradeScheduler(room, 'worker').tryGenEventToRoom() //专业升级的
+
+        debugger
+        //（有工地 || 全死光） && （工人小于2 || 闲置搬运大于闲置工人且工人小于2）
+        const isHasConstructionSite = room.constructionSites.length > 0
+        const isAllDead = room.creeps(undefined, false).length == 0
+        const carrierGTworker = room.idleCreeps('carrier').length > room.idleCreeps('worker').length && room.idleCreeps('worker', false).length < 2
+
+        if ((isHasConstructionSite || isAllDead) && (room.creeps('worker').length < 2 || carrierGTworker)) {
+            room.spawnQueue.push({
+                role: 'worker',
+                bodyFunc: WorkerBodyConfig.mediumWorker,
+            })
+        }
     }
 
     private static high(room: Room) {

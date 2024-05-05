@@ -19,6 +19,7 @@ export class RoomExtension extends Room {
      * @param targetRoomName creep所属房间，默认是spawn所在房间
      */
     trySpawn(role: RoleType, bodyConfigFunc: BodyConfigFunc, task?: ITask, spawnOpt?: SpawnOptions, targetRoomName?: string): string | undefined {
+
         if (!this || !this.my) return undefined
 
         if (this._isSpawnAvailable === undefined) this._isSpawnAvailable = true
@@ -31,7 +32,7 @@ export class RoomExtension extends Room {
         let tempTask = task || null
         while (tempTask) {
             tempTask._creep.name = name
-            tempTask = task?.parent || null
+            tempTask = tempTask.parent || null
         }
 
         const opts: SpawnOptions = {

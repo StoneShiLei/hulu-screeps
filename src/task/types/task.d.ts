@@ -141,17 +141,17 @@ interface TaskSetting {
     /**
      * 需要到达的目标范围
      */
-    targetRange?: number
+    targetRange: number
 
     /**
      * 只执行一次
      */
-    oneShot?: boolean
+    oneShot: boolean
 
     /**
      * 让开路面，不要在路面上执行任务
      */
-    workOffRoad?: boolean
+    workOffRoad: boolean
 
 
 }
