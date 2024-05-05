@@ -1,31 +1,27 @@
-挖运分离
-container利用
+link
+source转中心*2
+中心转升级
+矿转中心
 
-长期挖矿
-大存储取用
-worker中级挖矿
-upgrader分化
-内矿能量搬运和捡起资源(carry)
-中级填充
-upgrade的container搬运
+高级策略运转
 
-分配结余worker??? 如何重新生成一波任务  干脆直接调用任务调度器？更灵活一些
+整体架构优化
 
+minetral
+外矿
+reserve
+claim
 
-
+签名
 
 
+对穿，寻路
 
-storage利用
-
-对穿？
-
+lab
+terminal(资源平衡？)
+自动规划
 
 drop
 heal
-
-transferAll
-withdrawAll
-
 getBoosted
 getRenewed
