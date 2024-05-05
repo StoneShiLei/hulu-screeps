@@ -27,6 +27,12 @@ class Default implements IRoomStrategy<SourceConstantHarvestTargetType> {
     }
 
     getTargets(): SourceConstantHarvestTargetType[] {
+
+        //如果没有能运送的则跳过，防止只挖不运
+        if (this.room.creeps('carrier', false).length + this.room.creeps('worker').length == 0) {
+            return []
+        }
+
         const targets = this.room.sources.filter(s =>
             s.targetedBy.filter(c => c.role == this.role).length == 0 ||
             s.targetedBy.filter(c => c.role == this.role && (c.ticksToLive || 1500) < 300).length > 0)

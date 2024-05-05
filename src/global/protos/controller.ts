@@ -1,7 +1,6 @@
-export class MineralExtension extends Mineral {
-
+export class StructureControllerExtension extends StructureController {
     containerGetter(): StructureContainer | null {
-        if (!this.room) return null
+
         this.room.memory.roomObjectData = this.room.memory.roomObjectData || {};
         const data = this.room.memory.roomObjectData[this.id] || {};
 

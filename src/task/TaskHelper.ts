@@ -15,6 +15,7 @@ import { SignTargetType, TaskSign } from "./instances/task_sign";
 import { FortifyTargetType, TaskFortify } from "./instances/task_fortify";
 import { DismantleTargetType, TaskDismantle } from "./instances/task_dismantle";
 import { RepairTargetType, TaskRepair } from "./instances/task_repair";
+import { TaskConstantUpgrade } from "./instances/task_constantUpgrade";
 
 /**
  * 任务帮助
@@ -61,6 +62,10 @@ export class TaskHelper {
 
     static upgrade(target: UpgradeTargetType, option?: TaskOption): TaskUpgrade {
         return new TaskUpgrade(target, option)
+    }
+
+    static constantUpgrade(target: UpgradeTargetType, option?: TaskOption): TaskConstantUpgrade {
+        return new TaskConstantUpgrade(target, option)
     }
 
     static build(target: BuildTargetType, option?: TaskOption): TaskBuild {

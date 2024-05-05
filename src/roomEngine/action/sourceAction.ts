@@ -12,42 +12,16 @@ export class SourceAction extends Action {
 
             targets.forEach(source => {
 
-                //如果没有能运送的，先spawn一个能运送的
-                if (room.creeps('carrier', false).length + room.creeps('worker').length == 0) {
-                    room.spawnQueue.push({
-                        role: 'worker',
-                        bodyFunc: WorkerBodyConfig.mediumWorker,
-                    })
-                    return
+                const tasks: ITask[] = [TaskHelper.sourceConstantHarvest(source)]
+                if (source.container) {
+                    tasks.unshift(TaskHelper.goto(source.container, { targetRange: 0 }))
                 }
 
-
-                //当有多个的时候，相遇时杀死ttl低的那个
-                if (source.targetedBy.length > 1) {
-                    const harvesters = source.targetedBy.sort((a, b) => (a.ticksToLive || 0) - (b.ticksToLive || 0))
-                    for (let i = 0; i < harvesters.length; i++) {
-
-                        if (i + 1 == harvesters.length) break
-
-                        if (harvesters[i].pos.isNearTo(harvesters[i + 1].pos)) {
-                            harvesters[i].suicide()
-                        }
-                    }
-                }
-
-                if (!source.targetedBy.length || source.targetedBy && source.targetedBy.filter(c => c.role == role && (c.ticksToLive || 1500) < 300).length > 0) {
-
-                    const tasks: ITask[] = [TaskHelper.sourceConstantHarvest(source)]
-                    if (source.container) {
-                        tasks.unshift(TaskHelper.goto(source.container, { targetRange: 0 }))
-                    }
-
-                    room.spawnQueue.push({
-                        role: role,
-                        bodyFunc: HarvesterBodyConfig.sourceHarvester,
-                        task: TaskHelper.chain(tasks)
-                    })
-                }
+                room.spawnQueue.push({
+                    role: role,
+                    bodyFunc: HarvesterBodyConfig.sourceHarvester,
+                    task: TaskHelper.chain(tasks)
+                })
                 return
 
             })

@@ -9,7 +9,6 @@ import { StackAnalysis } from "utils/StackAnalysis";
 import { mountSpawnCaster } from "spawnCaster";
 import { mountStructure } from "structure";
 
-
 setLogLevel(LogLevel.INFO)
 mountGlobal()
 mountRoomCache()

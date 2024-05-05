@@ -10,6 +10,7 @@ import { UpgradeScheduler } from "./scheduler/upgradeScheduler"
 import { RoomStatusEnum } from "global/const/const"
 import { WorkerBodyConfig } from "role/bodyConfig/worker"
 import { SourceScheduler } from "./scheduler/sourceScheduler"
+import { worker } from "cluster"
 
 export function mountRoomEngine() {
     PrototypeHelper.assignPrototype(Room, RoomExtension)
@@ -69,12 +70,19 @@ export class RoomEngine {
     private static medium(room: Room) {
         new SourceScheduler(room).tryGenEventToRoom()
 
-        new HiveScheduler(room, 'worker').tryGenEventToRoom()
-        new TowerScheduler(room, 'worker').tryGenEventToRoom()
-        new BuildableScheduler(room, 'worker').tryGenEventToRoom()
-        new UpgradeScheduler(room, 'worker').tryGenEventToRoom() //专业升级的
 
-        debugger
+
+        new UpgradeScheduler(room, 'upgrader').tryGenEventToRoom() //专业升级的
+        //搬运任务
+
+        // new HiveScheduler(room, 'carrier').tryGenEventToRoom()
+        // new TowerScheduler(room, 'carrier').tryGenEventToRoom()
+        // new UpgradeScheduler(room, 'carrier').tryGenEventToRoom() //升级容器搬运
+
+        new HiveScheduler(room, 'worker').tryGenEventToRoom()
+        new BuildableScheduler(room, 'worker').tryGenEventToRoom()
+        new UpgradeScheduler(room, 'worker').tryGenEventToRoom()
+
         //（有工地 || 全死光） && （工人小于2 || 闲置搬运大于闲置工人且工人小于2）
         const isHasConstructionSite = room.constructionSites.length > 0
         const isAllDead = room.creeps(undefined, false).length == 0

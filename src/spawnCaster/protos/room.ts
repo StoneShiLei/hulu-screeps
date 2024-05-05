@@ -29,6 +29,7 @@ export class RoomExtension extends Room {
 
         const name = role + this.genName()
 
+        //给所有任务关联creepName
         let tempTask = task || null
         while (tempTask) {
             tempTask._creep.name = name

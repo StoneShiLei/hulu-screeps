@@ -1,8 +1,15 @@
+import { TaskHelper } from "task/TaskHelper";
 import { TargetCache } from "task/helper/TargetCache";
 import { initTask } from "task/task";
 import { Logger } from "utils/Logger";
 
 export class CreepExtension extends Creep {
+
+    pressTask(...task: ITask[]) {
+        if (!this.task) return
+        if (!task || task.length == 0) return
+        this.task = TaskHelper.chain([...task, this.task])
+    }
 
     /**
      * task的get访问器

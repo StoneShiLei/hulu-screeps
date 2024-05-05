@@ -1,10 +1,23 @@
 import { UpgradeTargetType } from "task/instances/task_upgrade";
 import { Action } from "./action";
 import { TaskHelper } from "task/TaskHelper";
+import { UpgraderBodyConfig } from "role/bodyConfig/upgrader";
 
 export class UpgradeAction extends Action {
 
-    static upgrade(targets: UpgradeTargetType[], role: RoleType, room: Room) {
+    static upgraderUpgrade(targets: UpgradeTargetType[], role: RoleType, room: Room) {
+        return function () {
+            if (!targets.length) return
+            const controller = targets[0]
+            room.spawnQueue.push({
+                role: role,
+                bodyFunc: UpgraderBodyConfig.upgrader,
+                task: TaskHelper.constantUpgrade(controller)
+            })
+        }
+    }
+
+    static workerUpgrade(targets: UpgradeTargetType[], role: RoleType, room: Room) {
         return function () {
             const creeps = room.idleCreeps(role, false)
 

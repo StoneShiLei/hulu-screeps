@@ -27,11 +27,21 @@ export class TaskSourceConstantHarvest extends Task<SourceConstantHarvestTargetT
     work(): number {
         if (!this.target) return OK
 
-        const container = this.target.container
+        //当有多个的时候，相遇时杀死ttl低的那个
+        if (this.target.targetedBy.length > 1) {
+            debugger
+            const harvesters = this.target.targetedBy.sort((a, b) => (a.ticksToLive || 0) - (b.ticksToLive || 0))
+            for (let i = 0; i < harvesters.length; i++) {
 
-        // if (container && !container.pos.isEqualTo(this.creep.pos)) {
-        //     return this.creep.moveTo(container)
-        // }
+                if (i + 1 == harvesters.length) break
+
+                if (harvesters[i].pos.isNearTo(harvesters[i + 1].pos)) {
+                    harvesters[i].suicide()
+                }
+            }
+        }
+
+        const container = this.target.container
 
         if ((this.creep.ticksToLive || 0) % 6 <= 1) {
             const droped = this.creep.pos.lookFor(LOOK_ENERGY).shift()
