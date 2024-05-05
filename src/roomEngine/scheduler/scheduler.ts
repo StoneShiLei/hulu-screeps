@@ -27,7 +27,7 @@ export abstract class Scheduler<T extends TargetType> implements IScheduler<T> {
         const actionDetail = strategy.getAction()
 
         const event: Event = {
-            action: actionDetail.actionMethod(targets, this.role, this.room),
+            action: actionDetail.actionMethod(targets, this.role, this.room, actionDetail.options),
         }
 
         this.room.eventQueue.push(event)

@@ -1,11 +1,53 @@
 import { TaskHelper } from "task/TaskHelper"
 import { HarvestTargetType } from "task/instances/task_harvest"
 import { PickupTargetType } from "task/instances/task_pickup"
+import { TransferTargetType } from "task/instances/task_transfer"
 import { WithdrawTargetType } from "task/instances/task_withdraw"
 
 type TakeResourceType = PickupTargetType | HarvestTargetType | WithdrawTargetType
 
 export abstract class Action implements IAction {
+
+    /**
+     * 取出资源，调用一次仅给第一个target指派1个creep
+     * @param targets
+     * @param role
+     * @param room
+     * @param options
+     * @returns
+     */
+    static withdrawResource(targets: WithdrawTargetType[], role: RoleType, room: Room, options?: ActionOptions) {
+        return function () {
+            room.idleCreeps(role).filter(c => c.isEmptyStore).forEach(creep => {
+                const target = targets.shift()
+                if (!target) return
+                creep.task = TaskHelper.withdraw(target, options)
+            })
+        }
+    }
+
+    /**
+     * 转入资源，1个目标指派1个creep
+     * @param targets
+     * @param role
+     * @param room
+     * @param options
+     * @returns
+     */
+    static transferResource(targets: TransferTargetType[], role: RoleType, room: Room, options?: ActionOptions) {
+        return function () {
+            const creeps = room.idleCreeps(role)
+
+            targets.forEach(target => {
+                creeps.forEach(creep => {
+                    const task = TaskHelper.transfer(target, options)
+                    const tasks = Action.genTaskList(creep, RESOURCE_ENERGY, task)
+                    creep.task = TaskHelper.chain(tasks)
+                })
+            })
+
+        }
+    }
 
     private static dropedResourceMap: {
         [roomName: string]: (PickupTargetType | WithdrawTargetType)[]

@@ -28,7 +28,7 @@ export class TaskConstantUpgrade extends Task<UpgradeTargetType> {
 
     work(): number {
         if (!this.target) return OK
-        debugger
+
         const container = this.target.container
         if (!container) return OK
 

@@ -1,7 +1,7 @@
 import { Scheduler } from "./scheduler";
 import { RoomStatusEnum } from "global/const/const";
 import { TransferTargetType } from "task/instances/task_transfer";
-import { FillAction } from "roomEngine/action/fillAction";
+import { Action } from "roomEngine/action/action";
 
 export class TowerScheduler extends Scheduler<TransferTargetType> {
 
@@ -31,7 +31,7 @@ class Default implements IRoomStrategy<TransferTargetType> { //todo
 
     getAction(): ActionDetail<TransferTargetType> {
         return {
-            actionMethod: FillAction.fillTower,
+            actionMethod: Action.transferResource,
         }
     }
 

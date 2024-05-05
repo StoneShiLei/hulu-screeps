@@ -46,6 +46,7 @@ export abstract class Task<TTargetType extends TargetType> implements ITask {
             }
         }
         else {
+            debugger
             this._target = {
                 ref: '',
                 _pos: {
@@ -122,6 +123,34 @@ export abstract class Task<TTargetType extends TargetType> implements ITask {
         return this.creep.moveTo(this.parent.target.pos, this.parent.option.moveOptions)
     }
 
+    protected parkCreep(creep: Creep, pos: RoomPosition = creep.pos, maintainDistance = false): number {
+        let road = _.find(creep.pos.lookFor(LOOK_STRUCTURES), s => s.structureType == STRUCTURE_ROAD);
+        if (!road) return OK;
+
+        let positions = _.sortBy(creep.pos.surroundPos().filter(p => p.isWalkable()), (p: RoomPosition) => p.getRangeTo(pos));
+        if (maintainDistance) {
+            let currentRange = creep.pos.getRangeTo(pos);
+            positions = _.filter(positions, (p: RoomPosition) => p.getRangeTo(pos) <= currentRange);
+        }
+
+        let swampPosition;
+        for (let position of positions) {
+            if (_.find(position.lookFor(LOOK_STRUCTURES), s => s.structureType == STRUCTURE_ROAD)) continue;
+            let terrain = position.lookFor(LOOK_TERRAIN)[0];
+            if (terrain === 'swamp') {
+                swampPosition = position;
+            } else {
+                return creep.move(creep.pos.getDirectionTo(position));
+            }
+        }
+
+        if (swampPosition) {
+            return creep.move(creep.pos.getDirectionTo(swampPosition));
+        }
+
+        return creep.moveTo(pos);
+    }
+
 
     isValid(): boolean {
         //强制持续执行
@@ -152,7 +181,10 @@ export abstract class Task<TTargetType extends TargetType> implements ITask {
 
     run(): number {
 
-        if (this.creep.pos.inRangeTo(this.targetPos, this.setting.targetRange)) { //and 不在边缘)
+        if (this.creep.pos.inRangeTo(this.targetPos, this.setting.targetRange) && !this.creep.pos.isEdge) {
+
+            if (this.setting.workOffRoad) this.parkCreep(this.creep, this.targetPos, true)
+
             let result = this.work()
 
             //只执行一次的任务

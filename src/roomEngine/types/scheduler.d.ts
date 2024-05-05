@@ -3,6 +3,7 @@
  */
 interface ActionDetail<T extends TargetType> {
     actionMethod: ActionGenerationType<T>
+    options?: ActionOptions
 }
 
 /**

@@ -20,7 +20,7 @@ function sortExtensionsByDistance(creep: Creep, targets: TransferTargetType[]): 
     });
 }
 
-export class FillAction extends Action {
+export class HiveAction extends Action {
 
     static fillSpawn(targets: TransferTargetType[], role: RoleType, room: Room) {
         return function () {
@@ -43,21 +43,6 @@ export class FillAction extends Action {
                 const tasks = Action.genTaskList(creep, RESOURCE_ENERGY, ...fillTasks)
                 creep.task = TaskHelper.chain(tasks)
             })
-        }
-    }
-
-    static fillTower(targets: TransferTargetType[], role: RoleType, room: Room) {
-        return function () {
-            const creeps = room.idleCreeps(role, false)
-
-            targets.forEach(target => {
-                creeps.forEach(creep => {
-                    const task = TaskHelper.transfer(target)
-                    const tasks = Action.genTaskList(creep, RESOURCE_ENERGY, task)
-                    creep.task = TaskHelper.chain(tasks)
-                })
-            })
-
         }
     }
 }

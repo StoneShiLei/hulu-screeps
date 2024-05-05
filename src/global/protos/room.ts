@@ -92,7 +92,7 @@ function initCreepsCache(): void {
 
     _.keys(creepsByRoom).forEach(roomName => {
         if (Game.rooms[roomName]) {
-            Game.rooms[roomName]._creeps = creepsByRoom[roomName];
+            Game.rooms[roomName]._creeps = creepsByRoom[roomName].sort((a, b) => b.store.getUsedCapacity() - a.store.getUsedCapacity());
         }
     });
 }

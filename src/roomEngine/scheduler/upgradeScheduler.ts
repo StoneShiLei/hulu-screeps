@@ -1,23 +1,25 @@
+import { Action } from "roomEngine/action/action";
 import { Scheduler } from "./scheduler";
 import { RoomStatusEnum } from "global/const/const";
 import { UpgradeAction } from "roomEngine/action/upgradeAction";
+import { TransferTargetType } from "task/instances/task_transfer";
 import { UpgradeTargetType } from "task/instances/task_upgrade";
 
-export class UpgradeScheduler extends Scheduler<UpgradeTargetType> {
+export class UpgradeScheduler extends Scheduler<UpgradeTargetType | TransferTargetType> {
 
     constructor(room: Room, role: RoleType) {
         super(room, role)
         this.strategy = this.updateStrategy()
     }
 
-    updateStrategy(): IRoomStrategy<UpgradeTargetType> | undefined {
+    updateStrategy(): IRoomStrategy<UpgradeTargetType | TransferTargetType> | undefined {
         switch (this.room.status) {
             case RoomStatusEnum.Low:
                 return new Low(this.room, this.role)
             case RoomStatusEnum.Medium:
                 return new Medium(this.room, this.role);
-            case RoomStatusEnum.High:
-                return new High(this.room, this.role);
+            // case RoomStatusEnum.High:
+            //     return new High(this.room, this.role);
             default:
                 return undefined
         }
@@ -25,7 +27,7 @@ export class UpgradeScheduler extends Scheduler<UpgradeTargetType> {
 }
 
 
-class Low implements IRoomStrategy<UpgradeTargetType> {
+class Low implements IRoomStrategy<UpgradeTargetType | TransferTargetType> {
     room: Room
     role: RoleType
 
@@ -34,11 +36,11 @@ class Low implements IRoomStrategy<UpgradeTargetType> {
         this.role = role
     }
 
-    getTargets(): UpgradeTargetType[] {
+    getTargets(): (UpgradeTargetType | TransferTargetType)[] {
         return this.room.controller ? [this.room.controller] : []
     }
 
-    getAction(): ActionDetail<UpgradeTargetType> {
+    getAction(): ActionDetail<UpgradeTargetType | TransferTargetType> {
         let action: ActionGenerationType<UpgradeTargetType>;
         switch (this.role) {
             case 'worker':
@@ -48,13 +50,13 @@ class Low implements IRoomStrategy<UpgradeTargetType> {
                 throw Error(`UpgradeScheduler的${this.room.status}策略未实现${this.role}的action方法`)
         }
         return {
-            actionMethod: action,
+            actionMethod: action as any,
         }
     }
 
 }
 
-class Medium implements IRoomStrategy<UpgradeTargetType> {
+class Medium implements IRoomStrategy<UpgradeTargetType | TransferTargetType> {
     room: Room
     role: RoleType
 
@@ -63,7 +65,7 @@ class Medium implements IRoomStrategy<UpgradeTargetType> {
         this.role = role
     }
 
-    getTargets(): UpgradeTargetType[] {
+    getTargets(): (UpgradeTargetType | TransferTargetType)[] {
         if (!this.room.controller) return []
 
         if (this.role == 'upgrader') {
@@ -93,21 +95,28 @@ class Medium implements IRoomStrategy<UpgradeTargetType> {
             return [this.room.controller]
         }
         else if (this.role == 'carrier') {
-            return []
+            if (!this.room.controller) return []
+            const container = this.room.controller.container
+            if (!container) return []
+
+            //有link时 检查link+container总容量是否小于800 或者link为空  todo
+            if ((container.getCurrentStoreResource(RESOURCE_ENERGY) || 0) > 1800) return []
+
+            return [container]
         }
         else {
             return []
         }
     }
 
-    getAction(): ActionDetail<UpgradeTargetType> {
-        let action: ActionGenerationType<UpgradeTargetType>;
+    getAction(): ActionDetail<UpgradeTargetType | TransferTargetType> {
+        let action: any;
         switch (this.role) {
             case 'upgrader':
                 action = UpgradeAction.upgraderUpgrade
                 break
             case 'carrier':
-                action = UpgradeAction.workerUpgrade
+                action = Action.transferResource
                 break
             case 'worker':
                 action = UpgradeAction.workerUpgrade
@@ -123,23 +132,23 @@ class Medium implements IRoomStrategy<UpgradeTargetType> {
 }
 
 
-class High implements IRoomStrategy<UpgradeTargetType> {
-    room: Room
-    role: RoleType
+// class High implements IRoomStrategy<UpgradeTargetType> {
+//     room: Room
+//     role: RoleType
 
-    constructor(room: Room, role: RoleType) {
-        this.room = room
-        this.role = role
-    }
+//     constructor(room: Room, role: RoleType) {
+//         this.room = room
+//         this.role = role
+//     }
 
-    getTargets(): UpgradeTargetType[] {
-        return this.room.controller ? [this.room.controller] : []
-    }
+//     getTargets(): UpgradeTargetType[] {
+//         return this.room.controller ? [this.room.controller] : []
+//     }
 
-    getAction(): ActionDetail<UpgradeTargetType> {
-        return {
-            actionMethod: UpgradeAction.workerUpgrade,
-        }
-    }
+//     getAction(): ActionDetail<UpgradeTargetType> {
+//         return {
+//             actionMethod: UpgradeAction.workerUpgrade,
+//         }
+//     }
 
-}
+// }

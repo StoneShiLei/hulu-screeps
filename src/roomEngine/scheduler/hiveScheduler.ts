@@ -1,6 +1,6 @@
 import { Scheduler } from "./scheduler";
 import { RoomStatusEnum } from "global/const/const";
-import { FillAction } from "roomEngine/action/fillAction";
+import { HiveAction } from "roomEngine/action/hiveAction";
 import { TransferTargetType } from "task/instances/task_transfer";
 
 export class HiveScheduler extends Scheduler<TransferTargetType> {
@@ -32,7 +32,7 @@ class Defaule implements IRoomStrategy<TransferTargetType> {
 
     getAction(): ActionDetail<TransferTargetType> {
         return {
-            actionMethod: FillAction.fillSpawn,
+            actionMethod: HiveAction.fillSpawn,
         }
     }
 
