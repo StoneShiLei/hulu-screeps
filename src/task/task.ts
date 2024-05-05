@@ -46,7 +46,6 @@ export abstract class Task<TTargetType extends TargetType> implements ITask {
             }
         }
         else {
-            debugger
             this._target = {
                 ref: '',
                 _pos: {
@@ -222,9 +221,10 @@ export abstract class Task<TTargetType extends TargetType> implements ITask {
  * @param protoTask 原型任务
  * @returns
  */
-export function initTask(protoTask: ProtoTask): Task<TargetType> {
+export function initTask(protoTask: ProtoTask): Task<TargetType> | null {
     let taskName = protoTask.name
     let target = GlobalHelper.deref(protoTask._target.ref)
+    if (!target) return null
 
     const createInstance = taskMap.get(taskName);
 

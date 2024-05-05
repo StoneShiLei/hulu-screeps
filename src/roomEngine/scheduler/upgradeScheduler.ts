@@ -18,8 +18,8 @@ export class UpgradeScheduler extends Scheduler<UpgradeTargetType | TransferTarg
                 return new Low(this.room, this.role)
             case RoomStatusEnum.Medium:
                 return new Medium(this.room, this.role);
-            // case RoomStatusEnum.High:
-            //     return new High(this.room, this.role);
+            case RoomStatusEnum.High:
+                return new Medium(this.room, this.role);
             default:
                 return undefined
         }

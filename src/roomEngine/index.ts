@@ -11,6 +11,7 @@ import { RoomStatusEnum } from "global/const/const"
 import { WorkerBodyConfig } from "role/bodyConfig/worker"
 import { SourceScheduler } from "./scheduler/sourceScheduler"
 import { worker } from "cluster"
+import { StorageScheduler } from "./scheduler/storageScheduler"
 
 export function mountRoomEngine() {
     PrototypeHelper.assignPrototype(Room, RoomExtension)
@@ -76,7 +77,20 @@ export class RoomEngine {
     }
 
     private static high(room: Room) {
+        this.checkNonCarry(room) //如果没有可搬运资源的creep则spawn一个
+        new SourceScheduler(room, 'sourceConstantHarvester').tryGenEventToRoom() //专业挖能量
+        this.checkAllDead(room) //检测是否全死光了
+        new UpgradeScheduler(room, 'upgrader').tryGenEventToRoom() //专业升级
+        new SourceScheduler(room, 'carrier').tryGenEventToRoom() //搬运内矿
 
+        new HiveScheduler(room, 'carrier').tryGenEventToRoom() //装填hive
+        new TowerScheduler(room, 'carrier').tryGenEventToRoom() //装填tower
+        new UpgradeScheduler(room, 'carrier').tryGenEventToRoom() //升级容器搬运
+        new StorageScheduler(room, 'carrier').tryGenEventToRoom() //剩余资源搬运到storage
+
+        new HiveScheduler(room, 'worker').tryGenEventToRoom() //装填hive
+        new BuildableScheduler(room, 'worker').tryGenEventToRoom() //建造工地
+        new UpgradeScheduler(room, 'worker').tryGenEventToRoom() //升级
     }
 
     private static lowSpawnWorker(room: Room) {

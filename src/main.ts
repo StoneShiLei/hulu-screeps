@@ -30,8 +30,8 @@ function unwarappedLoop(): void {
   ErrorCatcher.throwAll()
 }
 
-// const loop = global.LOCAL_SHARD_NAME != 'sim' ? ErrorMapper.wrapLoop(StackAnalysis.wrap(unwarappedLoop)) : unwarappedLoop
-const loop = global.LOCAL_SHARD_NAME != 'sim' ? ErrorMapper.wrapLoop(unwarappedLoop) : unwarappedLoop
+const loop = global.LOCAL_SHARD_NAME != 'sim' ? ErrorMapper.wrapLoop(StackAnalysis.wrap(unwarappedLoop)) : unwarappedLoop
+// const loop = global.LOCAL_SHARD_NAME != 'sim' ? ErrorMapper.wrapLoop(unwarappedLoop) : unwarappedLoop
 
 
 export {

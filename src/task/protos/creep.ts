@@ -80,6 +80,8 @@ export class CreepExtension extends Creep {
      * @returns
      */
     run(): number | undefined {
+        if (this.spawning) return
+
         if (this.task) {
             const name = `${this.task.name}`
             const res = this.task.run()

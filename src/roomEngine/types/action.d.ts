@@ -10,4 +10,5 @@ type ActionType = () => void
 interface ActionOptions {
     resourceType?: ResourceConstant
     amount?: number
+    skipEnergy?: boolean
 }

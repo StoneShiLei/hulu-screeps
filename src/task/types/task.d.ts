@@ -194,6 +194,11 @@ interface TaskOption {
      * 签名
      */
     signature?: string;
+
+    /**
+     * 跳过energy
+     */
+    skipEnergy?: boolean
 }
 /**
  * 目标数据
@@ -211,6 +216,11 @@ interface TaskData {
      * 签名
      */
     signature?: string;
+
+    /**
+     * 跳过energy
+     */
+    skipEnergy?: boolean
 }
 /**
  * 原型位置

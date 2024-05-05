@@ -66,9 +66,9 @@ export class RoomExtension extends Room {
         else if (this.energyCapacityAvailable >= 800 && !this.storage?.my) {
             return RoomStatusEnum.Medium
         }
-        // else if (this.storage && this.storage.my) {
-        //     return RoomStatusEnum.High
-        // }
+        else if (this.storage && this.storage.my) {
+            return RoomStatusEnum.High
+        }
         else {
             return RoomStatusEnum.Low
         }

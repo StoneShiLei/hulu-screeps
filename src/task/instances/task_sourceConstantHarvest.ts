@@ -29,7 +29,7 @@ export class TaskSourceConstantHarvest extends Task<SourceConstantHarvestTargetT
 
         //当有多个的时候，相遇时杀死ttl低的那个
         if (this.target.targetedBy.length > 1) {
-            debugger
+
             const harvesters = this.target.targetedBy.sort((a, b) => (a.ticksToLive || 0) - (b.ticksToLive || 0))
             for (let i = 0; i < harvesters.length; i++) {
 

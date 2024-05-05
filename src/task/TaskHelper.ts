@@ -16,6 +16,8 @@ import { FortifyTargetType, TaskFortify } from "./instances/task_fortify";
 import { DismantleTargetType, TaskDismantle } from "./instances/task_dismantle";
 import { RepairTargetType, TaskRepair } from "./instances/task_repair";
 import { TaskConstantUpgrade } from "./instances/task_constantUpgrade";
+import { TransferAllTargetType, TaskTransferAll } from "./instances/task_transferAll";
+import { WithdrawAllTargetType, TaskWithdrawAll } from "./instances/task_withdrawAll";
 
 /**
  * 任务帮助
@@ -58,6 +60,14 @@ export class TaskHelper {
 
     static withdraw(target: WithdrawTargetType, option?: TaskOption): TaskWithdraw {
         return new TaskWithdraw(target, option)
+    }
+
+    static transferAll(target: TransferAllTargetType, option?: TaskOption): TaskTransferAll {
+        return new TaskTransferAll(target, option)
+    }
+
+    static withdrawAll(target: WithdrawAllTargetType, option?: TaskOption): TaskWithdrawAll {
+        return new TaskWithdrawAll(target, option)
     }
 
     static upgrade(target: UpgradeTargetType, option?: TaskOption): TaskUpgrade {
