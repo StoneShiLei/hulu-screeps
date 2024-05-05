@@ -27,6 +27,7 @@ class Defaule implements IRoomStrategy<TransferTargetType> {
         const targets = [...this.room.spawns, ...this.room.extensions].filter(s => {
             return (s.getCurrentStoreResource(RESOURCE_ENERGY) || 0) < s.store.getCapacity(RESOURCE_ENERGY)
         })
+        debugger
         return targets
     }
 

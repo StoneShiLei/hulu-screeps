@@ -70,7 +70,7 @@ class Medium implements IRoomStrategy<UpgradeTargetType | TransferTargetType> {
 
         if (this.role == 'upgrader') {
             const controller = this.room.controller
-            debugger
+
             //未找到container跳过生成
             if (!controller.container) return []
 
@@ -145,7 +145,7 @@ class High implements IRoomStrategy<UpgradeTargetType | TransferTargetType> {
 
         if (this.role == 'upgrader') {
             const controller = this.room.controller
-            debugger
+
             //未找到container跳过生成
             if (!controller.container) return []
 
