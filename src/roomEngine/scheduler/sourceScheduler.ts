@@ -1,21 +1,23 @@
-import { HarvestTargetType } from "task/instances/task_harvest";
 import { Scheduler } from "./scheduler";
 import { SourceAction } from "roomEngine/action/sourceAction";
 import { RoomStatusEnum } from "global/const/const";
+import { SourceConstantHarvestTargetType } from "task/instances/task_sourceConstantHarvest";
+import { HarvestTargetType } from "task/instances/task_harvest";
 
-export class SourceScheduler extends Scheduler<HarvestTargetType> {
+export class SourceScheduler extends Scheduler<SourceConstantHarvestTargetType> {
 
-    constructor(room: Room, role: RoleType) {
+    constructor(room: Room) {
+        const role = 'sourceConstantHarvester'
         super(room, role)
         this.strategy = this.updateStrategy()
     }
 
-    updateStrategy(): IRoomStrategy<HarvestTargetType> | undefined {
+    updateStrategy(): IRoomStrategy<SourceConstantHarvestTargetType> | undefined {
         return new Default(this.room, this.role);
     }
 }
 
-class Default implements IRoomStrategy<HarvestTargetType> {
+class Default implements IRoomStrategy<SourceConstantHarvestTargetType> {
     room: Room
     role: RoleType
 
@@ -24,13 +26,13 @@ class Default implements IRoomStrategy<HarvestTargetType> {
         this.role = role
     }
 
-    getTargets(): HarvestTargetType[] {
+    getTargets(): SourceConstantHarvestTargetType[] {
         const targets = this.room.sources.filter(s =>
             s.targetedBy.filter(c => c.role == this.role).length == 0 ||
             s.targetedBy.filter(c => c.role == this.role && (c.ticksToLive || 1500) < 300).length > 0)
         return targets
     }
-    getAction(): ActionDetail<HarvestTargetType> {
+    getAction(): ActionDetail<SourceConstantHarvestTargetType> {
         return {
             actionMethod: SourceAction.constantHarvest
         }

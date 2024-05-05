@@ -151,7 +151,7 @@ export abstract class Task<TTargetType extends TargetType> implements ITask {
     }
 
     run(): number {
-        if (this.creep.pos.inRangeTo(this.targetPos, this.setting.targetRange || 0)) { //and 不在边缘)
+        if (this.creep.pos.inRangeTo(this.targetPos, this.setting.targetRange || 1)) { //and 不在边缘)
             let result = this.work()
 
             //只执行一次的任务

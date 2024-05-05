@@ -7,5 +7,5 @@ interface Room {
      * @param opt spawn选项
      * @param targetRoomName creep所属房间，默认是spawn所在房间
      */
-    trySpawn(role: RoleType, bodyConfigFunc: BodyConfigFunc, task?: ITask, opt?: SpawnOptions, targetRoomName?: string): string | undefined
+    trySpawn(role: RoleType, bodyConfigFunc: BodyConfigFunc, task?: ITask | null, opt?: SpawnOptions, targetRoomName?: string): string | undefined
 }

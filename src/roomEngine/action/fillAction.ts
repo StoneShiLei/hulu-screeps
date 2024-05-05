@@ -40,7 +40,7 @@ export class FillAction extends Action {
                     capacity -= target.store.getCapacity(RESOURCE_ENERGY)
                 }
 
-                const tasks = Action.genTaskList(creep, ...fillTasks)
+                const tasks = Action.genTaskList(creep, RESOURCE_ENERGY, ...fillTasks)
                 creep.task = TaskHelper.chain(tasks)
             })
         }
@@ -53,7 +53,7 @@ export class FillAction extends Action {
             targets.forEach(target => {
                 creeps.forEach(creep => {
                     const task = TaskHelper.transfer(target)
-                    const tasks = Action.genTaskList(creep, task)
+                    const tasks = Action.genTaskList(creep, RESOURCE_ENERGY, task)
                     creep.task = TaskHelper.chain(tasks)
                 })
             })

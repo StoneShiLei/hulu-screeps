@@ -11,7 +11,7 @@ export class BuildableAction extends Action {
                 const target = creep.pos.findClosestByPath(targets, { ignoreCreeps: true })
                 if (!target) return
                 const task = TaskHelper.build(target)
-                const tasks = Action.genTaskList(creep, task)
+                const tasks = Action.genTaskList(creep, RESOURCE_ENERGY, task)
                 creep.task = TaskHelper.chain(tasks)
             })
         }

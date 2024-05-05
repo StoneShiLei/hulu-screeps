@@ -1,6 +1,6 @@
 import { BuildTargetType, TaskBuild } from "task/instances/task_build";
 import { GoToTargetType, TaskGoto } from "task/instances/task_goto";
-import { TaskHarvestConstant } from "task/instances/task_harvest-constant";
+import { SourceConstantHarvestTargetType, TaskSourceConstantHarvest } from "task/instances/task_sourceConstantHarvest";
 import { PickupTargetType, TaskPickup } from "task/instances/task_pickup";
 import { HarvestTargetType, TaskHarvest } from "./instances/task_harvest";
 import { TaskTransfer, TransferTargetType } from "./instances/task_transfer";
@@ -47,8 +47,8 @@ export class TaskHelper {
         return new TaskHarvest(target, option)
     }
 
-    static harvestConstant(target: HarvestTargetType, option?: TaskOption): TaskHarvestConstant {
-        return new TaskHarvestConstant(target, option)
+    static sourceConstantHarvest(target: SourceConstantHarvestTargetType, option?: TaskOption): TaskSourceConstantHarvest {
+        return new TaskSourceConstantHarvest(target, option)
     }
 
     static transfer(target: TransferTargetType, option?: TaskOption): TaskTransfer {

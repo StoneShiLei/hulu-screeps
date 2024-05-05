@@ -15,11 +15,11 @@ export class TaskGoto extends Task<GoToTargetType> {
     constructor(target: GoToTargetType, option = {} as TaskOption) {
         super(TaskGoto.taskName, target, option)
 
-        this.setting.targetRange = 1
+        this.setting.targetRange = option.targetRange === undefined ? 1 : option.targetRange
     }
 
     isValidTask(): boolean {
-        return !this.creep.pos.inRangeTo(this.targetPos, this.setting.targetRange || 0)
+        return !this.creep.pos.inRangeTo(this.targetPos, this.setting.targetRange || 1)
     }
     isValidTarget(): boolean {
         return true

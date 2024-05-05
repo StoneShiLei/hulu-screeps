@@ -52,10 +52,7 @@ export class RoomEngine {
 
     private static low(room: Room) {
         new InvaderScheduler(room, 'basicDefender').tryGenEventToRoom()
-        // new DropedResourceScheduler(room, 'worker').tryGenEventToRoom()
-        // new SourceScheduler(room, 'worker').tryGenEventToRoom()
         new HiveScheduler(room, 'worker').tryGenEventToRoom()
-        new TowerScheduler(room, 'worker').tryGenEventToRoom()
         new BuildableScheduler(room, 'worker').tryGenEventToRoom()
         new UpgradeScheduler(room, 'worker').tryGenEventToRoom()
 
@@ -70,9 +67,12 @@ export class RoomEngine {
     }
 
     private static medium(room: Room) {
-        new SourceScheduler(room, 'sourceConstantHarvester').tryGenEventToRoom()
+        new SourceScheduler(room).tryGenEventToRoom()
 
         new HiveScheduler(room, 'worker').tryGenEventToRoom()
+        new TowerScheduler(room, 'worker').tryGenEventToRoom()
+        new BuildableScheduler(room, 'worker').tryGenEventToRoom()
+        new UpgradeScheduler(room, 'worker').tryGenEventToRoom()
     }
 
     private static high(room: Room) {

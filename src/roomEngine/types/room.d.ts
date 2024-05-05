@@ -12,7 +12,7 @@ interface Event {
 interface SpawnRequest {
     role: RoleType
     bodyFunc: BodyConfigFunc
-    task?: ITask
+    task?: ITask | null
     spawnOpt?: SpawnOptions
     targetRoomName?: string
 }

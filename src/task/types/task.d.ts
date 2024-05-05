@@ -161,6 +161,11 @@ interface TaskSetting {
 interface TaskOption {
 
     /**
+     * 目标范围半径
+     */
+    targetRange?: number
+
+    /**
      * 移动选项
      */
     moveOptions?: MoveToOpts

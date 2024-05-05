@@ -11,12 +11,13 @@ export abstract class Action implements IAction {
         [roomName: string]: (PickupTargetType | WithdrawTargetType)[]
     } = {}
 
-    protected static genTaskList(creep: Creep, ...tasks: ITask[]): ITask[] {
-        if (!creep.isEmptyStore) return tasks
+    protected static genTaskList(creep: Creep, type: ResourceConstant, ...tasks: ITask[]): ITask[] {
+        if (creep.store.getUsedCapacity(type) == creep.store.getCapacity(type)) return tasks
 
-        const target = creep.pos.findClosestByPath(Action.findResource(creep.room), { ignoreCreeps: true })
-        if (!target) return [] //emptyStore且找不到获取资源的目标时，不返回任何task
-
+        //资源未满时，先把资源补满再执行任务
+        const target = creep.pos.findClosestByPath(Action.findResource(creep.room, type), { ignoreCreeps: true })
+        if (!target && creep.isEmptyStore) return [] //emptyStore且找不到获取资源的目标时，不返回任何task
+        if (!target) return tasks //没有资源目标时，用现有的资源进行任务
         return [Action.genTakeResourceTask(target), ...tasks]
     }
 
