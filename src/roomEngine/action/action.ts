@@ -9,7 +9,7 @@ type TakeResourceType = PickupTargetType | HarvestTargetType | WithdrawTargetTyp
 export abstract class Action implements IAction {
 
     /**
-     * 取出资源，调用一次仅给第一个target指派1个creep
+     * 取出资源，给每个目标指派1个creep
      * @param targets
      * @param role
      * @param room
@@ -27,7 +27,7 @@ export abstract class Action implements IAction {
     }
 
     /**
-     * 转入资源，1个目标指派若干个creep
+     * 转入资源，给每个目标指派1个creep
      * @param targets
      * @param role
      * @param room
@@ -36,21 +36,18 @@ export abstract class Action implements IAction {
      */
     static transferResource(targets: TransferTargetType[], role: RoleType, room: Room, options?: ActionOptions) {
         return function () {
-            const creeps = room.idleCreeps(role)
-
-            targets.forEach(target => {
-                creeps.forEach(creep => {
-                    const task = TaskHelper.transfer(target, options)
-                    const tasks = Action.genTaskList(creep, RESOURCE_ENERGY, task)
-                    creep.task = TaskHelper.chain(tasks)
-                })
+            room.idleCreeps(role).forEach(creep => {
+                const target = targets.shift()
+                if (!target) return
+                const task = TaskHelper.transfer(target, options)
+                const tasks = Action.genTaskList(creep, RESOURCE_ENERGY, task)
+                creep.task = TaskHelper.chain(tasks)
             })
-
         }
     }
 
     /**
-     * 转入资源，1个目标指派若干个creep，不自动获取资源
+     * 转入资源，给1个目标指派所有creep
      * @param targets
      * @param role
      * @param room

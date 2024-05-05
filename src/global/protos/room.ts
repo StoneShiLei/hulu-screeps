@@ -59,7 +59,6 @@ export class RoomExtension extends Room {
     }
 
     statusGetter(): RoomStatusEnum {
-        // return RoomStatusEnum.Low
         if (this.energyCapacityAvailable < 800) {
             return RoomStatusEnum.Low
         }
