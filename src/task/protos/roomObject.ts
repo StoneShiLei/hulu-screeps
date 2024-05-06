@@ -39,13 +39,15 @@ export class RoomObjectExtension extends RoomObject {
         let string = ''
         creeps.forEach(creep => {
             string += `名称:${creep.name},ID:${creep.id},`
-            let task = creep.task // 这里不能使用creep.memory.task，会存在creep.task为null，但是creep.memory.task还没有来得及清除的情况
-            while (task) {
+
+            if (!creep.task) return
+
+            const tasks = creep.task.manifest
+            if (!tasks.length) return
+
+            tasks.forEach(task => {
                 //跳过不是以此对象为目标的任务
-                if (task.target?.ref !== this.ref) {
-                    task = task.parent
-                    continue
-                }
+                if (task.target?.ref !== this.ref) return
 
                 const taskName = task.name
                 const taskType = task.data.resourceType
@@ -63,8 +65,7 @@ export class RoomObjectExtension extends RoomObject {
                 else {
                     string += `影响资源:不影响|||`
                 }
-                task = task.parent
-            }
+            })
         })
 
         if (!this._currentResource[type]) this._currentResource[type] = 0

@@ -99,6 +99,46 @@ export abstract class Task<TTargetType extends TargetType> implements ITask {
         if (this.creep) this.creep.task = this
     }
 
+    get manifest(): Task<TargetType>[] {
+        const manifest: Task<TargetType>[] = [this]
+        let parent = this.parent
+        while (parent) {
+            manifest.push(parent);
+            parent = parent.parent
+        }
+        return manifest
+    }
+
+    get targetRefManifest(): string[] {
+        const targetRefs: string[] = [this._target.ref]
+        let parent = this._parent
+        while (parent) {
+            targetRefs.push(parent._target.ref);
+            parent = parent._parent
+        }
+        return targetRefs
+    }
+
+    get targetManifest(): RoomObject[] {
+        const targetRefs: string[] = [this._target.ref]
+        let parent = this._parent
+        while (parent) {
+            targetRefs.push(parent._target.ref);
+            parent = parent._parent
+        }
+        return _.map(targetRefs, ref => GlobalHelper.deref(ref)).filter((r): r is RoomObject => r != null)
+    }
+
+    get targetPosManifest(): RoomPosition[] {
+        const targetPositions: ProtoPos[] = [this._target._pos]
+        let parent = this._parent
+        while (parent) {
+            targetPositions.push(parent._target._pos);
+            parent = parent._parent
+        }
+        return _.map(targetPositions.filter(p => p.x != -1 && p.y != -1), protoPos => GlobalHelper.deRoomPosition(protoPos))
+    }
+
     fork(newTask: ITask): ITask {
         newTask.parent = this;
         if (this.creep) {

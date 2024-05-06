@@ -10,13 +10,15 @@ import { mountSpawnCaster } from "spawnCaster";
 import { mountStructure } from "structure";
 
 setLogLevel(LogLevel.INFO)
+
 mountGlobal()
 mountRoomCache()
 mountTask()
 mountSpawnCaster()
 mountStructure()
 mountRoomEngine()
-StackAnalysis.mount()
+
+if (global.LOCAL_SHARD_NAME != 'sim') StackAnalysis.mount()
 
 function unwarappedLoop(): void {
 

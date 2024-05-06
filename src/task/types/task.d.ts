@@ -88,6 +88,27 @@ interface ITask extends ProtoTask {
      * 父任务
      */
     parent: ITask | null
+
+    /**
+     * 返回所有任务列表
+     */
+    manifest: ITask[]
+
+    /**
+     * 返回所有任务的目标列表
+     */
+    targetManifest: RoomObject[]
+
+    /**
+     * 返回所有任务的目标的ref列表(不产生序列化任务和目标操作)
+     */
+    targetRefManifest: string[]
+
+    /**
+     * 返回所有任务的目标pos列表
+     */
+    targetPosManifest: RoomPosition[]
+
     /**
      * 创建子任务，并将子任务分配给当前任务所属的Creep
      * @param newTask 需要被创建为子任务的任务
@@ -186,6 +207,16 @@ interface TaskOption {
     resourceType?: ResourceConstant
 
     /**
+     * boost类型
+     */
+    boostType?: MineralBoostConstant
+
+    /**
+     * boost part数量
+     */
+    partCount?: number
+
+    /**
      * 转移数量
      */
     amount?: number
@@ -205,11 +236,11 @@ interface TaskOption {
  */
 interface TaskData {
     /**
-     * 资源类型
+     * 资源类型 | boost类型
      */
     resourceType?: ResourceConstant
     /**
-     * 转移数量
+     * 转移数量 | boost body数量
      */
     amount?: number
     /**

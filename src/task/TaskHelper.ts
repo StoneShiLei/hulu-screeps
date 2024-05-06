@@ -18,6 +18,10 @@ import { RepairTargetType, TaskRepair } from "./instances/task_repair";
 import { TaskConstantUpgrade } from "./instances/task_constantUpgrade";
 import { TransferAllTargetType, TaskTransferAll } from "./instances/task_transferAll";
 import { WithdrawAllTargetType, TaskWithdrawAll } from "./instances/task_withdrawAll";
+import { GetRenewedTargetType, TaskGetRenewed } from "./instances/task_getRenewed";
+import { DropTargetType, TaskDrop } from "./instances/task_drop";
+import { HealTargetType, TaskHeal } from "./instances/task_heal";
+import { GetBoostedTargetType, TaskGetBoosted } from "./instances/task_getBoosted";
 
 /**
  * 任务帮助
@@ -44,6 +48,10 @@ export class TaskHelper {
         }
 
         return task
+    }
+
+    static getBoosted(target: GetBoostedTargetType, option?: TaskOption): TaskGetBoosted {
+        return new TaskGetBoosted(target, option)
     }
 
     static harvest(target: HarvestTargetType, option?: TaskOption): TaskHarvest {
@@ -90,47 +98,51 @@ export class TaskHelper {
         return new TaskPickup(target, option)
     }
 
+    static heal(target: HealTargetType, option?: TaskOption): TaskHeal {
+        return new TaskHeal(target, option)
+    }
+
     static attack(target: AttackTargetType, option?: TaskOption): TaskAttack {
         return new TaskAttack(target, option)
     }
-
 
     static meleeAttack(target: MeleeAttackTargetType, option?: TaskOption): TaskMeleeAttack {
         return new TaskMeleeAttack(target, option)
     }
 
-
     static rangedAttack(target: RangedAttackTargetType, option?: TaskOption): TaskRangedAttack {
         return new TaskRangedAttack(target, option)
     }
-
 
     static reserve(target: ReserveTargetType, option?: TaskOption): TaskReserve {
         return new TaskReserve(target, option)
     }
 
-
     static claim(target: ClaimTargetType, option?: TaskOption): TaskClaim {
         return new TaskClaim(target, option)
     }
-
 
     static sign(target: SignTargetType, option?: TaskOption): TaskSign {
         return new TaskSign(target, option)
     }
 
-
     static fortify(target: FortifyTargetType, option?: TaskOption): TaskFortify {
         return new TaskFortify(target, option)
     }
-
 
     static dismantle(target: DismantleTargetType, option?: TaskOption): TaskDismantle {
         return new TaskDismantle(target, option)
     }
 
-
     static repair(target: RepairTargetType, option?: TaskOption): TaskRepair {
         return new TaskRepair(target, option)
+    }
+
+    static getRenewd(target: GetRenewedTargetType, option?: TaskOption): TaskGetRenewed {
+        return new TaskGetRenewed(target, option)
+    }
+
+    static drop(target: DropTargetType, option?: TaskOption): TaskDrop {
+        return new TaskDrop(target, option)
     }
 }

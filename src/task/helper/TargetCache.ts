@@ -23,13 +23,12 @@ export class TargetCache {
         this.targets = {};
         //遍历所有的creep，根据其所有的任务目标构建缓存
         for (let creep of _.values<Creep>(Game.creeps)) {
-            let task = creep.memory.task
-            while (task) {
-                if (!this.targets[task._target.ref]) this.targets[task._target.ref] = []
-
-                this.targets[task._target.ref].push(creep.name)
-                task = task._parent
-            }
+            if (!creep.task) continue
+            const targetRefs = creep.task.targetRefManifest
+            targetRefs.forEach(ref => {
+                if (!this.targets[ref]) this.targets[ref] = []
+                this.targets[ref].push(creep.name)
+            })
         }
     }
 
