@@ -35,7 +35,7 @@ export class SourceExtension extends Source {
         let link = this.getData<StructureContainer>('linkId')
         if (!link) {
             // 寻找附近的link
-            const links = this.pos.findInRange<StructureContainer>(FIND_STRUCTURES, 1, {
+            const links = this.pos.findInRange<StructureContainer>(FIND_STRUCTURES, 2, {
                 filter: s => s.structureType == STRUCTURE_LINK
             });
 

@@ -1,12 +1,12 @@
 import { Scheduler } from "./scheduler";
 import { SourceAction } from "roomEngine/action/sourceAction";
 import { SourceConstantHarvestTargetType } from "task/instances/task_sourceConstantHarvest";
-import { WithdrawTargetType } from "task/instances/task_withdraw";
+
 
 export class SourceScheduler extends Scheduler<SourceConstantHarvestTargetType> {
 
     constructor(room: Room) {
-        const role: RoleType = 'sourceConstantHarvester'
+        const role: RoleType = 'sourceHarvester'
         super(room, role)
         this.strategy = this.updateStrategy()
     }

@@ -7,6 +7,7 @@ import { SourceExtension } from "./protos/source";
 import { MineralExtension } from "./protos/mineral";
 import { StructureControllerExtension } from "./protos/controller";
 import { RoomObjectExtension } from "./protos/roomObject";
+import { StructureStorageExtension } from "./protos/storage";
 
 
 export function mountGlobal() {
@@ -26,6 +27,7 @@ export function mountGlobal() {
   PrototypeHelper.assignPrototype(RoomObject, RoomObjectExtension)
   PrototypeHelper.assignPrototype(Source, SourceExtension)
   PrototypeHelper.assignPrototype(Mineral, MineralExtension)
+  PrototypeHelper.assignPrototype(StructureStorage, StructureStorageExtension)
   PrototypeHelper.assignPrototype(StructureController, StructureControllerExtension)
 }
 
