@@ -1,22 +1,22 @@
 import { Scheduler } from "./scheduler";
 import { SourceAction } from "roomEngine/action/sourceAction";
-import { RoomStatusEnum } from "global/protos/room"
 import { SourceConstantHarvestTargetType } from "task/instances/task_sourceConstantHarvest";
 import { WithdrawTargetType } from "task/instances/task_withdraw";
 
-export class SourceScheduler extends Scheduler<SourceConstantHarvestTargetType | WithdrawTargetType> {
+export class SourceScheduler extends Scheduler<SourceConstantHarvestTargetType> {
 
-    constructor(room: Room, role: RoleType) {
+    constructor(room: Room) {
+        const role: RoleType = 'sourceConstantHarvester'
         super(room, role)
         this.strategy = this.updateStrategy()
     }
 
-    updateStrategy(): IRoomStrategy<SourceConstantHarvestTargetType | WithdrawTargetType> | undefined {
+    updateStrategy(): IRoomStrategy<SourceConstantHarvestTargetType> | undefined {
         return new Default(this.room, this.role);
     }
 }
 
-class Default implements IRoomStrategy<SourceConstantHarvestTargetType | WithdrawTargetType> {
+class Default implements IRoomStrategy<SourceConstantHarvestTargetType> {
     room: Room
     role: RoleType
 
@@ -25,43 +25,21 @@ class Default implements IRoomStrategy<SourceConstantHarvestTargetType | Withdra
         this.role = role
     }
 
-    getTargets(): (SourceConstantHarvestTargetType | WithdrawTargetType)[] {
-
-        if (this.role == 'sourceConstantHarvester') {
-            //如果没有能运送的则跳过，防止只挖不运
-            if (this.room.creeps('carrier', false).length + this.room.creeps('worker').length == 0) {
-                return []
-            }
-
-            const targets = this.room.sources.filter(s =>
-                s.targetedBy.filter(c => c.role == this.role).length == 0 ||
-                s.targetedBy.filter(c => c.role == this.role && (c.ticksToLive || 1500) < 300).length > 0)
-
-            return targets
-        }
-        else if (this.role == 'carrier') {
-            const containers = this.room.sources.map(s => s.container).filter((c): c is StructureContainer => c !== undefined)
-            const targets = containers.filter(c => (c.getCurrentStoreResource(RESOURCE_ENERGY) || 0) > (this.room.level == 8 ? 1600 : 1200))
-            return targets
-        }
-        else {
+    getTargets(): SourceConstantHarvestTargetType[] {
+        //如果没有能运送的则跳过，防止只挖不运
+        if (this.room.creeps('carrier', false).length + this.room.creeps('worker').length == 0) {
             return []
         }
+
+        const targets = this.room.sources.filter(s =>
+            s.targetedBy.filter(c => c.role == this.role).length == 0 ||
+            s.targetedBy.filter(c => c.role == this.role && (c.ticksToLive || 1500) < 300).length > 0)
+
+        return targets
     }
-    getAction(): ActionDetail<SourceConstantHarvestTargetType | WithdrawTargetType> {
-        let action: any
-        switch (this.role) {
-            case 'sourceConstantHarvester':
-                action = SourceAction.constantHarvest
-                break
-            case 'carrier':
-                action = SourceAction.withdrawSourceContainer
-                break
-            default:
-                throw Error(`UpgradeScheduler的${this.room.status}策略未实现${this.role}的action方法`)
-        }
+    getAction(): ActionDetail<SourceConstantHarvestTargetType> {
         return {
-            actionMethod: action,
+            actionMethod: SourceAction.constantHarvest,
             options: {
                 resourceType: RESOURCE_ENERGY
             }

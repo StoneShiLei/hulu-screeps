@@ -5,7 +5,8 @@ import { BuildTargetType } from "task/instances/task_build";
 
 export class BuildableScheduler extends Scheduler<BuildTargetType> {
 
-    constructor(room: Room, role: RoleType) {
+    constructor(room: Room) {
+        const role: RoleType = 'worker'
         super(room, role)
         this.strategy = this.updateStrategy()
     }

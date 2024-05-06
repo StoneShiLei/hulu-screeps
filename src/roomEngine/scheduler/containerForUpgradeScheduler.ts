@@ -1,8 +1,8 @@
-import { Scheduler } from "./scheduler";
 import { TransferTargetType } from "task/instances/task_transfer";
+import { Scheduler } from "./scheduler";
 import { Action } from "roomEngine/action/action";
 
-export class StorageScheduler extends Scheduler<TransferTargetType> {
+export class ContainerForUpgradeScheduler extends Scheduler<TransferTargetType> {
 
     constructor(room: Room) {
         const role: RoleType = 'carrier'
@@ -15,7 +15,6 @@ export class StorageScheduler extends Scheduler<TransferTargetType> {
     }
 }
 
-
 class Default implements IRoomStrategy<TransferTargetType> {
     room: Room
 
@@ -24,12 +23,21 @@ class Default implements IRoomStrategy<TransferTargetType> {
     }
 
     getTargets(): TransferTargetType[] {
-        return this.room.storage ? [this.room.storage] : []
-    }
+        if (!this.room.controller) return []
+        const container = this.room.controller.container
+        if (!container) return []
 
+        //有link时 检查link+container总容量是否小于800 或者link为空  todo
+        if ((container.getCurrentStoreResource(RESOURCE_ENERGY) || 0) > 1200) return []
+
+        return [container]
+    }
     getAction(): ActionDetail<TransferTargetType> {
         return {
-            actionMethod: Action.transferAllResource,
+            actionMethod: Action.transferResource,
+            options: {
+                resourceType: RESOURCE_ENERGY
+            }
         }
     }
 

@@ -5,7 +5,8 @@ import { Action } from "roomEngine/action/action";
 
 export class TowerScheduler extends Scheduler<TransferTargetType> {
 
-    constructor(room: Room, role: RoleType) {
+    constructor(room: Room) {
+        const role: RoleType = 'carrier'
         super(room, role)
         this.strategy = this.updateStrategy()
     }
@@ -16,7 +17,7 @@ export class TowerScheduler extends Scheduler<TransferTargetType> {
 }
 
 
-class Default implements IRoomStrategy<TransferTargetType> { //todo
+class Default implements IRoomStrategy<TransferTargetType> {
     room: Room
 
     constructor(room: Room) {
