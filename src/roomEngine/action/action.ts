@@ -89,7 +89,7 @@ export abstract class Action implements IAction {
         // todo 如果当前需求资源和体内资源不一致时，添加一个清空体内资源的任务
 
         //防止取资源的目标和填资源的目标是同一个
-        const resources = Action.findResource(creep.room, type, creep.getActiveBodyparts(WORK) == 0).filter(s => !_.some(tasks, task => task.target?.ref == s.id))
+        const resources = Action.findResource(creep, type).filter(s => !_.some(tasks, task => task.target?.ref == s.id))
 
         //资源未满时，先把资源补满再执行任务
         const target = creep.pos.findClosestByPath(resources, { ignoreCreeps: true })
@@ -100,20 +100,29 @@ export abstract class Action implements IAction {
 
     /**
      * 查找可用资源
-     * @param room
+     * @param creep
      * @param type
-     * @param ignoreOriginResource 忽略原始资源
      * @returns
      */
-    protected static findResource(room: Room, type: ResourceConstant = RESOURCE_ENERGY, ignoreOriginResource: boolean = false): TakeResourceType[] {
+    protected static findResource(creep: Creep, type: ResourceConstant = RESOURCE_ENERGY): TakeResourceType[] {
         let targets: TakeResourceType[]
-        targets = this.findDroped(room, type)
-        if (targets.length) return targets
-        targets = this.findMassStore(room, type)
+
+        //creep没有carry则不返回资源目标
+        if (creep.getActiveBodyparts(CARRY) == 0) return []
+
+        //仅当房间没有carrier时 其他角色在补充资源时才考虑掉落资源，否则由carrier负责捡起
+        if (creep.room.creeps('carrier', false), this.length == 0) {
+            targets = this.findDroped(creep.room, type)
+            if (targets.length) return targets
+        }
+
+        //大容量存储
+        targets = this.findMassStore(creep.room, type)
         if (targets.length) return targets
 
-        if (!ignoreOriginResource) {
-            targets = this.findOriginResource(room, type)
+        //没有work组件跳过原始资源点
+        if (creep.getActiveBodyparts(WORK) > 0) {
+            targets = this.findOriginResource(creep.room, type)
             if (targets.length) return targets
         }
 
@@ -144,9 +153,9 @@ export abstract class Action implements IAction {
     private static updateDropedMap(room: Room): void {
         Action.dropedResourceMap[room.name] = Action.dropedResourceMap[room.name] || []
         let droped: (PickupTargetType | WithdrawTargetType)[] = []
-        droped = droped.concat(room.find(FIND_DROPPED_RESOURCES).filter(x => x.amount > 100))
-        droped = droped.concat(room.find(FIND_TOMBSTONES).filter(x => x.store.getUsedCapacity() > 100))
-        droped = droped.concat(room.find(FIND_RUINS).filter(x => x.store.getUsedCapacity() > 100))
+        droped = droped.concat(room.find(FIND_DROPPED_RESOURCES).filter(x => x.amount > 200))
+        droped = droped.concat(room.find(FIND_TOMBSTONES).filter(x => x.store.getUsedCapacity() > 200))
+        droped = droped.concat(room.find(FIND_RUINS).filter(x => x.store.getUsedCapacity() > 200))
         this.dropedResourceMap[room.name] = droped
     }
 
@@ -161,10 +170,10 @@ export abstract class Action implements IAction {
 
         return this.dropedResourceMap[room.name]?.filter(d => {
             if ('store' in d) {
-                return d.store[type] > 100
+                return d.store[type] > 200
             }
             else {
-                return d.amount > 100
+                return d.amount > 200
             }
         }) || []
     }

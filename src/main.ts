@@ -16,6 +16,7 @@ mountTask()
 mountSpawnCaster()
 mountStructure()
 mountRoomEngine()
+StackAnalysis.mount()
 
 function unwarappedLoop(): void {
 

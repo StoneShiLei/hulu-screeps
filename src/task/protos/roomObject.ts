@@ -36,8 +36,10 @@ export class RoomObjectExtension extends RoomObject {
     }
 
     getCurrentStoreResource(type: ResourceConstant): number | undefined {
-        if (!('store' in this)) return undefined
-        const store = this.store as StoreDefinition
+        const thisProxy = this as unknown as StoreStructure
+        if (thisProxy.store === undefined) return undefined
+
+        const store = thisProxy.store
 
 
         const id = this.ref
@@ -45,6 +47,7 @@ export class RoomObjectExtension extends RoomObject {
 
         this._currentResource = this._currentResource || {}
         if (this._currentResource[type]) {
+            // if (this._currentResource[type] > store[type]) debugger
             // console.log(`读取缓存，目标ref:${id},        目标原始存储：${trueAmount},    目标结果存储：${this._currentResource[type] + store[type]}`)
             return this._currentResource[type] + store[type]
         }
@@ -56,11 +59,11 @@ export class RoomObjectExtension extends RoomObject {
         let string = ''
         creeps.forEach(creep => {
             string += `名称:${creep.name},ID:${creep.id},`
-            let task = creep.memory.task
+            let task = creep.task // 这里不能使用creep.memory.task，会存在creep.task为null，但是creep.memory.task还没有来得及清除的情况
             while (task) {
                 //跳过不是以此对象为目标的任务
-                if (task._target.ref !== this.ref) {
-                    task = task._parent
+                if (task.target?.ref !== this.ref) {
+                    task = task.parent
                     continue
                 }
 
@@ -80,13 +83,14 @@ export class RoomObjectExtension extends RoomObject {
                 else {
                     string += `影响资源:不影响|||`
                 }
-                task = task._parent
+                task = task.parent
             }
         })
 
         if (!this._currentResource[type]) this._currentResource[type] = 0
         this._currentResource[type] += currentResourceCount
 
+        // if (this._currentResource[type] > store[type]) debugger
 
         // console.log(`实时计算，目标ref:${id},        目标原始存储：${trueAmount},    目标结果存储：${this._currentResource[type] + store[type]},      目标工作者情况：${string}`)
         return this._currentResource[type] + store[type]

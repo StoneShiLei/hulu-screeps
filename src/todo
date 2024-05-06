@@ -1,4 +1,7 @@
-spawn线性距离优化
+缓存data改版
+
+container改版
+
 
 link
 source转中心*2
@@ -27,3 +30,4 @@ drop
 heal
 getBoosted
 getRenewed
+

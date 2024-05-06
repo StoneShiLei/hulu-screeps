@@ -100,7 +100,7 @@ class Medium implements IRoomStrategy<UpgradeTargetType | TransferTargetType> {
             if (!container) return []
 
             //有link时 检查link+container总容量是否小于800 或者link为空  todo
-            if ((container.getCurrentStoreResource(RESOURCE_ENERGY) || 0) > 1800) return []
+            if ((container.getCurrentStoreResource(RESOURCE_ENERGY) || 0) > 1200) return []
 
             return [container]
         }
