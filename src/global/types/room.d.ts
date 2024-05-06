@@ -1,8 +1,11 @@
-import { RoomStatusEnum } from "global/const/const"
-
+import { RoomStatusEnum } from "global/protos/room"
 
 declare global {
     interface Room {
+        /**
+         * 房间状态
+         */
+        status: RoomStatusEnum
         /**
          * 属于这个房间的所有creep
          */
@@ -29,10 +32,7 @@ declare global {
          * @param ignoreSpawning 忽略正在spawn中的creep
          */
         idleCreeps(role?: RoleType, ignoreSpawning?: boolean): Creep[]
-        /**
-         * 房间状态
-         */
-        status: RoomStatusEnum
+
     }
 }
 

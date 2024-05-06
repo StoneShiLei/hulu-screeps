@@ -2,7 +2,7 @@ import { BuildTargetType } from "task/instances/task_build";
 import { Action } from "./action";
 import { TaskHelper } from "task/TaskHelper";
 import { WorkerBodyConfig } from "role/bodyConfig/worker";
-import { RoomStatusEnum } from "global/const/const";
+import { RoomStatusEnum } from "global/protos/room"
 
 export class BuildableAction extends Action {
     static build(targets: BuildTargetType[], role: RoleType, room: Room) {

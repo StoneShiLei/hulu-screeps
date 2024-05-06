@@ -1,29 +1,41 @@
 import { PrototypeHelper } from "utils/PrototypeHelper";
+import { StackAnalysis } from "utils/StackAnalysis";
 import { RoomPositionExtension } from "./protos/roomPosition";
 import { CreepExtension } from "./protos/creep";
 import { RoomExtension } from "./protos/room";
-import { StackAnalysis } from "utils/StackAnalysis";
 import { SourceExtension } from "./protos/source";
 import { MineralExtension } from "./protos/mineral";
 import { StructureControllerExtension } from "./protos/controller";
+import { RoomObjectExtension } from "./protos/roomObject";
 
 
 export function mountGlobal() {
-    try {
-        global.LOCAL_SHARD_NAME = Game.shard.name
-    } catch (e) {
-        global.LOCAL_SHARD_NAME = 'sim'
-    }
-    global.StackAnalysis = StackAnalysis
-    global.HelperCpuUsed = HelperCpuUsed;
 
-    PrototypeHelper.assignPrototype(RoomPosition, RoomPositionExtension)
-    PrototypeHelper.assignPrototype(Creep, CreepExtension)
-    PrototypeHelper.assignPrototype(Room, RoomExtension)
-    PrototypeHelper.assignPrototype(Source, SourceExtension)
-    PrototypeHelper.assignPrototype(Mineral, MineralExtension)
-    PrototypeHelper.assignPrototype(StructureController, StructureControllerExtension)
+  try {
+    global.LOCAL_SHARD_NAME = Game.shard.name
+  } catch (e) {
+    global.LOCAL_SHARD_NAME = 'sim'
+  }
+
+  global.StackAnalysis = StackAnalysis
+  global.HelperCpuUsed = HelperCpuUsed;
+
+  PrototypeHelper.assignPrototype(RoomPosition, RoomPositionExtension)
+  PrototypeHelper.assignPrototype(Creep, CreepExtension)
+  PrototypeHelper.assignPrototype(Room, RoomExtension)
+  PrototypeHelper.assignPrototype(RoomObject, RoomObjectExtension)
+  PrototypeHelper.assignPrototype(Source, SourceExtension)
+  PrototypeHelper.assignPrototype(Mineral, MineralExtension)
+  PrototypeHelper.assignPrototype(StructureController, StructureControllerExtension)
 }
+
+
+
+
+
+
+
+
 
 
 /**
@@ -33,7 +45,7 @@ export function mountGlobal() {
  *
  */
 const cpuEcharts = (divName: number, data: number[], data2: number[]) => {
-    return `
+  return `
 <div id="${divName}" style="height: 400px;width:1200px;color:#000"/>
 <script>
 eval($.ajax({url:"https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.2/echarts.min.js",async:false}).responseText);
@@ -114,23 +126,23 @@ var data2 = ${JSON.stringify(data2)};
 showCpuUsed('${divName}',data,data2)
 </script>
 `.replace(/[\r\n]/g, '');
-    // .replace("script>","c>")
+  // .replace("script>","c>")
 };
 // smooth: true,
 // step: 'middle',
 
 let HelperCpuUsed: { cpu: number[], bucket: number[], show: () => void, exec: () => void } = {
-    cpu: [],
-    bucket: [],
-    show() {
-        console.log(cpuEcharts(Game.time, this.cpu.slice(-10000), this.bucket.slice(-10000)));
-    },
-    exec() {
-        if (this.cpu.length > 20000) this.cpu = this.cpu.slice(-10000);
-        if (this.bucket.length > 20000) this.bucket = this.bucket.slice(-10000);
-        this.cpu.push(Math.ceil(Game.cpu.getUsed()));
-        this.bucket.push(Game.cpu.bucket);
-    }
+  cpu: [],
+  bucket: [],
+  show() {
+    console.log(cpuEcharts(Game.time, this.cpu.slice(-10000), this.bucket.slice(-10000)));
+  },
+  exec() {
+    if (this.cpu.length > 20000) this.cpu = this.cpu.slice(-10000);
+    if (this.bucket.length > 20000) this.bucket = this.bucket.slice(-10000);
+    this.cpu.push(Math.ceil(Game.cpu.getUsed()));
+    this.bucket.push(Game.cpu.bucket);
+  }
 };
 
 

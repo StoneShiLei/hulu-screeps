@@ -46,7 +46,7 @@ export class CreepExtension extends Creep {
         if (task) {
 
             //如果目标存在，将目标加入到缓存中
-            if (task.target) {
+            if (task.target && task.target.ref) {
                 if (!Game.TargetCache.targets[task.target.ref]) {
                     Game.TargetCache.targets[task.target.ref] = []
                 }

@@ -7,5 +7,10 @@ interface Source {
     /**
      * source旁的container
      */
-    container: StructureContainer | null
+    container: StructureContainer | undefined
+
+    /**
+     * source旁的link
+     */
+    link: StructureContainer | undefined
 }

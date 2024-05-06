@@ -6,7 +6,7 @@ type TargetType = {
     /**
      * 目标引用，name id
      */
-    ref: string,
+    ref: string | undefined,
     /**
      * 目标位置
      */

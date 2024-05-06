@@ -1,6 +1,6 @@
 import { Action } from "roomEngine/action/action";
 import { Scheduler } from "./scheduler";
-import { RoomStatusEnum } from "global/const/const";
+import { RoomStatusEnum } from "global/protos/room"
 import { UpgradeAction } from "roomEngine/action/upgradeAction";
 import { TransferTargetType } from "task/instances/task_transfer";
 import { UpgradeTargetType } from "task/instances/task_upgrade";

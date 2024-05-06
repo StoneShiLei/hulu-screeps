@@ -35,7 +35,7 @@ export abstract class Task<TTargetType extends TargetType> implements ITask {
         this.option = option
 
 
-        if (target) {
+        if (target && target.ref) {
             this._target = {
                 ref: target.ref,
                 _pos: {

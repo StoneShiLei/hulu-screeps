@@ -1,9 +1,8 @@
 import { Scheduler } from "./scheduler";
 import { SourceAction } from "roomEngine/action/sourceAction";
-import { RoomStatusEnum } from "global/const/const";
+import { RoomStatusEnum } from "global/protos/room"
 import { SourceConstantHarvestTargetType } from "task/instances/task_sourceConstantHarvest";
 import { WithdrawTargetType } from "task/instances/task_withdraw";
-import { Action } from "roomEngine/action/action";
 
 export class SourceScheduler extends Scheduler<SourceConstantHarvestTargetType | WithdrawTargetType> {
 
