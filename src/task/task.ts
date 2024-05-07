@@ -222,7 +222,8 @@ export abstract class Task<TTargetType extends TargetType> implements ITask {
 
         if (this.creep.pos.inRangeTo(this.targetPos, this.setting.targetRange) && !this.creep.pos.isEdge) {
 
-            if (this.setting.workOffRoad) this.parkCreep(this.creep, this.targetPos, true)
+            //不要堵路
+            // if (this.setting.workOffRoad) this.parkCreep(this.creep, this.targetPos, true)
 
             let result = this.work()
 

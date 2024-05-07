@@ -51,17 +51,8 @@ export class TaskConstantUpgrade extends Task<UpgradeTargetType> {
         const res = this.creep.withdraw(container, RESOURCE_ENERGY)
         if (res == ERR_NOT_IN_RANGE) return this.creep.moveTo(container)
 
-        // //附近有能量尝试捡起来
-        // if ((this.creep.ticksToLive || 0) % 6 <= 1) {
-        //     const droped = this.creep.pos.lookFor(LOOK_ENERGY).shift()
-        //     if (droped) {
-        //         this.creep.pickup(droped)
-        //     }
-        //     const tomb = this.creep.pos.lookFor(LOOK_TOMBSTONES).shift()
-        //     if (tomb) {
-        //         this.creep.withdraw(tomb, RESOURCE_ENERGY)
-        //     }
-        // }
+        //防止堵路
+        if ((this.creep.ticksToLive || 0) % 2 > 0) this.creep.memory.dontPullMe = false;
 
         return OK
     }

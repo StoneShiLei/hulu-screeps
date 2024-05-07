@@ -16,6 +16,9 @@ export class TaskMeleeAttack extends Task<MeleeAttackTargetType> {
         super(TaskMeleeAttack.taskName, target, option)
 
         this.setting.targetRange = 1
+        this.option.moveOptions = {
+            bypassHostileCreeps: false
+        }
     }
 
     isValidTask(): boolean {

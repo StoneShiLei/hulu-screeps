@@ -14,10 +14,13 @@ import { StorageScheduler } from "./scheduler/storageScheduler"
 import { ContainerForSourceScheduler } from "./scheduler/containerForSourceScheduler"
 import { ContainerForUpgradeScheduler } from "./scheduler/containerForUpgradeScheduler"
 import { DropedResourceScheduler } from "./scheduler/dropedResourceScheduler"
+import { LOCAL_SHARD_NAME, SIM_ROOM_NAME } from "global"
 
 export function mountRoomEngine() {
     PrototypeHelper.assignPrototype(Room, RoomExtension)
 }
+
+let fistActive = true
 
 export class RoomEngine {
     static run() {
@@ -26,7 +29,12 @@ export class RoomEngine {
             ErrorCatcher.catch(() => BusinessTower.run(room)) //tower
 
             if (room.hashTime % 3 != 0 || !room.my) return
-            if (room.hashTime % 31) room.update()
+            if (room.hashTime % 31 == 0) room.update()
+            if ((room.hashTime % 301 == 0 || fistActive) && LOCAL_SHARD_NAME != SIM_ROOM_NAME) {
+                debugger
+                global.BetterMove.deletePathInRoom(room.name)
+                fistActive = false
+            }
 
             //按房间状态选用策略
             switch (room.status) {
