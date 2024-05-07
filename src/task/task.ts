@@ -47,11 +47,11 @@ export abstract class Task<TTargetType extends TargetType> implements ITask {
         }
         else {
             this._target = {
-                ref: '',
+                ref: '-',
                 _pos: {
                     x: -1,
                     y: -1,
-                    roomName: ''
+                    roomName: '-'
                 }
             }
         }
