@@ -9,14 +9,10 @@ import { StructureControllerExtension } from "./protos/controller";
 import { RoomObjectExtension } from "./protos/roomObject";
 import { StructureStorageExtension } from "./protos/storage";
 
+export const SIM_ROOM_NAME = 'sim'
+export const LOCAL_SHARD_NAME = Game.shard?.name || SIM_ROOM_NAME
 
 export function mountGlobal() {
-
-  try {
-    global.LOCAL_SHARD_NAME = Game.shard.name
-  } catch (e) {
-    global.LOCAL_SHARD_NAME = 'sim'
-  }
 
   global.StackAnalysis = StackAnalysis
   global.HelperCpuUsed = HelperCpuUsed;
