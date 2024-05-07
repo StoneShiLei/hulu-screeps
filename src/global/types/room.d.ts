@@ -19,6 +19,12 @@ declare global {
          * Game.time + room.hashCode
          */
         hashTime: number
+
+        /**
+         * 获取房间内掉落的资源，9tick更新一次
+         */
+        drops: (Resource | Ruin | Tombstone)[]
+
         /**
          * 获取该房间所有的creep，支持按角色分类,按store从高到低排序
          * @param role 角色

@@ -3,10 +3,6 @@ import { Scheduler } from "./scheduler";
 import { WithdrawTargetType } from "task/instances/task_withdraw";
 import { DropedAction } from "roomEngine/action/dropedAction";
 
-export const dropedResourceMap: {
-    [roomName: string]: (PickupTargetType | WithdrawTargetType)[]
-} = {}
-
 export class DropedResourceScheduler extends Scheduler<PickupTargetType | WithdrawTargetType> {
 
     constructor(room: Room) {
@@ -29,29 +25,20 @@ class Default implements IRoomStrategy<PickupTargetType | WithdrawTargetType> {
     }
 
     getTargets(): (PickupTargetType | WithdrawTargetType)[] {
-        if (this.room.hashTime % 9 == 0 || dropedResourceMap[this.room.name] === undefined) {
-            this.updateDropedMap(this.room)
-        }
-        return dropedResourceMap[this.room.name] || []
+        return this.room.drops.filter(d => {
+            if ('store' in d) {
+                return d.store.getUsedCapacity() > 100
+            }
+            else {
+                return d.amount > 100
+            }
+        })
     }
 
     getAction(): ActionDetail<PickupTargetType | WithdrawTargetType> {
         return {
             actionMethod: DropedAction.takeDroped,
         }
-    }
-
-    /**
-     * 更新掉落资源列表
-     * @param room
-     */
-    private updateDropedMap(room: Room): void {
-        dropedResourceMap[this.room.name] = dropedResourceMap[this.room.name] || []
-        let droped: (PickupTargetType | WithdrawTargetType)[] = []
-        droped = droped.concat(room.find(FIND_DROPPED_RESOURCES).filter(x => x.amount > 100))
-        droped = droped.concat(room.find(FIND_TOMBSTONES).filter(x => x.store.getUsedCapacity() > 100))
-        droped = droped.concat(room.find(FIND_RUINS).filter(x => x.store.getUsedCapacity() > 100))
-        dropedResourceMap[this.room.name] = droped
     }
 
 }

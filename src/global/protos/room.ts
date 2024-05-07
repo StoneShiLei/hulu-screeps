@@ -17,6 +17,10 @@ export enum RoomStatusEnum {
     High = 30,
 }
 
+const dropedResourceMap: {
+    [roomName: string]: (Resource | Ruin | Tombstone)[]
+} = {}
+
 
 export class RoomExtension extends Room {
 
@@ -55,6 +59,13 @@ export class RoomExtension extends Room {
         }
     }
 
+    dropsGetter(): (Resource | Ruin | Tombstone)[] {
+        if (this.hashTime % 9 == 0 || dropedResourceMap[this.name] === undefined) {
+            this.updateDropedMapIfNeeded()
+        }
+        return dropedResourceMap[this.name] || []
+    }
+
     hashCodeGetter(): number {
         if (!this.memory.hashCode) {
             this.memory.hashCode = (this.hash(this.name) * 9301 + 49297) % 233280
@@ -64,15 +75,6 @@ export class RoomExtension extends Room {
 
     hashTimeGetter(): number {
         return Game.time + this.hashCode
-    }
-
-    private hash(str: string) {
-        let hash = 5381;
-        for (let i = 0; i < str.length; i++) {
-            let char = str.charCodeAt(i);
-            hash = ((hash << 5) + hash) + char; /* hash * 33 + c */
-        }
-        return hash
     }
 
     statusGetter(): RoomStatusEnum {
@@ -88,6 +90,27 @@ export class RoomExtension extends Room {
         else {
             return RoomStatusEnum.Low
         }
+    }
+
+    /**
+     * 更新掉落资源列表
+     */
+    private updateDropedMapIfNeeded(): void {
+        dropedResourceMap[this.name] = dropedResourceMap[this.name] || []
+        let droped: (Resource | Ruin | Tombstone)[] = []
+        droped = droped.concat(this.find(FIND_DROPPED_RESOURCES).filter(x => x.amount > 100))
+        droped = droped.concat(this.find(FIND_TOMBSTONES).filter(x => x.store.getUsedCapacity() > 100))
+        droped = droped.concat(this.find(FIND_RUINS).filter(x => x.store.getUsedCapacity() > 100))
+        dropedResourceMap[this.name] = droped
+    }
+
+    private hash(str: string) {
+        let hash = 5381;
+        for (let i = 0; i < str.length; i++) {
+            let char = str.charCodeAt(i);
+            hash = ((hash << 5) + hash) + char; /* hash * 33 + c */
+        }
+        return hash
     }
 }
 

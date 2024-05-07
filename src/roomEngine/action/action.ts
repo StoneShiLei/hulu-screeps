@@ -3,7 +3,6 @@ import { HarvestTargetType } from "task/instances/task_harvest"
 import { PickupTargetType } from "task/instances/task_pickup"
 import { TransferTargetType } from "task/instances/task_transfer"
 import { WithdrawTargetType } from "task/instances/task_withdraw"
-import { dropedResourceMap } from "roomEngine/scheduler/dropedResourceScheduler"
 
 type TakeResourceType = PickupTargetType | HarvestTargetType | WithdrawTargetType
 
@@ -125,14 +124,14 @@ export abstract class Action implements IAction {
      * @returns
      */
     private static findDroped(room: Room, type: ResourceConstant): (PickupTargetType | WithdrawTargetType)[] {
-        return dropedResourceMap[room.name]?.filter(d => {
+        return room.drops.filter(d => {
             if ('store' in d) {
                 return d.store[type] > 100
             }
             else {
                 return d.amount > 100
             }
-        }) || []
+        })
     }
 
     /**
