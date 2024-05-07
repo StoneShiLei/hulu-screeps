@@ -3,13 +3,14 @@ import { HarvestTargetType } from "task/instances/task_harvest"
 import { PickupTargetType } from "task/instances/task_pickup"
 import { TransferTargetType } from "task/instances/task_transfer"
 import { WithdrawTargetType } from "task/instances/task_withdraw"
+import { dropedResourceMap } from "roomEngine/scheduler/dropedResourceScheduler"
 
 type TakeResourceType = PickupTargetType | HarvestTargetType | WithdrawTargetType
 
 export abstract class Action implements IAction {
 
     /**
-     * 取出资源，给每个目标指派1个creep
+     * 取出资源，给每个creep指派1个target
      * @param targets
      * @param role
      * @param room
@@ -27,7 +28,7 @@ export abstract class Action implements IAction {
     }
 
     /**
-     * 转入资源，给每个目标指派1个creep
+     * 转入资源，给每个creep指派1个target
      * @param targets
      * @param role
      * @param room
@@ -45,35 +46,6 @@ export abstract class Action implements IAction {
             })
         }
     }
-
-    /**
-     * 转入资源，给1个目标指派所有creep
-     * @param targets
-     * @param role
-     * @param room
-     * @param options
-     * @returns
-     */
-    static transferAllResource(targets: TransferTargetType[], role: RoleType, room: Room, options?: ActionOptions) {
-        return function () {
-            const creeps = room.idleCreeps(role).filter(c => !c.isEmptyStore)
-
-            targets.forEach(target => {
-                creeps.forEach(creep => {
-                    const task = TaskHelper.transfer(target, options)
-                    creep.task = task
-                })
-            })
-
-        }
-    }
-
-    /**
-     * 掉落资源map
-     */
-    private static dropedResourceMap: {
-        [roomName: string]: (PickupTargetType | WithdrawTargetType)[]
-    } = {}
 
     /**
      * 生成task列表，用于给creep补充资源
@@ -147,33 +119,18 @@ export abstract class Action implements IAction {
     }
 
     /**
-     * 更新掉落资源列表
-     * @param room
-     */
-    private static updateDropedMap(room: Room): void {
-        Action.dropedResourceMap[room.name] = Action.dropedResourceMap[room.name] || []
-        let droped: (PickupTargetType | WithdrawTargetType)[] = []
-        droped = droped.concat(room.find(FIND_DROPPED_RESOURCES).filter(x => x.amount > 200))
-        droped = droped.concat(room.find(FIND_TOMBSTONES).filter(x => x.store.getUsedCapacity() > 200))
-        droped = droped.concat(room.find(FIND_RUINS).filter(x => x.store.getUsedCapacity() > 200))
-        this.dropedResourceMap[room.name] = droped
-    }
-
-    /**
      * 查找掉落资源
      * @param room
      * @param type
      * @returns
      */
     private static findDroped(room: Room, type: ResourceConstant): (PickupTargetType | WithdrawTargetType)[] {
-        if (room.hashTime % 9 == 0 || Action.dropedResourceMap[room.name] === undefined) this.updateDropedMap(room)
-
-        return this.dropedResourceMap[room.name]?.filter(d => {
+        return dropedResourceMap[room.name]?.filter(d => {
             if ('store' in d) {
-                return d.store[type] > 200
+                return d.store[type] > 100
             }
             else {
-                return d.amount > 200
+                return d.amount > 100
             }
         }) || []
     }

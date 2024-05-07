@@ -1,6 +1,6 @@
 import { Scheduler } from "./scheduler";
-import { SourceAction } from "roomEngine/action/sourceAction";
 import { WithdrawTargetType } from "task/instances/task_withdraw";
+import { ContainerAction } from "roomEngine/action/containerAction";
 
 export class ContainerForSourceScheduler extends Scheduler<WithdrawTargetType> {
 
@@ -29,7 +29,7 @@ class Default implements IRoomStrategy<WithdrawTargetType> {
     }
     getAction(): ActionDetail<WithdrawTargetType> {
         return {
-            actionMethod: SourceAction.withdrawSourceContainer,
+            actionMethod: ContainerAction.withdrawSourceContainer,
             options: {
                 resourceType: RESOURCE_ENERGY
             }

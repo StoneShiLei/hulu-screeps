@@ -1,6 +1,6 @@
 import { Scheduler } from "./scheduler";
 import { TransferTargetType } from "task/instances/task_transfer";
-import { Action } from "roomEngine/action/action";
+import { StorageAction } from "roomEngine/action/storageAction";
 
 export class StorageScheduler extends Scheduler<TransferTargetType> {
 
@@ -29,7 +29,7 @@ class Default implements IRoomStrategy<TransferTargetType> {
 
     getAction(): ActionDetail<TransferTargetType> {
         return {
-            actionMethod: Action.transferAllResource,
+            actionMethod: StorageAction.fillAllResourceToStorage,
         }
     }
 

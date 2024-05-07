@@ -13,6 +13,7 @@ import { SourceScheduler } from "./scheduler/sourceScheduler"
 import { StorageScheduler } from "./scheduler/storageScheduler"
 import { ContainerForSourceScheduler } from "./scheduler/containerForSourceScheduler"
 import { ContainerForUpgradeScheduler } from "./scheduler/containerForUpgradeScheduler"
+import { DropedResourceScheduler } from "./scheduler/dropedResourceScheduler"
 
 export function mountRoomEngine() {
     PrototypeHelper.assignPrototype(Room, RoomExtension)
@@ -64,11 +65,15 @@ export class RoomEngine {
         this.checkNonCarry(room) //如果没有可搬运资源的creep则spawn一个
         new SourceScheduler(room).tryGenEventToRoom() //专业挖能量
         this.checkAllDead(room) //检测是否全死光了
+
         new UpgradeScheduler(room, 'upgrader').tryGenEventToRoom() //专业升级
+
         new ContainerForSourceScheduler(room).tryGenEventToRoom() //搬运内矿
+        new DropedResourceScheduler(room).tryGenEventToRoom() //搬运掉落资源
 
         new HiveScheduler(room, 'carrier').tryGenEventToRoom() //装填hive
         new TowerScheduler(room).tryGenEventToRoom() //装填tower
+
         new ContainerForUpgradeScheduler(room).tryGenEventToRoom() //升级容器搬运
 
         new HiveScheduler(room, 'worker').tryGenEventToRoom() //装填hive
@@ -80,11 +85,15 @@ export class RoomEngine {
         this.checkNonCarry(room) //如果没有可搬运资源的creep则spawn一个
         new SourceScheduler(room).tryGenEventToRoom() //专业挖能量
         this.checkAllDead(room) //检测是否全死光了
+
         new UpgradeScheduler(room, 'upgrader').tryGenEventToRoom() //专业升级
+
         new ContainerForSourceScheduler(room).tryGenEventToRoom() //搬运内矿
+        new DropedResourceScheduler(room).tryGenEventToRoom() //搬运掉落资源
 
         new HiveScheduler(room, 'carrier').tryGenEventToRoom() //装填hive
         new TowerScheduler(room).tryGenEventToRoom() //装填tower
+
         new ContainerForUpgradeScheduler(room).tryGenEventToRoom() //升级容器搬运
         new StorageScheduler(room).tryGenEventToRoom() //剩余资源搬运到storage
 

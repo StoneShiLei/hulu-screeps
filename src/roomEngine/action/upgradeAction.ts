@@ -5,18 +5,6 @@ import { UpgraderBodyConfig } from "role/bodyConfig/upgrader";
 
 export class UpgradeAction extends Action {
 
-    static upgraderUpgrade(targets: UpgradeTargetType[], role: RoleType, room: Room) {
-        return function () {
-            if (!targets.length) return
-            const controller = targets[0]
-            room.spawnQueue.push({
-                role: role,
-                bodyFunc: UpgraderBodyConfig.upgrader,
-                task: TaskHelper.constantUpgrade(controller)
-            })
-        }
-    }
-
     static workerUpgrade(targets: UpgradeTargetType[], role: RoleType, room: Room) {
         return function () {
             const creeps = room.idleCreeps(role, false)
@@ -27,6 +15,18 @@ export class UpgradeAction extends Action {
                 const task = TaskHelper.upgrade(target)
                 const tasks = Action.genTaskList(creep, RESOURCE_ENERGY, task)
                 creep.task = TaskHelper.chain(tasks)
+            })
+        }
+    }
+
+    static upgraderUpgrade(targets: UpgradeTargetType[], role: RoleType, room: Room) {
+        return function () {
+            if (!targets.length) return
+            const controller = targets[0]
+            room.spawnQueue.push({
+                role: role,
+                bodyFunc: UpgraderBodyConfig.upgrader,
+                task: TaskHelper.constantUpgrade(controller)
             })
         }
     }
