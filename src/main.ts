@@ -28,7 +28,7 @@ mountStructure()
 mountRoomEngine()
 
 //挂载堆栈分析
-if (!enableStackAnalysis) StackAnalysis.mount()
+if (enableStackAnalysis) StackAnalysis.mount()
 
 //main
 function unwarappedLoop(): void {
