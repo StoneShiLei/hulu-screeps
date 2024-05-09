@@ -28,7 +28,14 @@ class Default implements IRoomStrategy<TransferTargetType> {
         if (!centerLink || centerLink.store.energy == 0) return []
 
         //sourceLink有都满的情况下才需要清空centerLink
-        const needTran = this.room.sources.some(s => s.links.filter(l => l.store.energy == 800).length >= 2)
+        let needTran = false
+        this.room.sources.forEach(source => {
+            const container = source.container
+            const link1 = source.links[0]
+            const link2 = source.links[1]
+            if (!needTran) needTran = !!container && container.store.energy > (link1 && link2 && link1.store.energy == 800 && link2.store.energy == 800 ? 0 : 800)
+        })
+
         if (!needTran || centerLink.targetedBy.length != 0) return []
 
         return [centerLink];
