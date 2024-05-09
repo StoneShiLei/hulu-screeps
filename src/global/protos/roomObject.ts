@@ -17,16 +17,18 @@ export class RoomObjectExtension extends RoomObject {
         }
     }
 
-    setData(key: string, ref: string | undefined): void {
+    setData(key: keyof RoomObjectData, ref: string | undefined): void {
         if (!this.room || !this.ref || !ref) return undefined
 
         this.room.memory.roomObjectData = this.room.memory.roomObjectData || {};
         const data = this.room.memory.roomObjectData[this.ref] || {};
 
         data[key] = ref
+
+        this.room.memory.roomObjectData[this.ref] = data
     }
 
-    getData<T extends RoomObject>(key: string): T | undefined {
+    getDataObj<T extends RoomObject>(key: keyof RoomObjectData): T | undefined {
         if (!this.room || !this.ref) return undefined
 
         this.room.memory.roomObjectData = this.room.memory.roomObjectData || {};
@@ -34,7 +36,7 @@ export class RoomObjectExtension extends RoomObject {
 
         // 尝试通过缓存的id获取对象data
         if (data[key]) {
-            const roomObject = GlobalHelper.deref<T>(data[key])
+            const roomObject = GlobalHelper.deref<T>(data[key]!)
             if (roomObject) {
                 return roomObject;  // 如果有效，则直接返回
             } else {
@@ -44,5 +46,18 @@ export class RoomObjectExtension extends RoomObject {
         }
 
         return undefined;  // 如果没有找到，则返回null
+    }
+
+    getData(key: keyof RoomObjectData): string | undefined {
+        if (!this.room || !this.ref) return undefined
+
+        this.room.memory.roomObjectData = this.room.memory.roomObjectData || {};
+        const data = this.room.memory.roomObjectData[this.ref] || {};
+
+        if (data[key]) {
+            return data[key]
+        } else {
+            return undefined
+        }
     }
 }

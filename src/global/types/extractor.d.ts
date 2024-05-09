@@ -1,7 +1,7 @@
-interface Mineral {
+interface StructureExtractor {
 
     /**
-     * mineral旁的container
+     * extractor旁的container
      */
     container: StructureContainer | undefined
 }

@@ -4,10 +4,12 @@ import { RoomPositionExtension } from "./protos/roomPosition";
 import { CreepExtension } from "./protos/creep";
 import { RoomExtension } from "./protos/room";
 import { SourceExtension } from "./protos/source";
-import { MineralExtension } from "./protos/mineral";
+import { StructureExtractorExtension } from "./protos/extractor";
 import { StructureControllerExtension } from "./protos/controller";
 import { RoomObjectExtension } from "./protos/roomObject";
 import { StructureStorageExtension } from "./protos/storage";
+import { StructureLinkExtension } from "./protos/link";
+import { StructureContainerExtension } from "./protos/container";
 
 export const SIM_ROOM_NAME = 'sim'
 export const LOCAL_SHARD_NAME = Game.shard?.name || SIM_ROOM_NAME
@@ -22,9 +24,11 @@ export function mountGlobal() {
   PrototypeHelper.assignPrototype(Room, RoomExtension)
   PrototypeHelper.assignPrototype(RoomObject, RoomObjectExtension)
   PrototypeHelper.assignPrototype(Source, SourceExtension)
-  PrototypeHelper.assignPrototype(Mineral, MineralExtension)
+  PrototypeHelper.assignPrototype(StructureExtractor, StructureExtractorExtension)
   PrototypeHelper.assignPrototype(StructureStorage, StructureStorageExtension)
   PrototypeHelper.assignPrototype(StructureController, StructureControllerExtension)
+  PrototypeHelper.assignPrototype(StructureContainer, StructureContainerExtension)
+  PrototypeHelper.assignPrototype(StructureLink, StructureLinkExtension)
 }
 
 

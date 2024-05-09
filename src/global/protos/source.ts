@@ -14,39 +14,14 @@ export class SourceExtension extends Source {
     }
 
     containerGetter(): StructureContainer | undefined {
-        let container = this.getData<StructureContainer>('containerId')
-        if (!container) {
-            // 寻找附近的container
-            const containers = this.pos.findInRange<StructureContainer>(FIND_STRUCTURES, 1, {
-                filter: s => s.structureType == STRUCTURE_CONTAINER
-            });
-
-            if (containers.length > 0) {
-                // 更新内存并返回找到的第一个container
-                container = containers[0]
-                this.setData('containerId', container.ref)
-            }
-        }
-
-        return container
+        const containers = this.room.containers.filter(container => container.mountAt('source')?.id == this.id)
+        if (containers.length) return containers[0]
+        return undefined
     }
 
-    linkGetter(): StructureContainer | undefined {
-        let link = this.getData<StructureContainer>('linkId')
-        if (!link) {
-            // 寻找附近的link
-            const links = this.pos.findInRange<StructureContainer>(FIND_STRUCTURES, 2, {
-                filter: s => s.structureType == STRUCTURE_LINK
-            });
-
-            if (links.length > 0) {
-                // 更新内存并返回找到的第一个link
-                link = links[0]
-                this.setData('linkId', link.ref)
-            }
-        }
-
-        return link
+    linksGetter(): StructureLink[] {
+        const links = this.room.links.filter(link => link.mountAt('source')?.id == this.id)
+        return links
     }
 
 }

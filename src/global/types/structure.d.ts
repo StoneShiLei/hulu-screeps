@@ -16,6 +16,7 @@ interface MountAtDefinitions {
     source: Source
     storage: StructureStorage
     controller: StructureController
+    extractor: StructureExtractor
 }
 
 /**

@@ -10,11 +10,17 @@ interface RoomObject {
      * @param key 缓存key
      * @param ref 缓存对象的ref
      */
-    setData(key: string, ref: string | undefined): void
+    setData(key: keyof RoomObjectData, ref: string | undefined): void
 
     /**
-     * 获取对象数据缓存的RoomObject
+     * 获取对象数据缓存的RoomObject(如果存储内容是ref的话)
      * @param key 缓存key
      */
-    getData<T extends RoomObject>(key: string): T | undefined
+    getDataObj<T extends RoomObject>(key: keyof RoomObjectData): T | undefined
+
+    /**
+     * 获取对象数据缓存的原始内容
+     * @param key 缓存key
+     */
+    getData(key: keyof RoomObjectData): string | undefined
 }

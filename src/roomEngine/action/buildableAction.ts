@@ -7,7 +7,7 @@ import { RoomStatusEnum } from "global/protos/room"
 export class BuildableAction extends Action {
     static build(targets: BuildTargetType[], role: RoleType, room: Room) {
         return function () {
-            const creeps = room.idleCreeps(role, false)
+            const creeps = room.idleCreeps(role)
 
             creeps.forEach(creep => {
                 const target = creep.pos.findClosestByPath(targets, { ignoreCreeps: true })

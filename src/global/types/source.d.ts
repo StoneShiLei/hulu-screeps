@@ -10,7 +10,7 @@ interface Source {
     container: StructureContainer | undefined
 
     /**
-     * source旁的link
+     * source旁的link数组
      */
-    link: StructureContainer | undefined
+    links: StructureLink[]
 }

@@ -2,5 +2,5 @@ interface StructureStorage {
     /**
      * storage旁的link
      */
-    link: StructureContainer | undefined
+    link: StructureLink | undefined
 }
