@@ -1,3 +1,4 @@
+import { GlobalHelper } from "utils/GlobalHelper"
 
 /**
  * 房间状态枚举

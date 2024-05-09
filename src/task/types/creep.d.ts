@@ -26,4 +26,10 @@ interface Creep {
      * @param task 若干的task
      */
     pressTask(...task: ITask[]): void
+
+    /**
+     * 压入新的task并立即执行
+     * @param task 若干的task
+     */
+    pressTaskAndRun(...task: ITask[]): void
 }

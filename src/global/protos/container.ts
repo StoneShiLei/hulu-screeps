@@ -1,9 +1,10 @@
+import { GlobalHelper } from "utils/GlobalHelper";
+
 export class StructureContainerExtension extends StructureContainer {
 
     mountAt(type: keyof MountAtMap): MountAtObjType | undefined
         | undefined {
 
-        const room = this.room
         let mountAtObj = this.getDataObj<MountAtObjType>('mountAt')
         if (!mountAtObj) {
 
@@ -18,6 +19,22 @@ export class StructureContainerExtension extends StructureContainer {
                         filter: s => s.structureType == type
                     });
             }
+
+            const thisProxy = this
+            const room = this.room
+
+            // //筛选id是否相等，同时删除失效目标的缓存
+            // const f = function (a: StructureContainer, b: string) {
+            //     const aMountAtRef = a.getData('mountAt')
+            //     if (!aMountAtRef) return false
+
+            //     const o = GlobalHelper.deref(aMountAtRef)
+            //     if (!o) {
+            //         thisProxy.deleteData(aMountAtRef, 'mountAt')
+            //         return false
+            //     }
+            //     return o.ref == b
+            // }
 
             //筛选一次，防止controller和storage source等挨得过近，确保返回的是想要的对象,
             //同时筛选已经有container的对象,标记是否已经有挂载过了，原则是给挂载少的对象进行挂载
@@ -41,8 +58,8 @@ export class StructureContainerExtension extends StructureContainer {
             if (mountAtObjs.length > 0) {
                 //选择没有挂载container的那个对象进行挂载
                 mountAtObjs.sort((a, b) => {
-                    let aMountNum = room.links.filter(l => l.getData('mountAt') == a.id).length;
-                    let bMountNum = room.links.filter(l => l.getData('mountAt') == b.id).length;
+                    let aMountNum = room.containers.filter(c => c.getData('mountAt') == a.id).length;
+                    let bMountNum = room.containers.filter(c => c.getData('mountAt') == b.id).length;
 
                     // 如果挂载数量相同，则按距离排序
                     if (aMountNum === bMountNum) {
@@ -56,6 +73,15 @@ export class StructureContainerExtension extends StructureContainer {
                 });
                 mountAtObj = mountAtObjs[0]
                 this.setData('mountAt', mountAtObj.id)
+
+                //清理一次无效的mountAt缓存
+                for (let i in this.room.memory.roomObjectData) {
+                    const cache = this.room.memory.roomObjectData[i]
+                    if (cache.mountAt == mountAtObj.ref) {
+                        const o = GlobalHelper.deref(i)
+                        if (!o) this.deleteData(i)
+                    }
+                }
             }
         }
 

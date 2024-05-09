@@ -15,6 +15,7 @@ import { ContainerForSourceScheduler } from "./scheduler/containerForSourceSched
 import { ContainerForUpgradeScheduler } from "./scheduler/containerForUpgradeScheduler"
 import { DropedResourceScheduler } from "./scheduler/dropedResourceScheduler"
 import { LOCAL_SHARD_NAME, SIM_ROOM_NAME } from "global"
+import { LinkForUpgradeScheduler } from "./scheduler/linkForUpgradeScheduler"
 
 export function mountRoomEngine() {
     PrototypeHelper.assignPrototype(Room, RoomExtension)
@@ -29,9 +30,10 @@ export class RoomEngine {
             ErrorCatcher.catch(() => BusinessTower.run(room)) //tower
 
             if (room.hashTime % 3 != 0 || !room.my) return
-            if (room.hashTime % 31 == 0) room.update()
+            if (room.hashTime % 31 == 0) {
+                room.update() //更新建筑缓存
+            }
             if ((room.hashTime % 301 == 0 || fistActive) && LOCAL_SHARD_NAME != SIM_ROOM_NAME) {
-                debugger
                 global.BetterMove.deletePathInRoom(room.name)
                 fistActive = false
             }
@@ -76,7 +78,7 @@ export class RoomEngine {
 
         new UpgradeScheduler(room, 'upgrader').tryGenEventToRoom() //专业升级
 
-        new ContainerForSourceScheduler(room).tryGenEventToRoom() //搬运内矿
+        new ContainerForSourceScheduler(room).tryGenEventToRoom() //内矿容器搬运
         new DropedResourceScheduler(room).tryGenEventToRoom() //搬运掉落资源
 
         new HiveScheduler(room, 'carrier').tryGenEventToRoom() //装填hive
@@ -96,13 +98,15 @@ export class RoomEngine {
 
         new UpgradeScheduler(room, 'upgrader').tryGenEventToRoom() //专业升级
 
-        new ContainerForSourceScheduler(room).tryGenEventToRoom() //搬运内矿
+        new ContainerForSourceScheduler(room).tryGenEventToRoom() //内矿容器搬运
         new DropedResourceScheduler(room).tryGenEventToRoom() //搬运掉落资源
 
         new HiveScheduler(room, 'carrier').tryGenEventToRoom() //装填hive
         new TowerScheduler(room).tryGenEventToRoom() //装填tower
 
+        new LinkForUpgradeScheduler(room).tryGenEventToRoom() //升级link搬运
         new ContainerForUpgradeScheduler(room).tryGenEventToRoom() //升级容器搬运
+
         new StorageScheduler(room).tryGenEventToRoom() //剩余资源搬运到storage
 
         new HiveScheduler(room, 'worker').tryGenEventToRoom() //装填hive

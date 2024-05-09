@@ -38,7 +38,6 @@ declare global {
          * @param ignoreSpawning 忽略正在spawn中的creep
          */
         idleCreeps(role?: RoleType, ignoreSpawning?: boolean): Creep[]
-
     }
 }
 

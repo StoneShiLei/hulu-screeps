@@ -40,7 +40,7 @@ export abstract class Action implements IAction {
                 const target = targets.shift()
                 if (!target) return
                 const task = TaskHelper.transfer(target, options)
-                const tasks = Action.genTaskList(creep, RESOURCE_ENERGY, task)
+                const tasks = Action.genTaskList(creep, RESOURCE_ENERGY, options, task)
                 creep.task = TaskHelper.chain(tasks)
             })
         }
@@ -51,13 +51,13 @@ export abstract class Action implements IAction {
      * @param creep 要添加任务的creep
      * @param type 要补充的资源类型
      * @param tasks 原始任务
+     * @param amount withdraw的数量
      * @returns
      */
-    protected static genTaskList(creep: Creep, type: ResourceConstant, ...tasks: ITask[]): ITask[] {
+    protected static genTaskList(creep: Creep, type: ResourceConstant, options?: ActionOptions, ...tasks: ITask[]): ITask[] {
+
         //资源已满的话直接返回原本的任务
         if (creep.store.getUsedCapacity(type) == creep.store.getCapacity(type)) return tasks
-
-        // todo 如果当前需求资源和体内资源不一致时，添加一个清空体内资源的任务
 
         //防止取资源的目标和填资源的目标是同一个
         const resources = Action.findResource(creep, type).filter(s => !_.some(tasks, task => task.target?.ref == s.id))
@@ -66,7 +66,9 @@ export abstract class Action implements IAction {
         const target = creep.pos.findClosestByPath(resources, { ignoreCreeps: true })
         if (!target && creep.isEmptyStore) return [] //emptyStore且找不到获取资源的目标时，不返回任何task
         if (!target) return tasks //没有资源目标时，用现有的资源进行任务
-        return [Action.genTakeResourceTask(target), ...tasks]
+
+        const amount = options?.amount || creep.store.getFreeCapacity(type)
+        return [Action.genTakeResourceTask(target, amount), ...tasks]
     }
 
     /**
@@ -103,11 +105,12 @@ export abstract class Action implements IAction {
     /**
      * 根据目标类型生成任务
      * @param target
+     * @param amount withdraw的数量
      * @returns
      */
-    protected static genTakeResourceTask(target: TakeResourceType): ITask {
+    protected static genTakeResourceTask(target: TakeResourceType, amount?: number): ITask {
         if ('store' in target) {
-            return TaskHelper.withdraw(target)
+            return TaskHelper.withdraw(target, { amount })
         }
         else if ('amount' in target) {
             return TaskHelper.pickup(target)

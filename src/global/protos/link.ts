@@ -1,12 +1,13 @@
+import { GlobalHelper } from "utils/GlobalHelper";
 
 export class StructureLinkExtension extends StructureLink {
 
     mountAt(type: keyof MountAtMap): MountAtObjType | undefined
         | undefined {
-        const room = this.room
+
         let mountAtObj = this.getDataObj<MountAtObjType>('mountAt')
         if (!mountAtObj) {
-            debugger
+
             // 寻找附近对象
             let mountAtObjs: MountAtObjType[] = []
             if (type == 'source') {
@@ -19,6 +20,16 @@ export class StructureLinkExtension extends StructureLink {
                     });
             }
 
+            const room = this.room
+
+            // //筛选id是否相等，同时删除失效目标的缓存
+            // const f = function (a: StructureLink, b: string) {
+            //     //挂载目标的ref
+            //     const aMountAtRef = a.getData('mountAt')
+            //     if (!aMountAtRef) return false
+            //     return aMountAtRef == b
+            // }
+
             //筛选一次，防止controller和storage source等挨得过近，确保返回的是想要的对象,
             //同时筛选已经有link的对象，或已经有2个link的source,标记是否已经有挂载过了，原则是给挂载少的对象进行挂载
             const filter = function (obj: MountAtObjType): boolean {
@@ -26,10 +37,11 @@ export class StructureLinkExtension extends StructureLink {
 
                 //视为已挂载的则不会被考虑新挂载link上去
                 let isMounted = false
+                const mountNum = room.links.filter(l => l.getData('mountAt') == obj.id).length
                 if (isStructure && 'link' in obj) {
-                    isMounted = room.links.filter(l => l.getData('mountAt') == obj.id).length > 0
+                    isMounted = mountNum > 0
                 } else if (!isStructure && 'links' in obj) {
-                    isMounted = room.links.filter(l => l.getData('mountAt') == obj.id).length >= 2
+                    isMounted = mountNum >= 2
                 }
                 else {
                     isMounted = true //extractor不挂载link
@@ -38,8 +50,7 @@ export class StructureLinkExtension extends StructureLink {
                 return (isStructure ? obj.structureType === type : type === 'source') && !isMounted
             }
 
-            mountAtObjs = mountAtObjs
-                .filter(o => filter(o));
+            mountAtObjs = mountAtObjs.filter(o => filter(o));
 
             if (mountAtObjs.length > 0) {
                 //选择挂载link 最少 最近 的那个对象进行挂载
@@ -65,6 +76,15 @@ export class StructureLinkExtension extends StructureLink {
                 }
                 mountAtObj = mountAtObjs[0]
                 this.setData('mountAt', mountAtObj.id)
+
+                //清理一次无效的mountAt缓存
+                for (let i in this.room.memory.roomObjectData) {
+                    const cache = this.room.memory.roomObjectData[i]
+                    if (cache.mountAt == mountAtObj.ref) {
+                        const o = GlobalHelper.deref(i)
+                        if (!o) this.deleteData(i)
+                    }
+                }
             }
         }
 

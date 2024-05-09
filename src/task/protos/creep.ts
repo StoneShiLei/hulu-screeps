@@ -10,6 +10,11 @@ export class CreepExtension extends Creep {
         if (!task || task.length == 0) return
         this.task = TaskHelper.chain([...task, this.task])
     }
+    pressTaskAndRun(...task: ITask[]) {
+        this.pressTask(...task)
+        this.task?.run()
+    }
+
 
     /**
      * task的get访问器

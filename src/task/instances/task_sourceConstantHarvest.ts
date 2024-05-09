@@ -41,7 +41,43 @@ export class TaskSourceConstantHarvest extends Task<SourceConstantHarvestTargetT
             }
         }
 
+
+        if ((this.target.energy + 300) / this.target.energyCapacity > (this.target.ticksToRegeneration || 300) / 300 && this.target.energy) {
+            this.creep.harvest(this.target)
+        }
+
+
         const container = this.target.container
+        const link = findSuitableLink(this.target.links)
+
+        if ((this.creep.ticksToLive || 0) % 3 == 0 || this.creep.store.getFreeCapacity(RESOURCE_ENERGY) <= 0) {
+            // debugger
+            const nearFull = this.creep.store.getFreeCapacity(RESOURCE_ENERGY) < this.creep.getActiveBodyparts(WORK) * 2
+            const linkNotFull = link && link.store.energy != 800
+            if (nearFull) {
+                const site = this.creep.room.constructionSites.filter(s => s.pos.isNearTo(this.creep.pos)).shift()
+                if (site) {
+                    this.creep.build(site)
+                }
+                else if (container && container.hits / container.hitsMax < 0.9) {
+                    this.creep.repair(container)
+                }
+                else if (link && link.hits / link.hitsMax < 0.9) {
+                    this.creep.repair(link)
+                }
+                else {
+
+                }
+            }
+
+            if (container && linkNotFull) {
+                if (nearFull) this.creep.transfer(link, RESOURCE_ENERGY)
+                if (container.store.getUsedCapacity(RESOURCE_ENERGY) > this.creep.store.getCapacity()) {
+                    this.creep.withdraw(container, RESOURCE_ENERGY)
+                }
+            }
+
+        }
 
         if ((this.creep.ticksToLive || 0) % 6 <= 1) {
             const droped = this.creep.pos.lookFor(LOOK_ENERGY).shift()
@@ -56,35 +92,17 @@ export class TaskSourceConstantHarvest extends Task<SourceConstantHarvestTargetT
             }
         }
 
-
-
-        if ((this.creep.ticksToLive || 0) % 3 == 0 || this.creep.store.getFreeCapacity(RESOURCE_ENERGY) <= 0) {
-            const nearFull = this.creep.store.getFreeCapacity(RESOURCE_ENERGY) < this.creep.getActiveBodyparts(WORK) * 2
-            if (nearFull) {
-                const site = this.creep.room.constructionSites.filter(s => s.pos.isNearTo(this.creep.pos)).shift()
-                if (site) {
-                    return this.creep.build(site)
-                }
-                else if (container && container.hits / container.hitsMax < 0.9) {
-                    return this.creep.repair(container)
-                }
-                else {
-                    //todo  维修link
-                }
-            }
-
-            if (container && container.store.getUsedCapacity(RESOURCE_ENERGY) > this.creep.getActiveBodyparts(CARRY) * CARRY_CAPACITY) {
-                this.creep.withdraw(container, RESOURCE_ENERGY)
-            }
-        }
-
-
-
-        if ((this.target.energy + 300) / this.target.energyCapacity > (this.target.ticksToRegeneration || 300) / 300 && this.target.energy) {
-            return this.creep.harvest(this.target)
-        }
-
         return OK
     }
 }
 
+function findSuitableLink(links: StructureLink[]): StructureLink | undefined {
+    // debugger
+    let link1 = links[0]
+    let link2 = links[1]
+    if (!link1) link1 = link2
+    if (link1 && link2 && link1.store.energy > link2.store.energy && link1.store.energy == 800) {
+        link1 = link2
+    }
+    return link1
+}

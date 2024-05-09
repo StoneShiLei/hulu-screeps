@@ -6,6 +6,12 @@ interface RoomObject {
     ref: string | undefined
 
     /**
+     * 删除对象数据缓存
+     * @param thisRef 对象的ref
+     * @param key 缓存key，为空时删除全部
+     */
+    deleteData(thisRef: string | undefined, key?: keyof RoomObjectData,): void
+    /**
      * 设置对象数据缓存
      * @param key 缓存key
      * @param ref 缓存对象的ref

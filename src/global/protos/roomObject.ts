@@ -17,8 +17,19 @@ export class RoomObjectExtension extends RoomObject {
         }
     }
 
+    deleteData(thisRef: string | undefined, key?: keyof RoomObjectData,): void {
+        if (!this.room || !thisRef) return
+        this.room.memory.roomObjectData = this.room.memory.roomObjectData || {};
+        if (key) {
+            delete this.room.memory.roomObjectData[thisRef][key]
+        }
+        else {
+            delete this.room.memory.roomObjectData[thisRef]
+        }
+    }
+
     setData(key: keyof RoomObjectData, ref: string | undefined): void {
-        if (!this.room || !this.ref || !ref) return undefined
+        if (!this.room || !this.ref || !ref) return
 
         this.room.memory.roomObjectData = this.room.memory.roomObjectData || {};
         const data = this.room.memory.roomObjectData[this.ref] || {};
