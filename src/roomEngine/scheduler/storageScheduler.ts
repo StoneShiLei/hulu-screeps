@@ -1,8 +1,8 @@
+import { TransferAllTargetType } from "task/instances/task_transferAll";
 import { Scheduler } from "./scheduler";
-import { TransferTargetType } from "task/instances/task_transfer";
 import { StorageAction } from "roomEngine/action/storageAction";
 
-export class StorageScheduler extends Scheduler<TransferTargetType> {
+export class StorageScheduler extends Scheduler<TransferAllTargetType> {
 
     constructor(room: Room) {
         const role: RoleType = 'carrier'
@@ -10,24 +10,24 @@ export class StorageScheduler extends Scheduler<TransferTargetType> {
         this.strategy = this.updateStrategy()
     }
 
-    updateStrategy(): IRoomStrategy<TransferTargetType> | undefined {
+    updateStrategy(): IRoomStrategy<TransferAllTargetType> | undefined {
         return new Default(this.room);
     }
 }
 
 
-class Default implements IRoomStrategy<TransferTargetType> {
+class Default implements IRoomStrategy<TransferAllTargetType> {
     room: Room
 
     constructor(room: Room) {
         this.room = room
     }
 
-    getTargets(): TransferTargetType[] {
+    getTargets(): TransferAllTargetType[] {
         return this.room.storage ? [this.room.storage] : []
     }
 
-    getAction(): ActionDetail<TransferTargetType> {
+    getAction(): ActionDetail<TransferAllTargetType> {
         return {
             actionMethod: StorageAction.fillAllResourceToStorage,
         }
