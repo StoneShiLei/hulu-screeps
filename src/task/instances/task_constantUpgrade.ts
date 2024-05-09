@@ -32,7 +32,7 @@ export class TaskConstantUpgrade extends Task<UpgradeTargetType> {
         if (!this.target) return OK
 
         //有能量就升级
-        if (this.creep.store[RESOURCE_ENERGY] > 0) return this.creep.upgradeController(this.target)
+        if (this.creep.store[RESOURCE_ENERGY] > 0) this.creep.upgradeController(this.target)
 
         const container = this.target.container
         if (!container) return OK
@@ -45,14 +45,19 @@ export class TaskConstantUpgrade extends Task<UpgradeTargetType> {
         if (this.creep.store.getUsedCapacity(RESOURCE_ENERGY) <= this.creep.getActiveBodyparts(WORK) * (containerIsNotFull ? 2000 : 1)) {
             let withdrawLinkRes: ScreepsReturnCode = ERR_FULL
             //如果link的当前可用能量大于0，则取用link的能量  （计算其他以此为目标的影响）
-            if (link && (link.getCurrentStoreResource(RESOURCE_ENERGY) || 0) > 0) {
+            if (link && (link._upgrade_used || 0) <= link.store.energy && link.store.energy > 0) {
                 withdrawLinkRes = this.creep.withdraw(link, RESOURCE_ENERGY)
-                if (withdrawLinkRes == ERR_NOT_IN_RANGE) this.creep.moveTo(link)
+                if (withdrawLinkRes == ERR_NOT_IN_RANGE) {
+                    this.creep.moveTo(link)
+                }
+                else {
+                    link._upgrade_used = (link._upgrade_used || 0) + this.creep.store.getFreeCapacity(RESOURCE_ENERGY)
+                }
             }
 
             //如果当前tick取用过link，则将富余1tick升级所需能量之外的能量转入到container中
             if (withdrawLinkRes == OK && containerIsNotFull) {
-                const amount = this.creep.store.getCapacity() - this.creep.getActiveBodyparts(WORK) * 2
+                const amount = this.creep.getActiveBodyparts(CARRY) * CARRY_CAPACITY - this.creep.getActiveBodyparts(WORK) * 2
                 const transferContainerRes = this.creep.transfer(container, RESOURCE_ENERGY, amount)
                 if (transferContainerRes == ERR_NOT_IN_RANGE) this.creep.moveTo(container)
             }
@@ -78,6 +83,12 @@ export class TaskConstantUpgrade extends Task<UpgradeTargetType> {
         if ((this.creep.ticksToLive || 0) % 2 > 0) this.creep.memory.dontPullMe = false;
 
         return OK
+    }
+}
+
+declare global {
+    interface StructureLink {
+        _upgrade_used: number | undefined
     }
 }
 

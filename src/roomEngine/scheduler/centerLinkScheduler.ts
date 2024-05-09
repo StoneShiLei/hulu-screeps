@@ -1,8 +1,9 @@
 import { TransferTargetType } from "task/instances/task_transfer";
 import { Scheduler } from "./scheduler";
 import { Action } from "roomEngine/action/action";
+import { StorageAction } from "roomEngine/action/storageAction";
 
-export class LinkForUpgradeScheduler extends Scheduler<TransferTargetType> {
+export class CenterLinkScheduler extends Scheduler<TransferTargetType> {
 
     constructor(room: Room) {
         const role: RoleType = 'carrier'
@@ -23,19 +24,18 @@ class Default implements IRoomStrategy<TransferTargetType> {
     }
 
     getTargets(): TransferTargetType[] {
-        if (!this.room.controller) return []
-        const link = this.room.controller.link
         const centerLink = this.room.storage?.link
-        //如果有link在，且2个link都为空，则装填中央link
-        if (link && centerLink && link.store.energy == 0 && centerLink.store.energy == 0) {
-            return [centerLink]
-        }
+        if (!centerLink || centerLink.store.energy == 0) return []
 
-        return [];
+        //sourceLink有都满的情况下才需要清空centerLink
+        const needTran = this.room.sources.some(s => s.links.filter(l => l.store.energy == 800).length >= 2)
+        if (!needTran || centerLink.targetedBy.length != 0) return []
+
+        return [centerLink];
     }
     getAction(): ActionDetail<TransferTargetType> {
         return {
-            actionMethod: Action.transferResource,
+            actionMethod: StorageAction.tranCenterLink as any,
             options: {
                 resourceType: RESOURCE_ENERGY,
                 amount: 800

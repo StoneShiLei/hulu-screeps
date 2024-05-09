@@ -110,7 +110,8 @@ export abstract class Action implements IAction {
      */
     protected static genTakeResourceTask(target: TakeResourceType, amount?: number): ITask {
         if ('store' in target) {
-            return TaskHelper.withdraw(target, { amount })
+            // return TaskHelper.withdraw(target, { amount }) //todo  有问题
+            return TaskHelper.withdraw(target)
         }
         else if ('amount' in target) {
             return TaskHelper.pickup(target)
@@ -144,18 +145,21 @@ export abstract class Action implements IAction {
      * @returns
      */
     private static findMassStore(room: Room, type: ResourceConstant): WithdrawTargetType[] {
+
+        if (room.storage && room.storage.store[type] > 3000) return [room.storage]
+
         return room.massStores.filter(s => {
             if (s.structureType == STRUCTURE_CONTAINER) {
                 return s.store[type] > 600
             }
             else if (s.structureType == STRUCTURE_STORAGE) {
-                return s.store[type] > 3000
+                return s.store[type] > 2000
             }
             else if (s.structureType == STRUCTURE_TERMINAL) {
-                return s.store[type] > 3000
+                return s.store[type] > 2000
             }
             else if (s.structureType == STRUCTURE_FACTORY) {
-                return s.store[type] > 3000
+                return s.store[type] > 2000
             }
             else {
                 return false

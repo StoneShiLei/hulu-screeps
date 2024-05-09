@@ -2,7 +2,7 @@ import { Scheduler } from "./scheduler";
 import { WithdrawTargetType } from "task/instances/task_withdraw";
 import { ContainerAction } from "roomEngine/action/containerAction";
 
-export class ContainerForSourceScheduler extends Scheduler<WithdrawTargetType> {
+export class TransferSourceScheduler extends Scheduler<WithdrawTargetType> {
 
     constructor(room: Room) {
         const role: RoleType = 'carrier'

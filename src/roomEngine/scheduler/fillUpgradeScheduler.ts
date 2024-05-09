@@ -2,7 +2,7 @@ import { TransferTargetType } from "task/instances/task_transfer";
 import { Scheduler } from "./scheduler";
 import { Action } from "roomEngine/action/action";
 
-export class ContainerForUpgradeScheduler extends Scheduler<TransferTargetType> {
+export class FillUpgradeScheduler extends Scheduler<TransferTargetType> {
 
     constructor(room: Room) {
         const role: RoleType = 'carrier'
@@ -26,7 +26,13 @@ class Default implements IRoomStrategy<TransferTargetType> {
         if (!this.room.controller) return []
         const container = this.room.controller.container
         if (!container) return []
+
         const link = this.room.controller.link
+        const centerLink = this.room.storage?.link
+        //如果有link在，且2个link都为空，则装填中央link
+        if (link && centerLink && link.store.energy == 0 && centerLink.store.energy == 0) {
+            return [centerLink]
+        }
 
         // 获取container中的能量存储量
         const containerEnergy = container.getCurrentStoreResource(RESOURCE_ENERGY) || 0;

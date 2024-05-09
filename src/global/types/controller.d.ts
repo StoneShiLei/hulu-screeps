@@ -8,5 +8,5 @@ interface StructureController {
     /**
      * controller旁的link
      */
-    link: StructureContainer | undefined
+    link: StructureLink | undefined
 }

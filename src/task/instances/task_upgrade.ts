@@ -26,7 +26,8 @@ export class TaskUpgrade extends Task<UpgradeTargetType> {
     }
     work(): number {
         if (!!this.target && this.target.my) {
-            return this.creep.upgradeController(this.target)
+            const res = this.creep.upgradeController(this.target)
+            return res
         }
         else {
             return this.finish()

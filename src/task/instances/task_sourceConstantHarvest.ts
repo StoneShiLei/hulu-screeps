@@ -51,7 +51,7 @@ export class TaskSourceConstantHarvest extends Task<SourceConstantHarvestTargetT
         const link = findSuitableLink(this.target.links)
 
         if ((this.creep.ticksToLive || 0) % 3 == 0 || this.creep.store.getFreeCapacity(RESOURCE_ENERGY) <= 0) {
-            // debugger
+
             const nearFull = this.creep.store.getFreeCapacity(RESOURCE_ENERGY) < this.creep.getActiveBodyparts(WORK) * 2
             const linkNotFull = link && link.store.energy != 800
             if (nearFull) {
@@ -97,7 +97,7 @@ export class TaskSourceConstantHarvest extends Task<SourceConstantHarvestTargetT
 }
 
 function findSuitableLink(links: StructureLink[]): StructureLink | undefined {
-    // debugger
+
     let link1 = links[0]
     let link2 = links[1]
     if (!link1) link1 = link2
