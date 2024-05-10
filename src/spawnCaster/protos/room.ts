@@ -70,6 +70,15 @@ export class RoomExtension extends Room {
         return name
     }
 
+    /**
+     * 是否需要装填spawn和ext
+     */
+    needFillSpawnGetter(): boolean {
+        const allHiveCurrentEnergy = [...this.spawns, ...this.extensions]
+            .reduce((sum, ext) => sum + (ext.getCurrentStoreResource(RESOURCE_ENERGY) || 0), 0)
+        return allHiveCurrentEnergy < this.energyCapacityAvailable
+    }
+
     private genName(): string {
         return _.padLeft(Math.ceil(Math.random() * Math.pow(36, 10)).toString(36).toLocaleUpperCase(), 10, "0")
     }

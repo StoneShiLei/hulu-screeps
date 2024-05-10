@@ -13,7 +13,7 @@ export class UpgradeAction extends Action {
                 const target = targets.shift()
                 if (!target) return
                 const task = TaskHelper.upgrade(target)
-                const tasks = Action.genTaskList(creep, RESOURCE_ENERGY, {}, task)
+                const tasks = Action.genTaskList(creep, undefined, task)
                 creep.task = TaskHelper.chain(tasks)
             })
         }

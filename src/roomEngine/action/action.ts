@@ -16,7 +16,7 @@ export abstract class Action implements IAction {
      * @param options
      * @returns
      */
-    static withdrawResource(targets: WithdrawTargetType[], role: RoleType, room: Room, options?: ActionOptions) {
+    static withdrawResource(targets: WithdrawTargetType[], role: RoleType, room: Room, options: ActionOptions = {}) {
         return function () {
             room.idleCreeps(role).filter(c => c.isEmptyStore).forEach(creep => {
                 const target = targets.shift()
@@ -34,13 +34,17 @@ export abstract class Action implements IAction {
      * @param options
      * @returns
      */
-    static transferResource(targets: TransferTargetType[], role: RoleType, room: Room, options?: ActionOptions) {
+    static transferResource(targets: TransferTargetType[], role: RoleType, room: Room, options: ActionOptions = {}) {
         return function () {
             room.idleCreeps(role).forEach(creep => {
                 const target = targets.shift()
                 if (!target) return
                 const task = TaskHelper.transfer(target, options)
-                const tasks = Action.genTaskList(creep, RESOURCE_ENERGY, options, task)
+
+                const takeResourceType = options.resourceType || RESOURCE_ENERGY
+                const withdrawAmount = options.amount || (target.store.getFreeCapacity(takeResourceType) || undefined)
+
+                const tasks = Action.genTaskList(creep, { resourceType: takeResourceType, amount: withdrawAmount }, task)
                 creep.task = TaskHelper.chain(tasks)
             })
         }
@@ -49,26 +53,31 @@ export abstract class Action implements IAction {
     /**
      * 生成task列表，用于给creep补充资源
      * @param creep 要添加任务的creep
-     * @param type 要补充的资源类型
      * @param tasks 原始任务
-     * @param amount withdraw的数量
+     * @param options 设置
      * @returns
      */
-    protected static genTaskList(creep: Creep, type: ResourceConstant, options?: ActionOptions, ...tasks: ITask[]): ITask[] {
+    protected static genTaskList(creep: Creep, options: ActionOptions = {}, ...tasks: ITask[]): ITask[] {
+        options.resourceType = options.resourceType || RESOURCE_ENERGY
 
         //资源已满的话直接返回原本的任务
-        if (creep.store.getUsedCapacity(type) == creep.store.getCapacity(type)) return tasks
+        if (creep.store.getUsedCapacity(options.resourceType) == creep.store.getCapacity(options.resourceType)) return tasks
 
         //防止取资源的目标和填资源的目标是同一个
-        const resources = Action.findResource(creep, type).filter(s => !_.some(tasks, task => task.target?.ref == s.id))
+        const resources = Action.findResource(creep, options.resourceType)
+            .filter(s => !_.some(tasks, task => task.target?.ref == s.id))
 
         //资源未满时，先把资源补满再执行任务
         const target = creep.pos.findClosestByPath(resources, { ignoreCreeps: true })
         if (!target && creep.isEmptyStore) return [] //emptyStore且找不到获取资源的目标时，不返回任何task
         if (!target) return tasks //没有资源目标时，用现有的资源进行任务
 
-        const amount = options?.amount || creep.store.getFreeCapacity(type)
-        return [Action.genTakeResourceTask(target, amount), ...tasks]
+        //如果有设置取用数量且目标包含store属性，则设置取用数量为目标可用数量
+        if (options.amount && 'store' in target) {
+            options.amount = Math.min(target.store[options.resourceType], options.amount)
+        }
+
+        return [Action.genTakeResourceTask(target, options), ...tasks]
     }
 
     /**
@@ -108,10 +117,9 @@ export abstract class Action implements IAction {
      * @param amount withdraw的数量
      * @returns
      */
-    protected static genTakeResourceTask(target: TakeResourceType, amount?: number): ITask {
+    protected static genTakeResourceTask(target: TakeResourceType, options?: ActionOptions): ITask {
         if ('store' in target) {
-            // return TaskHelper.withdraw(target, { amount }) //todo  有问题
-            return TaskHelper.withdraw(target)
+            return TaskHelper.withdraw(target, options)
         }
         else if ('amount' in target) {
             return TaskHelper.pickup(target)
@@ -150,17 +158,18 @@ export abstract class Action implements IAction {
 
         return room.massStores.filter(s => {
             if (s.structureType == STRUCTURE_CONTAINER) {
-                return s.store[type] > 600
+                return (s.getCurrentStoreResource(type) || 0) >
+                    (room.level == 8 ? 1600 : room.needFillSpawn ? 1200 : 500)
             }
             else if (s.structureType == STRUCTURE_STORAGE) {
-                return s.store[type] > 2000
+                return (s.getCurrentStoreResource(type) || 0) > 3000
             }
             else if (s.structureType == STRUCTURE_TERMINAL) {
-                return s.store[type] > 2000
+                return (s.getCurrentStoreResource(type) || 0) > 3000
             }
-            else if (s.structureType == STRUCTURE_FACTORY) {
-                return s.store[type] > 2000
-            }
+            // else if (s.structureType == STRUCTURE_FACTORY) {
+            //     return s.store[type] > 3000
+            // }
             else {
                 return false
             }

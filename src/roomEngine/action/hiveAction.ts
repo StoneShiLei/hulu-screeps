@@ -20,7 +20,7 @@ export class HiveAction extends Action {
 
                         let capacity = creep.store.getCapacity(RESOURCE_ENERGY)
                         const fillTasks: ITask[] = []
-                        while (capacity > 0) {
+                        while (capacity >= 0) {
                             const target = sortedTargets.shift()
                             if (!target) break
                             fillTasks.push(TaskHelper.transfer(target))
