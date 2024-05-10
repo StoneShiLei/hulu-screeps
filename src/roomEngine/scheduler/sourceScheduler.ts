@@ -33,7 +33,8 @@ class Default implements IRoomStrategy<SourceConstantHarvestTargetType> {
 
         const targets = this.room.sources.filter(s =>
             s.targetedBy.filter(c => c.role == this.role).length == 0 ||
-            s.targetedBy.filter(c => c.role == this.role && (c.ticksToLive || 1500) < 300).length > 0)
+            s.targetedBy.filter(c => c.role == this.role && (c.ticksToLive || 1500) < 300).length > 0 &&
+            s.targetedBy.filter(c => c.role == this.role && (c.ticksToLive || 1500) > 300).length == 0)
 
         return targets
     }

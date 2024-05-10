@@ -60,6 +60,7 @@ export class RoomEngine {
 
             //处理房间spawn队列
             room.spawnQueue.forEach(request => {
+                debugger
                 room.trySpawn(request.role, request.bodyFunc, request.task, request.spawnOpt, request.targetRoomName)
             })
         })
