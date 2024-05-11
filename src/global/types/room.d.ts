@@ -1,8 +1,11 @@
-import { RoomStatusEnum } from "global/const/const"
-
+import { RoomStatusEnum } from "global/protos/room"
 
 declare global {
     interface Room {
+        /**
+         * 房间状态
+         */
+        status: RoomStatusEnum
         /**
          * 属于这个房间的所有creep
          */
@@ -16,17 +19,25 @@ declare global {
          * Game.time + room.hashCode
          */
         hashTime: number
+
         /**
-         * 获取该房间所有的creep，支持按角色分类
+         * 获取房间内掉落的资源，9tick更新一次
+         */
+        drops: (Resource | Ruin | Tombstone)[]
+
+        /**
+         * 获取该房间所有的creep，支持按角色分类,按store从高到低排序
          * @param role 角色
          * @param ignoreSpawning 忽略正在spawn中的creep
          */
         creeps(role?: RoleType, ignoreSpawning?: boolean): Creep[]
 
         /**
-         * 房间状态
+         * 获取该房间所有闲置的creep，支持按角色分类,按store从高到低排序
+         * @param role 角色
+         * @param ignoreSpawning 忽略正在spawn中的creep
          */
-        status: RoomStatusEnum
+        idleCreeps(role?: RoleType, ignoreSpawning?: boolean): Creep[]
     }
 }
 

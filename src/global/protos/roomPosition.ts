@@ -1,5 +1,9 @@
 export class RoomPositionExtension extends RoomPosition {
 
+    isEdgeGetter(): boolean {
+        return this.x == 0 || this.x == 49 || this.y == 0 || this.y == 49
+    }
+
     isWalkable(ignoreCreep: boolean = true, ignoreRampartOwner?: string): boolean {
 
         //无房间视野时直接按地形判断

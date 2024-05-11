@@ -1,0 +1,3 @@
+interface RoomMemory {
+    carrierBusy: number[]
+}

@@ -74,7 +74,7 @@ export class BusinessTower {
                     tower.attack(hostileCreep);
                     this.beforeAttackMap[room.name] = hostileCreep;
                     return;
-                }
+                } //todo  需要修改
 
                 // 每15 ticks随机攻击一个目标，如果已经有随机目标
                 if (Game.time % 15 === 0 && randomAttackTarget) {
@@ -82,7 +82,7 @@ export class BusinessTower {
                     return;
                 }
 
-                // 每7 ticks切换一次随机攻击目标
+                // 切换一次随机攻击目标
                 if (Game.time % 15 === 7) {
                     randomAttackTarget = hostiles[Math.floor(hostiles.length * Math.random())]
                     tower.attack(randomAttackTarget);

@@ -1,10 +1,9 @@
 /**
  * 任务策略详细
  */
-interface StrategyDetail<T extends TargetType> {
-    strategyMethod: StrategyMethodType<T>
-    shouldSpawn?: boolean
-    creepsPerTarget?: number
+interface ActionDetail<T extends TargetType> {
+    actionMethod: ActionGenerationType<T>
+    options?: ActionOptions
 }
 
 /**
@@ -12,13 +11,9 @@ interface StrategyDetail<T extends TargetType> {
  */
 interface IScheduler<T extends TargetType> {
     /**
-     * 调度优先级，更高优先级的优先执行
+     * 添加房间event
      */
-    priority(): number
-    /**
-     * 生成任务包
-     */
-    generateTaskPackage(): TaskPackage<T> | undefined
+    tryGenEventToRoom(): void
 
     /**
      * 根据房间的状态，使用不同的策略
@@ -35,19 +30,11 @@ interface IRoomStrategy<T extends TargetType> {
      */
     room: Room
     /**
-     * 调度优先级，更高优先级的优先执行
+     * 获取任务目标
      */
-    priority(): number
-    /**
-     * 生成任务目标
-     */
-    generateTargets(): T[];
-    /**
-     * 过滤符合任务工作条件的creep
-     */
-    creepsFilter(creep: Creep): boolean;
+    getTargets(): T[];
     /**
      * 根据房间情况选择合适的执行策略
      */
-    getStrategy(): StrategyDetail<T>;
+    getAction(): ActionDetail<T>;
 }

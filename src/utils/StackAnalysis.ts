@@ -47,6 +47,10 @@
  *                    StackAnalysis.watching() 获取已挂载的函数及挂载耗时
  */
 
+import { Action } from "roomEngine/action/action";
+import { Scheduler } from "roomEngine/scheduler/scheduler";
+import { Task } from "task/task";
+
 /** ********************************************** 配置（根据说明修改） ************************************************** **/
 // #region
 
@@ -102,15 +106,17 @@ interface analysisDefined {
 
 // 自定义分析函数合集
 const CUSTOM_FUNCTION: analysisDefined[] = [
-    { name: "Creep.say", parent: Creep.prototype },
-    { name: "RoomVisual.text", parent: RoomVisual.prototype }
+    // { name: "RoomObject.getCurrentStoreResource", parent: RoomObject.prototype },
+    // { name: "Task.run", parent: RoomObject.prototype },
+    // { name: "RoomObject.getCurrentStoreResource", parent: RoomObject.prototype },
+    // { name: "HiveAction.fillSpawn", parent: HiveAction }
 ];
 // 自定义分析的类合集
 const CUSTOM_CLASS: analysisDefined[] = [
-    // { name: "AnalysisMgr", parent: AnalysisMgr },
-    // { name: "ConfigMgr", parent: ConfigMgr },
-    // { name: "BuildingMgr", parent: BuildingMgr },
-    // { name: "EntityMgr", parent: EntityMgr },
+    { name: "Task", parent: Task.prototype },
+    { name: "Room", parent: Room.prototype },
+    { name: "Action", parent: Action.prototype },
+    { name: "Scheduler", parent: Scheduler.prototype },
     // { name: "RoleMgr", parent: RoleMgr },
     // { name: "WorldMgr", parent: WorldMgr },
     // { name: "BuildingBase", parent: BuildingBase.prototype },

@@ -22,20 +22,20 @@ export abstract class Task<TTargetType extends TargetType> implements ITask {
 
         this.data = {}
         this.setting = {
-            targetRange: 1,
             workOffRoad: false,
             oneShot: false,
+            targetRange: 1
         }
 
         _.defaults(option, {
             blind: false,
             moveNextTarget: false,
-            moveOptions: {}
+            moveOptions: {},
         })
         this.option = option
 
 
-        if (target) {
+        if (target && target.ref) {
             this._target = {
                 ref: target.ref,
                 _pos: {
@@ -47,11 +47,11 @@ export abstract class Task<TTargetType extends TargetType> implements ITask {
         }
         else {
             this._target = {
-                ref: '',
+                ref: '-',
                 _pos: {
                     x: -1,
                     y: -1,
-                    roomName: ''
+                    roomName: '-'
                 }
             }
         }
@@ -99,6 +99,46 @@ export abstract class Task<TTargetType extends TargetType> implements ITask {
         if (this.creep) this.creep.task = this
     }
 
+    get manifest(): Task<TargetType>[] {
+        const manifest: Task<TargetType>[] = [this]
+        let parent = this.parent
+        while (parent) {
+            manifest.push(parent);
+            parent = parent.parent
+        }
+        return manifest
+    }
+
+    get targetRefManifest(): string[] {
+        const targetRefs: string[] = [this._target.ref]
+        let parent = this._parent
+        while (parent) {
+            targetRefs.push(parent._target.ref);
+            parent = parent._parent
+        }
+        return targetRefs
+    }
+
+    get targetManifest(): RoomObject[] {
+        const targetRefs: string[] = [this._target.ref]
+        let parent = this._parent
+        while (parent) {
+            targetRefs.push(parent._target.ref);
+            parent = parent._parent
+        }
+        return _.map(targetRefs, ref => GlobalHelper.deref(ref)).filter((r): r is RoomObject => r != null)
+    }
+
+    get targetPosManifest(): RoomPosition[] {
+        const targetPositions: ProtoPos[] = [this._target._pos]
+        let parent = this._parent
+        while (parent) {
+            targetPositions.push(parent._target._pos);
+            parent = parent._parent
+        }
+        return _.map(targetPositions.filter(p => p.x != -1 && p.y != -1), protoPos => GlobalHelper.deRoomPosition(protoPos))
+    }
+
     fork(newTask: ITask): ITask {
         newTask.parent = this;
         if (this.creep) {
@@ -120,6 +160,34 @@ export abstract class Task<TTargetType extends TargetType> implements ITask {
         if (!this.parent?.target) return
 
         return this.creep.moveTo(this.parent.target.pos, this.parent.option.moveOptions)
+    }
+
+    protected parkCreep(creep: Creep, pos: RoomPosition = creep.pos, maintainDistance = false): number {
+        let road = _.find(creep.pos.lookFor(LOOK_STRUCTURES), s => s.structureType == STRUCTURE_ROAD);
+        if (!road) return OK;
+
+        let positions = _.sortBy(creep.pos.surroundPos().filter(p => p.isWalkable()), (p: RoomPosition) => p.getRangeTo(pos));
+        if (maintainDistance) {
+            let currentRange = creep.pos.getRangeTo(pos);
+            positions = _.filter(positions, (p: RoomPosition) => p.getRangeTo(pos) <= currentRange);
+        }
+
+        let swampPosition;
+        for (let position of positions) {
+            if (_.find(position.lookFor(LOOK_STRUCTURES), s => s.structureType == STRUCTURE_ROAD)) continue;
+            let terrain = position.lookFor(LOOK_TERRAIN)[0];
+            if (terrain === 'swamp') {
+                swampPosition = position;
+            } else {
+                return creep.move(creep.pos.getDirectionTo(position));
+            }
+        }
+
+        if (swampPosition) {
+            return creep.move(creep.pos.getDirectionTo(swampPosition));
+        }
+
+        return creep.moveTo(pos);
     }
 
 
@@ -151,7 +219,12 @@ export abstract class Task<TTargetType extends TargetType> implements ITask {
     }
 
     run(): number {
-        if (this.creep.pos.inRangeTo(this.targetPos, this.setting.targetRange || 0)) { //and 不在边缘)
+
+        if (this.creep.pos.inRangeTo(this.targetPos, this.setting.targetRange) && !this.creep.pos.isEdge) {
+
+            //不要堵路
+            // if (this.setting.workOffRoad) this.parkCreep(this.creep, this.targetPos, true)
+
             let result = this.work()
 
             //只执行一次的任务
@@ -189,17 +262,18 @@ export abstract class Task<TTargetType extends TargetType> implements ITask {
  * @param protoTask 原型任务
  * @returns
  */
-export function initTask(protoTask: ProtoTask): Task<TargetType> {
+export function initTask(protoTask: ProtoTask): Task<TargetType> | null {
     let taskName = protoTask.name
     let target = GlobalHelper.deref(protoTask._target.ref)
+    if (!target) return null
 
     const createInstance = taskMap.get(taskName);
 
     if (!createInstance) {
-        return new TaskInvalid(target);
+        return new TaskInvalid(target, protoTask.option);
     }
 
-    const task = createInstance(target);
+    const task = createInstance(target, protoTask.option);
 
     task.proto = protoTask
 

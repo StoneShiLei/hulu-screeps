@@ -1,4 +1,26 @@
-import { RoomStatusEnum } from "global/const/const";
+import { GlobalHelper } from "utils/GlobalHelper"
+
+/**
+ * 房间状态枚举
+ */
+export enum RoomStatusEnum {
+    /**
+     * 房间可用能量低于800
+     */
+    Low = 10,
+    /**
+     * 房间可用能量高于800，但无己方storage
+     */
+    Medium = 20,
+    /**
+     * 有己方storage
+     */
+    High = 30,
+}
+
+const dropedResourceMap: {
+    [roomName: string]: (Resource | Ruin | Tombstone)[]
+} = {}
 
 
 export class RoomExtension extends Room {
@@ -7,12 +29,18 @@ export class RoomExtension extends Room {
         [key: string]: Creep[]
     } | undefined
 
+    idleCreeps(role?: RoleType, ignoreSpawning: boolean = true): Creep[] {
+        return this.creeps(role, ignoreSpawning).filter(c => c.isIdle)
+    }
+
     creeps(role?: RoleType, ignoreSpawning: boolean = true): Creep[] {
         if (!this._creeps || !this._creeps.length) {
             initCreepsCache();
             if (!this._creeps || !this._creeps.length) this._creeps = []
+
         }
         this._roleCreeps = this._roleCreeps || {}
+        this._roleCreeps["_creeps"] = this._roleCreeps["_creeps"] || this._creeps
 
         const keySuffix = ignoreSpawning ? "_spawned_creeps" : "_creeps";
         const roleKey = role ? role + keySuffix : keySuffix;
@@ -32,6 +60,13 @@ export class RoomExtension extends Room {
         }
     }
 
+    dropsGetter(): (Resource | Ruin | Tombstone)[] {
+        if (this.hashTime % 9 == 0 || dropedResourceMap[this.name] === undefined) {
+            this.updateDropedMapIfNeeded()
+        }
+        return dropedResourceMap[this.name] || []
+    }
+
     hashCodeGetter(): number {
         if (!this.memory.hashCode) {
             this.memory.hashCode = (this.hash(this.name) * 9301 + 49297) % 233280
@@ -43,6 +78,33 @@ export class RoomExtension extends Room {
         return Game.time + this.hashCode
     }
 
+    statusGetter(): RoomStatusEnum {
+        if (this.energyCapacityAvailable < 800) {
+            return RoomStatusEnum.Low
+        }
+        else if (this.energyCapacityAvailable >= 800 && !this.storage?.my) {
+            return RoomStatusEnum.Medium
+        }
+        else if (this.storage && this.storage.my) {
+            return RoomStatusEnum.High
+        }
+        else {
+            return RoomStatusEnum.Low
+        }
+    }
+
+    /**
+     * 更新掉落资源列表
+     */
+    private updateDropedMapIfNeeded(): void {
+        dropedResourceMap[this.name] = dropedResourceMap[this.name] || []
+        let droped: (Resource | Ruin | Tombstone)[] = []
+        droped = droped.concat(this.find(FIND_DROPPED_RESOURCES).filter(x => x.amount > 100))
+        droped = droped.concat(this.find(FIND_TOMBSTONES).filter(x => x.store.getUsedCapacity() > 100))
+        droped = droped.concat(this.find(FIND_RUINS).filter(x => x.store.getUsedCapacity() > 100))
+        dropedResourceMap[this.name] = droped
+    }
+
     private hash(str: string) {
         let hash = 5381;
         for (let i = 0; i < str.length; i++) {
@@ -50,22 +112,6 @@ export class RoomExtension extends Room {
             hash = ((hash << 5) + hash) + char; /* hash * 33 + c */
         }
         return hash
-    }
-
-    statusGetter(): RoomStatusEnum {
-        return RoomStatusEnum.Low
-        // if (this.energyCapacityAvailable < 800) {
-        //     return RoomStatusEnum.Low
-        // }
-        // else if (this.energyCapacityAvailable >= 800 && !this.storage?.my) {
-        //     return RoomStatusEnum.Medium
-        // }
-        // else if (this.storage && this.storage.my) {
-        //     return RoomStatusEnum.High
-        // }
-        // else {
-        //     return RoomStatusEnum.Low
-        // }
     }
 }
 
@@ -86,7 +132,7 @@ function initCreepsCache(): void {
 
     _.keys(creepsByRoom).forEach(roomName => {
         if (Game.rooms[roomName]) {
-            Game.rooms[roomName]._creeps = creepsByRoom[roomName];
+            Game.rooms[roomName]._creeps = creepsByRoom[roomName].sort((a, b) => b.store.getUsedCapacity() - a.store.getUsedCapacity());
         }
     });
 }

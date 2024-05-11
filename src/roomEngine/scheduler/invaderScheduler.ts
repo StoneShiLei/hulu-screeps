@@ -1,51 +1,38 @@
 import { Scheduler } from "./scheduler";
-import { RoomStatusEnum } from "global/const/const";
-import { InvaderStrategy } from "roomEngine/strategy/invaderStrategy";
+import { RoomStatusEnum } from "global/protos/room"
+import { InvaderAction } from "roomEngine/action/invaderAction";
 import { AttackTargetType } from "task/instances/task_attack";
 
 export class InvaderScheduler extends Scheduler<AttackTargetType> {
 
-    constructor(room: Room, idleCreeps: Creep[]) {
-        super(room, idleCreeps)
+    constructor(room: Room) {
+        const role: RoleType = 'basicDefender'
+        super(room, role)
         this.strategy = this.updateStrategy()
     }
 
     updateStrategy(): IRoomStrategy<AttackTargetType> | undefined {
-        switch (this.room.status) {
-            case RoomStatusEnum.Low:
-                return new DefaultStrategy(this.room)
-            case RoomStatusEnum.Medium:
-                return new DefaultStrategy(this.room);
-            default:
-                return undefined
-        }
+        return new Default(this.room)
     }
 }
 
 
-class DefaultStrategy implements IRoomStrategy<AttackTargetType> {
+class Default implements IRoomStrategy<AttackTargetType> {
     room: Room
 
     constructor(room: Room) {
         this.room = room
     }
 
-    priority(): number {
-        return 1000
-    }
-    generateTargets(): AttackTargetType[] {
+    getTargets(): AttackTargetType[] {
         const targets = this.room.find(FIND_HOSTILE_CREEPS).filter(e => e.body.filter(b => b.type != MOVE).length)
         const target = targets.shift()
         return target ? [target] : []
     }
-    creepsFilter(creep: Creep): boolean {
-        return creep.role == "basicDefender"
-    }
-    getStrategy(): StrategyDetail<AttackTargetType> {
+
+    getAction(): ActionDetail<AttackTargetType> {
         return {
-            strategyMethod: InvaderStrategy.basicDefence,
-            creepsPerTarget: 3,
-            shouldSpawn: this.room.towers.length == 0 && this.room.creeps("basicDefender", false).length < 3,
+            actionMethod: InvaderAction.basicDefence,
         }
     }
 

@@ -1,97 +1,37 @@
 import { Scheduler } from "./scheduler";
-import { RoomStatusEnum } from "global/const/const";
-import { BuildableStrategy } from "roomEngine/strategy/buildableStrategy";
+import { RoomStatusEnum } from "global/protos/room"
+import { BuildableAction } from "roomEngine/action/buildableAction";
 import { BuildTargetType } from "task/instances/task_build";
 
 export class BuildableScheduler extends Scheduler<BuildTargetType> {
 
-    constructor(room: Room, idleCreeps: Creep[]) {
-        super(room, idleCreeps)
+    constructor(room: Room) {
+        const role: RoleType = 'worker'
+        super(room, role)
         this.strategy = this.updateStrategy()
     }
 
     updateStrategy(): IRoomStrategy<BuildTargetType> | undefined {
-        switch (this.room.status) {
-            case RoomStatusEnum.Low:
-                return new Low(this.room)
-            case RoomStatusEnum.Medium:
-                return new Medium(this.room);
-            case RoomStatusEnum.High:
-                return new High(this.room);
-            default:
-                return undefined
-        }
+        return new Default(this.room)
     }
 }
 
 
-class Low implements IRoomStrategy<BuildTargetType> {
+class Default implements IRoomStrategy<BuildTargetType> {
     room: Room
 
     constructor(room: Room) {
         this.room = room
     }
 
-    priority(): number {
-        return 30
+    getTargets(): BuildTargetType[] {
+        return this.room.level > 1 ? this.room.constructionSites : []
     }
-    generateTargets(): BuildTargetType[] {
-        return this.room.level > 1 && this.room.constructionSites.length ? [this.room.constructionSites[0]] : []
-    }
-    creepsFilter(creep: Creep): boolean {
-        return !creep.isEmptyStore && creep.role == "worker" && !creep.spawning
-    }
-    getStrategy(): StrategyDetail<BuildTargetType> {
+
+    getAction(): ActionDetail<BuildTargetType> {
         return {
-            strategyMethod: BuildableStrategy.build,
-            creepsPerTarget: 999,
-            shouldSpawn: false,
+            actionMethod: BuildableAction.build,
         }
-    }
-
-}
-
-class Medium implements IRoomStrategy<BuildTargetType> {
-    room: Room
-
-    constructor(room: Room) {
-        this.room = room
-    }
-
-    priority(): number {
-        throw new Error("Method not implemented.");
-    }
-    generateTargets(): BuildTargetType[] {
-        throw new Error("Method not implemented.");
-    }
-    creepsFilter(creep: Creep): boolean {
-        throw new Error("Method not implemented.");
-    }
-    getStrategy(): StrategyDetail<BuildTargetType> {
-        throw new Error("Method not implemented.");
-    }
-
-}
-
-
-class High implements IRoomStrategy<BuildTargetType> {
-    room: Room
-
-    constructor(room: Room) {
-        this.room = room
-    }
-
-    priority(): number {
-        throw new Error("Method not implemented.");
-    }
-    generateTargets(): BuildTargetType[] {
-        throw new Error("Method not implemented.");
-    }
-    creepsFilter(creep: Creep): boolean {
-        throw new Error("Method not implemented.");
-    }
-    getStrategy(): StrategyDetail<BuildTargetType> {
-        throw new Error("Method not implemented.");
     }
 
 }

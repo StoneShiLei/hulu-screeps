@@ -20,4 +20,16 @@ interface Creep {
      * 执行当前任务
      */
     run(): number | undefined
+
+    /**
+     * 压入新的task
+     * @param task 若干的task
+     */
+    pressTask(...task: ITask[]): void
+
+    /**
+     * 压入新的task并立即执行
+     * @param task 若干的task
+     */
+    pressTaskAndRun(...task: ITask[]): void
 }

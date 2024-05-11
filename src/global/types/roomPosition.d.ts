@@ -1,4 +1,10 @@
 interface RoomPosition {
+
+    /**
+     * 是否是房间边缘
+     */
+    isEdge: boolean
+
     /**
      * 位置是否可到达
      * @param ignoreCreep 忽略creep

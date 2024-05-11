@@ -286,7 +286,7 @@ function init(room: Room): RoomCacheType {
     if (roomCache[STRUCTURE_CONTAINER]) roomCache[STRUCTURE_CONTAINER].forEach(id => roomCache.massStores.add(id))
 
     //建筑工地
-    roomCache.constructionSites = new Set(room.find(FIND_MY_CONSTRUCTION_SITES).map(s => s.id))
+    roomCache.constructionSites = new Set(room.find(FIND_CONSTRUCTION_SITES).map(s => s.id))
 
 
     local[room.name] = { data: roomCache, time: {} }

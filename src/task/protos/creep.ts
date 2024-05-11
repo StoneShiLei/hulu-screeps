@@ -1,8 +1,20 @@
+import { TaskHelper } from "task/TaskHelper";
 import { TargetCache } from "task/helper/TargetCache";
 import { initTask } from "task/task";
 import { Logger } from "utils/Logger";
 
 export class CreepExtension extends Creep {
+
+    pressTask(...task: ITask[]) {
+        if (!this.task) return
+        if (!task || task.length == 0) return
+        this.task = TaskHelper.chain([...task, this.task])
+    }
+    pressTaskAndRun(...task: ITask[]) {
+        this.pressTask(...task)
+        this.task?.run()
+    }
+
 
     /**
      * task的get访问器
@@ -39,7 +51,7 @@ export class CreepExtension extends Creep {
         if (task) {
 
             //如果目标存在，将目标加入到缓存中
-            if (task.target) {
+            if (task.target && task.target.ref) {
                 if (!Game.TargetCache.targets[task.target.ref]) {
                     Game.TargetCache.targets[task.target.ref] = []
                 }
@@ -73,11 +85,14 @@ export class CreepExtension extends Creep {
      * @returns
      */
     run(): number | undefined {
+        if (this.spawning) return
+
         if (this.task) {
             const name = `${this.task.name}`
             const res = this.task.run()
-            if (Game.time % 3 == 0) this.say(name + ':' + res.toString())
-            //tick结束前再次验证任务，提前更新目标缓存
+            if (Game.time % 3 == 0 && name && name.length > 3) this.say(name.substring(0, 3) + ':' + res.toString())
+
+            //tick结束前再次验证任务，提前更新目标缓存,同时防止没有触发器调用creep.isIdle
             if (this._task) this.task.isValid()
 
             return res

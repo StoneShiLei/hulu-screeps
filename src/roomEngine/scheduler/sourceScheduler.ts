@@ -1,104 +1,50 @@
-import { HarvestTargetType } from "task/instances/task_harvest";
 import { Scheduler } from "./scheduler";
-import { SourceStrategy } from "roomEngine/strategy/sourceStrategy";
-import { RoomStatusEnum } from "global/const/const";
+import { SourceAction } from "roomEngine/action/sourceAction";
+import { SourceHarvestTargetType } from "task/instances/task_sourceHarvest";
 
-export class SourceScheduler extends Scheduler<HarvestTargetType> {
 
-    constructor(room: Room, idleCreeps: Creep[]) {
-        super(room, idleCreeps)
+export class SourceScheduler extends Scheduler<SourceHarvestTargetType> {
+
+    constructor(room: Room) {
+        const role: RoleType = 'sourceHarvester'
+        super(room, role)
         this.strategy = this.updateStrategy()
     }
 
-    updateStrategy(): IRoomStrategy<HarvestTargetType> | undefined {
-        switch (this.room.status) {
-            case RoomStatusEnum.Low:
-                return new Low(this.room)
-            case RoomStatusEnum.Medium:
-                return new Medium(this.room);
-            case RoomStatusEnum.High:
-                return new High(this.room);
-            default:
-                return undefined
-        }
+    updateStrategy(): IRoomStrategy<SourceHarvestTargetType> | undefined {
+        return new Default(this.room, this.role);
     }
 }
 
-
-class Low implements IRoomStrategy<HarvestTargetType> {
+class Default implements IRoomStrategy<SourceHarvestTargetType> {
     room: Room
+    role: RoleType
 
-    constructor(room: Room) {
+    constructor(room: Room, role: RoleType) {
         this.room = room
+        this.role = role
     }
 
-    priority(): number {
-        return 100
-    }
-    generateTargets(): HarvestTargetType[] {
-        const f = (source: Source) => {
-            const energyAvailable = source.energy > 0
-            const canWorkPosLen = source.pos.surroundPos(1).filter(pos => pos.isWalkable()).length
-            const targetedLen = source.targetedBy.length
-
-            return energyAvailable && canWorkPosLen * 1.5 - targetedLen > 0
+    getTargets(): SourceHarvestTargetType[] {
+        //如果没有能运送的则跳过，防止只挖不运
+        if (this.room.creeps('carrier', false).length + this.room.creeps('worker', false).length == 0) {
+            return []
         }
 
-        return this.room.sources.filter(f).sort((a, b) => b.energy - a.energy)
+        const targets = this.room.sources.filter(s =>
+            s.targetedBy.filter(c => c.role == this.role).length == 0 ||
+            s.targetedBy.filter(c => c.role == this.role && (c.ticksToLive || 1500) < 300).length > 0 &&
+            s.targetedBy.filter(c => c.role == this.role && (c.ticksToLive || 1500) > 300).length == 0)
+
+        return targets
     }
-    creepsFilter(creep: Creep): boolean {
-        return creep.isEmptyStore && creep.role == "worker" && !creep.spawning
-    }
-    getStrategy(): StrategyDetail<HarvestTargetType> {
+    getAction(): ActionDetail<SourceHarvestTargetType> {
         return {
-            strategyMethod: SourceStrategy.harvest,
-            shouldSpawn: this.room.creeps('worker', false).length < 20,
+            actionMethod: SourceAction.constantHarvest,
+            options: {
+                resourceType: RESOURCE_ENERGY
+            }
         }
-    }
-
-}
-
-class Medium implements IRoomStrategy<HarvestTargetType> {
-    room: Room
-
-    constructor(room: Room) {
-        this.room = room
-    }
-
-    priority(): number {
-        throw new Error("Method not implemented.");
-    }
-    generateTargets(): HarvestTargetType[] {
-        throw new Error("Method not implemented.");
-    }
-    creepsFilter(creep: Creep): boolean {
-        throw new Error("Method not implemented.");
-    }
-    getStrategy(): StrategyDetail<HarvestTargetType> {
-        throw new Error("Method not implemented.");
-    }
-
-}
-
-
-class High implements IRoomStrategy<HarvestTargetType> {
-    room: Room
-
-    constructor(room: Room) {
-        this.room = room
-    }
-
-    priority(): number {
-        throw new Error("Method not implemented.");
-    }
-    generateTargets(): HarvestTargetType[] {
-        throw new Error("Method not implemented.");
-    }
-    creepsFilter(creep: Creep): boolean {
-        throw new Error("Method not implemented.");
-    }
-    getStrategy(): StrategyDetail<HarvestTargetType> {
-        throw new Error("Method not implemented.");
     }
 
 }

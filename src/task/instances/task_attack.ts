@@ -16,6 +16,9 @@ export class TaskAttack extends Task<AttackTargetType> {
         super(TaskAttack.taskName, target, option)
 
         this.setting.targetRange = 3
+        this.option.moveOptions = {
+            bypassHostileCreeps: false
+        }
     }
 
     isValidTask(): boolean {
