@@ -20,6 +20,7 @@ import { FillUpgradeScheduler } from "./scheduler/fillUpgradeScheduler"
 import { CarrierBodyConfig } from "role/bodyConfig/carrier"
 import { MineralScheduler } from "./scheduler/minetralScheduler"
 import { TransferMineralScheduler } from "./scheduler/transferMineralScheduler"
+import { BusinessTerminal } from "structure/instances/business_terminal"
 
 export function mountRoomEngine() {
     PrototypeHelper.assignPrototype(Room, RoomExtension)
@@ -29,6 +30,9 @@ let fistActive = true
 
 export class RoomEngine {
     static run() {
+
+        // ErrorCatcher.catch(() => BusinessTerminal.autoBuy())
+
         _.values<Room>(Game.rooms).forEach(room => {
 
             ErrorCatcher.catch(() => BusinessLink.run(room)) //link

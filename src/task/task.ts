@@ -55,11 +55,6 @@ export abstract class Task<TTargetType extends TargetType> implements ITask {
                 }
             }
         }
-
-        // this.log = Container.get(Logger)
-        // if (this.creep) {
-        //     this.log = this.log.withCreep(this.creep).withRoom(this.creep.room)
-        // }
     }
 
 

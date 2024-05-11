@@ -86,13 +86,15 @@ export class RoomExtension extends Room {
         return Game.getObjectById(id) || undefined
     }
 
-    countResource(type: ResourceConstant): number {
+    countResource(type?: ResourceConstant): number {
+        const currentType = type || 'all'
+
         local[this.name] = local[this.name] || { data: {}, time: {} }
-        local[this.name].time[type] = local[this.name].time[type] || { time: 0, count: 0 }
-        const lastFetch = local[this.name].time[type]
+        local[this.name].time[currentType] = local[this.name].time[currentType] || { time: 0, count: 0 }
+        const lastFetch = local[this.name].time[currentType]
 
         if (lastFetch.time < Game.time) {
-            lastFetch.count = this.massStores.reduce((temp, massStore) => temp + massStore.store[type], 0)
+            lastFetch.count = this.massStores.reduce((temp, massStore) => temp + massStore.store.getUsedCapacity(type), 0)
             lastFetch.time = Game.time
         }
         return lastFetch.count

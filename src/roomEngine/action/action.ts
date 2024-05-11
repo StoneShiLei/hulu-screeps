@@ -96,7 +96,15 @@ export abstract class Action implements IAction {
             options.amount = Math.min(creep.store.getFreeCapacity(options.resourceType), Math.min(target.store[options.resourceType], options.amount))
         }
 
-        return [Action.genTakeResourceTask(target, options), ...tasks]
+        tasks.unshift(Action.genTakeResourceTask(target, options))
+
+        //如果creep包含任务所需其他资源，尝试放入storage
+        const creepStoredTypes = _.keys(creep.store)
+        if (creep.room.storage && creepStoredTypes.length && creepStoredTypes.some(r => r != options.resourceType)) {
+            tasks.unshift(TaskHelper.transferAll(creep.room.storage || creep.belongRoom.storage))
+        }
+
+        return tasks
     }
 
     /**

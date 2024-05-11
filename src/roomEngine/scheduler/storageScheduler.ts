@@ -24,7 +24,15 @@ class Default implements IRoomStrategy<TransferAllTargetType> {
     }
 
     getTargets(): TransferAllTargetType[] {
-        return this.room.storage ? [this.room.storage] : []
+        if (this.room.storage && this.room.storage.store.getFreeCapacity() > 0) {
+            return [this.room.storage]
+        }
+        else if (this.room.terminal && this.room.terminal.store.getFreeCapacity() > 0) {
+            return [this.room.terminal]
+        }
+        else {
+            return []
+        }
     }
 
     getAction(): ActionDetail<TransferAllTargetType> {

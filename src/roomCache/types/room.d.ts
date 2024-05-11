@@ -42,10 +42,10 @@ interface Room {
     massStores: MassStoresType[]
 
     /**
-     * 获取当前房间所有大容量存储对象中的该资源总数
+     * 获取当前房间所有大容量存储对象中的该资源总数,不传入type计算所有
      * @param type 资源类型
      */
-    countResource(type: ResourceConstant): number
+    countResource(type?: ResourceConstant): number
 
     /**
      * Game.getObjectById的别名
