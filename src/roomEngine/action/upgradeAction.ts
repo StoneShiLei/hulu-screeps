@@ -20,6 +20,13 @@ export class UpgradeAction extends Action {
     }
 
     static upgraderUpgrade(targets: UpgradeTargetType[], role: RoleType, room: Room) {
+        if (!room.storage) {
+            //如果有upgrader同时upgrader的数量大于等于闲置且有能量的carrier数量-1，跳过
+            const upgraderCount = room.creeps('upgrader', false).length
+            if (upgraderCount > 0 && upgraderCount >= room.idleCreeps('carrier').filter(c => c.store[RESOURCE_ENERGY] > 0).length - 1) return
+        }
+
+
         return function () {
             if (!targets.length) return
             const controller = targets[0]

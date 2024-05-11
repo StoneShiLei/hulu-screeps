@@ -6,6 +6,10 @@ export class HiveAction extends Action {
 
     static fillSpawn(targets: TransferTargetType[], role: RoleType, room: Room) {
         return function () {
+
+            //如果有carrier能执行此任务时，不给worker发布此任务
+            if (role == 'worker' && room.storage && room.idleCreeps('carrier', false).length != 0) return
+
             const creeps = room.idleCreeps(role)
 
             creeps.forEach(creep => {

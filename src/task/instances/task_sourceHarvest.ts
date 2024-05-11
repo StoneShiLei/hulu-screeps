@@ -1,19 +1,19 @@
 import { TaskRegistration } from "task/helper/TaskRegistry";
 import { Task } from "../task";
 
-export type SourceConstantHarvestTargetType = Source
+export type SourceHarvestTargetType = Source
 
-@TaskRegistration<SourceConstantHarvestTargetType>()
-export class TaskSourceConstantHarvest extends Task<SourceConstantHarvestTargetType> {
+@TaskRegistration<SourceHarvestTargetType>()
+export class TaskSourceHarvest extends Task<SourceHarvestTargetType> {
 
-    static taskName = 'sourceConstantHarvest'
+    static taskName = 'sourceHarvest'
 
-    static createInstance(target: SourceConstantHarvestTargetType, options?: TaskOption) {
-        return new TaskSourceConstantHarvest(target, options)
+    static createInstance(target: SourceHarvestTargetType, options?: TaskOption) {
+        return new TaskSourceHarvest(target, options)
     }
 
-    constructor(target: SourceConstantHarvestTargetType, options = {} as TaskOption) {
-        super(TaskSourceConstantHarvest.taskName, target, options);
+    constructor(target: SourceHarvestTargetType, options = {} as TaskOption) {
+        super(TaskSourceHarvest.taskName, target, options);
 
     }
 

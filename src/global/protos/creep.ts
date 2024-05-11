@@ -5,4 +5,7 @@ export class CreepExtension extends Creep {
     roleGetter(): RoleType {
         return this.memory.role
     }
+    belongRoomGetter(): Room {
+        return Game.rooms[this.memory.roomName]
+    }
 }

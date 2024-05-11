@@ -18,8 +18,8 @@ export class TaskGetRenewed extends Task<GetRenewedTargetType> {
 
     isValidTask(): boolean {
         let hasClaimPart = _.filter(this.creep.body, (part: BodyPartDefinition) => part.type == CLAIM).length > 0;
-        let lifetime = hasClaimPart ? CREEP_CLAIM_LIFE_TIME : CREEP_LIFE_TIME;
-        return this.creep.ticksToLive != undefined && this.creep.ticksToLive < 0.9 * lifetime;
+        if (hasClaimPart) return false
+        return this.creep.ticksToLive != undefined && this.creep.ticksToLive < 0.9 * CREEP_LIFE_TIME;
     }
     isValidTarget(): boolean {
         return !!this.target && this.target.my

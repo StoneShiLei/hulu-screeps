@@ -25,7 +25,7 @@ class Default implements IRoomStrategy<BuildTargetType> {
     }
 
     getTargets(): BuildTargetType[] {
-        return this.room.level > 1 && this.room.constructionSites.length ? [this.room.constructionSites[0]] : []
+        return this.room.level > 1 ? this.room.constructionSites : []
     }
 
     getAction(): ActionDetail<BuildTargetType> {

@@ -1,9 +1,9 @@
 import { Scheduler } from "./scheduler";
 import { SourceAction } from "roomEngine/action/sourceAction";
-import { SourceConstantHarvestTargetType } from "task/instances/task_sourceConstantHarvest";
+import { SourceHarvestTargetType } from "task/instances/task_sourceHarvest";
 
 
-export class SourceScheduler extends Scheduler<SourceConstantHarvestTargetType> {
+export class SourceScheduler extends Scheduler<SourceHarvestTargetType> {
 
     constructor(room: Room) {
         const role: RoleType = 'sourceHarvester'
@@ -11,12 +11,12 @@ export class SourceScheduler extends Scheduler<SourceConstantHarvestTargetType> 
         this.strategy = this.updateStrategy()
     }
 
-    updateStrategy(): IRoomStrategy<SourceConstantHarvestTargetType> | undefined {
+    updateStrategy(): IRoomStrategy<SourceHarvestTargetType> | undefined {
         return new Default(this.room, this.role);
     }
 }
 
-class Default implements IRoomStrategy<SourceConstantHarvestTargetType> {
+class Default implements IRoomStrategy<SourceHarvestTargetType> {
     room: Room
     role: RoleType
 
@@ -25,9 +25,9 @@ class Default implements IRoomStrategy<SourceConstantHarvestTargetType> {
         this.role = role
     }
 
-    getTargets(): SourceConstantHarvestTargetType[] {
+    getTargets(): SourceHarvestTargetType[] {
         //如果没有能运送的则跳过，防止只挖不运
-        if (this.room.creeps('carrier', false).length + this.room.creeps('worker').length == 0) {
+        if (this.room.creeps('carrier', false).length + this.room.creeps('worker', false).length == 0) {
             return []
         }
 
@@ -38,7 +38,7 @@ class Default implements IRoomStrategy<SourceConstantHarvestTargetType> {
 
         return targets
     }
-    getAction(): ActionDetail<SourceConstantHarvestTargetType> {
+    getAction(): ActionDetail<SourceHarvestTargetType> {
         return {
             actionMethod: SourceAction.constantHarvest,
             options: {

@@ -10,7 +10,7 @@ interface RoomObject {
 	 * 如果该对象没有store，则返回undefined
 	 * @param type 资源类型
 	 */
-	getCurrentStoreResource(type: ResourceConstant): number | undefined
+	getCurrentStoreResource(type?: ResourceConstant): number | undefined
 }
 
 

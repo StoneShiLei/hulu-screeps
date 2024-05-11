@@ -15,21 +15,22 @@ export class RoomObjectExtension extends RoomObject {
         return _.map(Game.TargetCache.targets[this.ref], name => Game.creeps[name])
     }
 
-    getCurrentStoreResource(type: ResourceConstant): number | undefined {
+    getCurrentStoreResource(type?: ResourceConstant): number | undefined {
         const thisProxy = this as unknown as StoreStructure
         if (thisProxy.store === undefined) return undefined
 
         const store = thisProxy.store
 
+        const strType = type || 'all'
 
         const id = this.ref
-        const trueAmount = store[type]
+        const trueAmount = store.getUsedCapacity(type)
 
         this._currentResource = this._currentResource || {}
-        if (this._currentResource[type]) {
+        if (this._currentResource[strType]) {
             // if (this._currentResource[type] > store[type]) debugger
             // console.log(`读取缓存，目标ref:${id},        目标原始存储：${trueAmount},    目标结果存储：${this._currentResource[type] + store[type]}`)
-            return this._currentResource[type] + store[type]
+            return this._currentResource[strType] + store.getUsedCapacity(type)
         }
 
         let currentResourceCount = 0
@@ -68,13 +69,13 @@ export class RoomObjectExtension extends RoomObject {
             })
         })
 
-        if (!this._currentResource[type]) this._currentResource[type] = 0
-        this._currentResource[type] += currentResourceCount
+        if (!this._currentResource[strType]) this._currentResource[strType] = 0
+        this._currentResource[strType] += currentResourceCount
 
         // if (this._currentResource[type] > store[type]) debugger
 
         // console.log(`实时计算，目标ref:${id},        目标原始存储：${trueAmount},    目标结果存储：${this._currentResource[type] + store[type]},      目标工作者情况：${string}`)
-        return this._currentResource[type] + store[type]
+        return this._currentResource[strType] + store.getUsedCapacity(type)
     }
 }
 

@@ -3,10 +3,29 @@ import { HarvestTargetType } from "task/instances/task_harvest"
 import { PickupTargetType } from "task/instances/task_pickup"
 import { TransferTargetType } from "task/instances/task_transfer"
 import { WithdrawTargetType } from "task/instances/task_withdraw"
+import { WithdrawAllTargetType } from "task/instances/task_withdrawAll"
 
 type TakeResourceType = PickupTargetType | HarvestTargetType | WithdrawTargetType
 
 export abstract class Action implements IAction {
+
+    /**
+     * 取出全部类型资源，给每个creep指派1个target
+     * @param targets
+     * @param role
+     * @param room
+     * @param options
+     * @returns
+     */
+    static withdrawAllResource(targets: WithdrawAllTargetType[], role: RoleType, room: Room, options: ActionOptions = {}) {
+        return function () {
+            room.idleCreeps(role).filter(c => c.isEmptyStore).forEach(creep => {
+                const target = targets.shift()
+                if (!target) return
+                creep.task = TaskHelper.withdrawAll(target, options)
+            })
+        }
+    }
 
     /**
      * 取出资源，给每个creep指派1个target
@@ -74,7 +93,7 @@ export abstract class Action implements IAction {
 
         //如果有设置取用数量且目标包含store属性，则设置取用数量为目标可用数量
         if (options.amount && 'store' in target) {
-            options.amount = Math.min(target.store[options.resourceType], options.amount)
+            options.amount = Math.min(creep.store.getFreeCapacity(options.resourceType), Math.min(target.store[options.resourceType], options.amount))
         }
 
         return [Action.genTakeResourceTask(target, options), ...tasks]

@@ -1,16 +1,16 @@
 import { Action } from "./action";
 import { TaskHelper } from "task/TaskHelper";
 import { HarvesterBodyConfig } from "role/bodyConfig/harvester";
-import { SourceConstantHarvestTargetType } from "task/instances/task_sourceConstantHarvest";
+import { SourceHarvestTargetType } from "task/instances/task_sourceHarvest";
 
 export class SourceAction extends Action {
 
-    static constantHarvest(targets: SourceConstantHarvestTargetType[], role: RoleType, room: Room) {
+    static constantHarvest(targets: SourceHarvestTargetType[], role: RoleType, room: Room) {
         return function () {
 
             targets.forEach(source => {
 
-                const tasks: ITask[] = [TaskHelper.sourceConstantHarvest(source)]
+                const tasks: ITask[] = [TaskHelper.sourceHarvest(source)]
                 if (source.container) {
                     tasks.unshift(TaskHelper.goto(source.container, { targetRange: 0 }))
                 }

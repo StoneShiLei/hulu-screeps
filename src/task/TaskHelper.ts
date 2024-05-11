@@ -1,6 +1,6 @@
 import { BuildTargetType, TaskBuild } from "task/instances/task_build";
 import { GoToTargetType, TaskGoto } from "task/instances/task_goto";
-import { SourceConstantHarvestTargetType, TaskSourceConstantHarvest } from "task/instances/task_sourceConstantHarvest";
+import { SourceHarvestTargetType, TaskSourceHarvest } from "task/instances/task_sourceHarvest";
 import { PickupTargetType, TaskPickup } from "task/instances/task_pickup";
 import { HarvestTargetType, TaskHarvest } from "./instances/task_harvest";
 import { TaskTransfer, TransferTargetType } from "./instances/task_transfer";
@@ -22,6 +22,8 @@ import { GetRenewedTargetType, TaskGetRenewed } from "./instances/task_getRenewe
 import { DropTargetType, TaskDrop } from "./instances/task_drop";
 import { HealTargetType, TaskHeal } from "./instances/task_heal";
 import { GetBoostedTargetType, TaskGetBoosted } from "./instances/task_getBoosted";
+import { MineralHarvestTargetType, TaskMineralHarvest } from "./instances/task_mineralHarvest";
+import { GetRecycledTargetType, TaskGetRecycled } from "./instances/task_getRecycled";
 
 /**
  * 任务帮助
@@ -58,8 +60,12 @@ export class TaskHelper {
         return new TaskHarvest(target, option)
     }
 
-    static sourceConstantHarvest(target: SourceConstantHarvestTargetType, option?: TaskOption): TaskSourceConstantHarvest {
-        return new TaskSourceConstantHarvest(target, option)
+    static sourceHarvest(target: SourceHarvestTargetType, option?: TaskOption): TaskSourceHarvest {
+        return new TaskSourceHarvest(target, option)
+    }
+
+    static mineralHarvest(target: MineralHarvestTargetType, option?: TaskOption): TaskMineralHarvest {
+        return new TaskMineralHarvest(target, option)
     }
 
     static transfer(target: TransferTargetType, option?: TaskOption): TaskTransfer {
@@ -140,6 +146,10 @@ export class TaskHelper {
 
     static getRenewd(target: GetRenewedTargetType, option?: TaskOption): TaskGetRenewed {
         return new TaskGetRenewed(target, option)
+    }
+
+    static getRecycled(target: GetRecycledTargetType, option?: TaskOption): TaskGetRecycled {
+        return new TaskGetRecycled(target, option)
     }
 
     static drop(target: DropTargetType, option?: TaskOption): TaskDrop {
